@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+  form { width: 95%; margin: 5px; padding: 5px; border: solid #000 1px; }
+  label.prompt { width: 6em; float: left; text-align: right; margin: .5em 1em; clear: both; }
+  textarea#script { margin: .5em 0; width: 80%; }
+  input#command { margin: .5em 0; width: 60%; }
+
+
+  h2 { font-size: 1.1em; margin: 0.1em; }
+  div.sample { border: solid #000 1px; display: inline-block; }
+</style>
+
+<script type="text/javascript" src="../dist/jquery.min.js"></script>
+<script type="text/javascript" src="../dist/jquery.simulate.js"></script>
+<script type="text/javascript" src="../dist/bililiteRange.js"></script>
+<script type="text/javascript" src="../dist/jquery.simulate.ext.js"></script>
+<script type="text/javascript" src="../dist/jquery.simulate.drag-n-drop.js"></script>
+<script type="text/javascript" src="../dist/jquery.simulate.key-sequence.js"></script>
+<script type="text/javascript" src="../dist/jquery.simulate.key-combo.js"></script>
+
+<script type="text/javascript" src="../src/inspector.js"></script>
+<script type="text/javascript" src="../src/herbie.js"></script>
+
+<script>
+
+
+
+
+
+$(document).ready(function(){
+    $("#add").click(function(){
+    	if (!$('#script').val().match(/\n$/)) {
+			$('#script').append('\n'); 
+    	}
+		$('#script').append($("#command").val() + '\n'); 
+		$("#command").val('').focus();
+    });
+    $("#parse").click(function(){
+		var cmdtree = ParseScript($('#script').val());
+		$('#cmdtree').text(JSON.stringify(cmdtree,null,2));
+    });
+   $("#run").click(function(){
+		var cmdtree = ParseScript($('#script').val());
+		$('#cmdtree').text(JSON.stringify(cmdtree,null,2));
+		ExecuteScript(cmdtree);
+    });
+   $("#inspect").click(function(){
+	   document.RunInspector($("#inspector"));
+    });
+
+});
+</script>
+</head>
+
+
+<body>
+
+This is an example page.  It had many sample elements:<br>
+<div class="sample">
+<h2>Inputs without labels:</h2>
+Name: <input name="name" size="15" type="text" /><br>
+Address: <TEXTAREA NAME="address" ROWS=3 COLS=30 ></TEXTAREA><br>
+Type: <select  name="type">
+<option>Home</option>
+<option>Office</option>
+<option>Family</option>
+</select><br>
+Phone: <input name="phone" size="15" type="text" />
+<input name="phone" type="checkbox" value="business" /> business
+<input name="phone" type="checkbox" value="personal" /> personal
+<input name="phone" type="checkbox" value="other" /> other
+<br>
+A save button: <button>Save</button><br>
+An ok button: <button>OK</button><br>
+A cancel button: <button>Cancel</button><br>
+And finally, it has a link <a href="http://www.google.com/">going away</a>
+</div>
+
+<div class="sample">
+<h2>Inputs w/o labels, but using IDs:</h2>
+Name: <input id="name" name="name" size="15" type="text" /><br>
+Address: <TEXTAREA id="address" NAME="address" ROWS=3 COLS=30 ></TEXTAREA><br>
+Type: <select id="type" name="type">
+<option>Home</option>
+<option>Office</option>
+<option>Family</option>
+</select><br>
+Phone: <input id="phone" name="phone" size="15" type="text" />
+<input id="business" name="phone" type="checkbox" value="business" /> business
+<input id="personal" name="phone" type="checkbox" value="personal" /> personal
+<input id="other" name="phone" type="checkbox" value="other" /> other
+<br>
+A save button: <button id="save">Save</button><br>
+An ok button: <button id="ok">OK</button><br>
+A cancel button: <button id="cancel">Cancel</button><br>
+And finally, it has a link <a href="http://www.google.com/">going away</a>
+</div>
+
+<div class="sample">
+<h2>Inputs with labels:</h2>
+<label for="input_name">Last Name:</label>
+<input id="input_name" name="name" size="15" type="text" /><br>
+<label for="input_address">Address:</label>
+<textarea id="input_address" name="address" rows=3 cols=30></textarea><br>
+<label for="input_type">Type:</label>
+<select id="input_type" name="type">
+<option>Home</option>
+<option>Office</option>
+<option>Family</option>
+</select><br>
+<label for="input_phone">Phone:</label>
+
+<input id="input_phone" name="phone" size="15" type="text" />
+<input id="input_business" name="phone" type="checkbox" value="business" /> <label for="input_business">business</label>
+<input id="input_personal" name="phone" type="checkbox" value="personal" /> <label for="input_personal">personal</label>
+<input id="input_other" name="phone" type="checkbox" value="other" /> <label for="input_other">other</label>
+<br>
+A save button: <button>Save</button><br>
+An ok button: <button>OK</button><br>
+A cancel button: <button>Cancel</button><br>
+And finally, it has a link <a href="http://www.google.com/">going away</a>
+</div>
+
+
+
+
+
+<form onsubmit="return false">
+  <label class="prompt" for="script">Script:</label>
+  <textarea name="Script" id="script" rows="10" cols="80">
+  * Last Name: horner test
+  Type 'hi' in to 'Address' input.
+  Click on the 'buttons' button.
+  Click on the 'links' link.
+  </textarea>
+  <label class="prompt" for="command">Command:</label>
+  <input type="text" name="Command" id="command" size="80" maxlength="100" />
+  <button id="add">Add</button>
+  <button id="parse">Parse</button>
+  <button id="run">Run</button>
+  <button id="inspect">Inspect</button> <span id="inspector"></span>
+</form>
+<pre id="cmdtree">
+Click parse
+</p>
+
+  <textarea name="Script" id="script" rows="10" cols="80">
+Test 'Employee checks in'
+    Switch to the 'mainwindow' frame
+    Navigate to the 'E-Chart' link
+    Click the 'MIE-10019' link
+    Capture 'portlet' with the 'Quick Links' portlet
+    Click the 'Checkin' link in the 'Quick Links' portlet
+    Switch to the 'WebChart: E-Chart CheckIn' window
+    Click the 'Save' button
+    Close
+    Switch to the 'WebChart: Patient Summary' window
+    Click the 'Logout' link
+    The "Selenium Testing System" text should exist
+Test "Receptionist begins the Visit"
+    Login 'reception/selenium'
+    Switch to the 'mainwindow' frame
+    Navigate to the "Checkin" link
+    Click the 1st "Open" link in the "Patients In Waiting Room for (Office)" table
+    Switch to the "WebChart: Encounters" window
+    Select "Visit" from the "Visit type" dropdown
+    Click the "Save" button
+    Close "WebChart: E-Chart CheckIn"
+    Switch to the "WebChart: E-Chart CheckIn" window
+    Click the "Logout" link
+    The "Selenium Testing System" text should exist
+Test "Nurse goes to the Visit"
+    Login 'nurse/selenium'
+    Switch to the 'mainwindow' frame
+    Navigate to the "Checkin" link
+    Click the "Waiting Room" link in the "Patients In Waiting Room for (Office)" table
+    Test the "Enter New Station Details" MIEwindow
+        Select "Room 1" from the "New Station" dropdown
+        Type "William Hart in Room 1" in the "Comment" textarea
+        Click the "Save" button
+    Test the "Checked In Patients -- All Stations for (Office)" table
+        The "Room 1" text should exist
+        Click the "Open" link
+    Close
+    Switch to the 'WebChart: Encounters' window
+    Test "Visit"
+        The "CCDA / Clinical Summary" MIEsection should be closed
+        Capture "visit_start"
+        Test the "Subjective" MIEgroup
+            Capture "subjective_group_start"
+            Test the "Encounter info" MIEsection
+                Click the header
+                It should be open
+                Type '02-02-2007' in the 'Date' date
+                Capture 'open_encounter_info'
+                Click the next button
+                It should be closed
+                Capture 'closed_encounter_info'
+            Test the 'Multi-Dictation' MIEsection
+                It should be open
+                capture 'multi_dictation_open'
+                Click the next button
+                It should be closed
+                capture 'multi_dictation_closed'
+            Test the "Chief complaint" MIEsection
+                It should be open
+                Type "Seen today with complaints of" in the textarea
+                Capture 'open_chief_complaint'
+                Click the next button
+                It should be closed
+                Capture 'closed_chief_complaint'
+            Test the "HPI" MIEsection
+                It should be open
+                Type "Scratching his head" in the "What was the employee doing just before the incident occured?" textarea
+                Type "The employee's hat fell into the septic system, and he fell in trying to retrieve it." in the "What happened? Tell us how the injury occurred." textarea
+                Type "This is the third accident involving the employer's septic system in a week.  Possibly they need better safety controls." in the "HPI Narrative (Personal/Private Additional)" textarea
+                Capture 'hpi_open'
+                Click next button
+                It should be closed
+                Capture 'hpi_closed'
+            Test the "Case" MIEsection
+                It should be open
+                The "No" radio button in the "Would you like to create a new case?" text should be checked
+                Click the "Injury (OSHA)" radio button in the "Would you like to create a new case?" text
+                Click the "the result of a single event" radio button in the "Was the injury/illness" text
+                Type "08-08-1980 1314" in the "Date and time of injury or onset of illness" datetime
+                Type '0900' in the 'Time patient began work on day of injury/illness' textfield
+                Type "08-08-1980 1500" in the "Date/time supervisor was notified of incident/illness" datetime
+                Type "08-08-1980" in the "Last date of work" date
+                Click the "Yes" radio button in the "Work related" row
+                Click the "Injury" radio button in the "Injury/Illness type" row
+                Click the "Yes" radio button in the "Workers' Comp related" row
+                Click the "Not Denied" radio button in the "Workers' Comp claim resolution" row
+                Select "Major contributing cause" from the "Workers' Comp investigation" dropdown
+                Type "08-11-1980" in the "Date determined recordable" datetime
+                Type "08-11-1980 0900" in the "Date/time workers compensation forms were given" datetime
+                Click the "onsite location" radio button in the "Did the injury/illness occur at an" row
+                Select "Cali" from the "Please select" autocomplete
+                Type "Secondary fertilizer tank" in the "Where the event occurred" textarea
+                Type "Cleaning the walkway around the top of the tank with a pushbroom" in the "What was the employee doing just before the incident occured?" textarea
+                Type "septic chemicals caused a rash and the fall twisted his ankle" in the "What object or substance directly harmed the employee?" textarea
+                Click the "Yes" radio button in the "Did patient receive medical treatment for this injury/illness prior to reporting the incident?" row
+                Type "The employee went in the chemical shower and packed ice around his ankle" in the "Please describe the treatment provided" textarea
+                Click the "Onsite Health Services" radio button in the "Was treatment provided by" row
+                Select "Office" from the "Onsite location information" dropdown
+                Test "Select Selenium as the provider" in the table after the "Authorized providers" text
+                    Select "Selenium" from the autocomplete
+                    Select "Occupational Medicine" from the dropdown
+                    Click the "Add" button
+                Test "Enter the injuries and comments" in the table after the "Nature of injury / Body parts" text
+                    Select "Sprain/Strain" from the 1st dropdown
+                    Select "Ankle - Left" from the 2nd dropdown
+                    Type "The sprains is quite severe" in the textarea
+                    Click the "Add" button
+                    Select "Burn" from the 1st dropdown
+                    Select "General Body" from the 2nd dropdown
+                    Type "This is a chemical burn caused by the septic tank chemicals Mr. Hart fell in" in the textarea
+                    Click the "Add" button
+                Click the next button
+                It should be closed
+                Capture 'incident_details_closed'
+            Test the "Past medical history" MIEsection
+                It should be open
+                Click the 2nd button in the "Atrial fibrillation" row
+                Click the "Edit" button in the "CHF - Congestive heart failure" row
+                Type "08-08-1980" in the 2nd textfield
+                Type "Ongoing" in the 3rd textfield
+                Click the "OK" button
+                Select "MI" from the autocomplete
+                Type "08-08-1980" in the 1st textfield
+                Type "09-09-1983" in the 2nd textfield
+                Type "Skinny again" in the 3rd textfield
+                Click the "Add" button
+                Capture "past_medical_history_open"
+                Click the next button
+                It should be closed
+                Capture "past_medical_history_closed"
+            Test the "Past procedures" MIEsection
+                It should be open
+                Click the 2nd button in the "CT scan of head" row
+                Click the "Edit" button in the "Appendectomy" row
+                Type "He was dressed like Fred Flintstone" in the 2nd textfield
+                Click the "OK" button
+                Select "Angio" from the autocomplete
+                Type "08-08-1980" in the 1st textfield
+                Type "It was shaped like a giraffe" in the 2nd textfield
+                Click the "Add" button
+                Capture "past_procedures_open"
+                Click the next button
+                It should be closed
+                Capture "past_procedures_closed"
+            Test the "Preventive care" MIEsection
+                It should be open
+                Capture "preventive_care_open"
+                Click the next button
+                It should be closed
+                Capture "preventive_care_closed"
+            Test the "Presenting medications" MIEsection
+                It should be open
+                Click the 2nd button in the "amoxicillin" row
+                Click the 2nd button in the 'Coumadin' row
+                Click the "Edit/Disc" button in the "Lisinopril" row
+                Type "08-08-1980" in the 2nd textfield
+                Type "09-09-1983" in the 3rd textfield
+                Select "Atrial fibrillation" from the 4th autocomplete
+                Click the "OK" button
+                Select "Water B" from the 1st autocomplete
+                Type "08-08-1980" in the 2nd textfield
+                Type "09-09-1983" in the 3rd textfield
+                Select "Hyper" from the 4th autocomplete
+                Click the "Add" button
+                Capture "presenting_medications_open"
+                Click the next button
+                It should be closed
+                Capture "presenting_medications_closed"
+            Test the "Allergies / Intolerances" MIEsection
+                It should be open
+                Click the 2nd button in the "PENICILLINS" row
+                Click the "Edit" button in the "SULFA(SULFONAMIDE ANTIBIOTICS)" row
+                Select "Bee" from the autocomplete
+                Click the "OK" button
+                Select "Wasp" from the autocomplete
+                Type "Hives" in the textfield
+                Type "08-08-1980" in the date
+                Click the "Add" button
+                Capture "allergies_intolerances_open"
+                Click the next button
+                It should be closed
+                Capture "allergies_intolerances_closed"
+            Test the "Family history" MIEsection
+                It should be open
+                Select "Heart attack" from the autocomplete
+                Select "Father" from the dropdown
+                Type "Testing the comments." in the textfield
+                Click the "Add" button
+                Capture "family_history_open"
+                Click the next button
+                It should be closed
+                Capture "family_history_closed"
+            Test the "Injections / Immunizations" MIEsection
+                It should be open
+                Select "MMR" from the autocomplete
+                Type "08-08-1980" in the date
+                Click the "Add" button
+                Capture "injections_immunizations_open"
+                Click the next button
+                It should be closed
+                Capture "injections_immunizations_closed"
+            Test the "Social history" MIEsection
+                It should be open
+                Click the "Former smoker" radio button
+                Type "14" in the "Age Started" textfield
+                Type "52" in the "Age Quit" textfield
+                Type "Mr. Hart smoked for many years, then quit when his granddaughter was asthmatic." in the textarea after the "Narrative" text
+                Capture "social_history_open"
+                Click the next button
+                It should be closed
+                Capture "social_history_closed"
+            Test the "Presenting restrictions" MIEsection
+                It should be open
+                Capture "presenting_restrictions_open"
+                Click the next button
+                It should be closed
+                Capture "presenting_restrictions_closed"
+            Test the "Review of systems" MIEsection
+                It should be open
+                Test the "General" vartree
+                    Add the "Normal activity" varitem
+                    Click the "Normal energy level" varitem
+                Test the "Eyes" vartree
+                    Click the "Free Text" text
+                    Type "Cross-eyed" in the textarea in the "Review of systems" context
+                Test the "Eyes" vartree
+                    Click the "Add New" text
+                    Test the "Add Item" MIEwindow
+                        Type "Hulk Eyes" in the "Display" textfield
+                        Type "You wouldn't like them when they're angry" in the "Text" textarea
+                        Type "Pretty eyes" in the "Negative" textarea
+                        Click the 2nd "Is Normal" checkbox
+                        Click on the "Age/Gender" text
+                        Capture "add_item_window"
+                        Click the "Save" button
+                Test the "Ears/Nose/Mouth/Throat" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Respiratory" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Cardiac" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "GI" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "GU" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Musculoskeletal" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Neurological" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Psychiatric" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Endocrine" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Hematologic/Lymphatic" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Skin" vartree
+                    Click the "No complaints" varitem
+                Type "Mr. Hart is developing mutant powers, as well." in the textarea
+                Capture "review_of_systems_open"
+                Click the next button
+                It should be closed
+                Capture "review_of_systems_closed"
+            Test the "Questionnaire" MIEsection
+                Click the next button
+            Capture "subjective_group_end"
+        Test the "Objective" MIEgroup
+            Capture 'objective_group_start'
+            Test the 'Vitals' MIEsection
+                It should be open
+                Click the 'Manual' text
+                Click the 'Get Readings' button
+                Accept the 'Could not find ActiveX control' alert
+                Click the 'Device' text
+                Type '72' in the 1st textfield
+                Type '240' in the 2nd textfield
+                Type '32.55' in the 3rd textfield
+                Type 'He slouches' in the 4th textfield
+                Type 'He is a fatty' in the 5th textfield
+                Type 'He is wider than he is tall' in the 6th textfield
+                Type '120' in the 7th textfield
+                Type '80' in the 8th textfield
+                Select 'Left Arm' from the 4th dropdown
+                Select 'Standing' from the 5th dropdown
+                Type 'He wanted to stand on his head for this' in the 9th textfield
+                Type '60' in the 10th textfield
+                Select 'Regular' from the 6th dropdown
+                Select 'Radial' from the 7th dropdown
+                Type 'His heart was beating' in the 11th textfield
+                Type '99' in the 12th textfield
+                Type 'Normal, for him' in the 13th textfield
+                Type '100' in the 14th textfield
+                Type 'Lungs are good' in the 15th textfield
+                Type '20' in the 16th textfield
+                Type 'He has freezing breath' in the 17th textfield
+                Select 'Resting' from the 9th dropdown
+                Type 'He is very lazy' in the 18th textfield
+                Select '0' from the 10th dropdown
+                Type 'He is a weenie' in the 19th textfield
+                Capture 'vitals_open'
+                Click the next button
+                It should be closed
+                Capture 'vitals_closed'
+            Test the 'Visual acuity' MIEsection
+                It should be open
+                Type '20' in the 1st textfield in the 'Right Eye' row
+                Type '20' in the 2nd textfield in the 'Right Eye' row
+                Type '20' in the 1st textfield in the 'Left Eye' row
+                Type '20' in the 2nd textfield in the 'Left Eye' row
+                Type '20' in the 1st textfield in the 'Both Eyes' row
+                Type '20' in the 2nd textfield in the 'Both Eyes' row
+                Capture 'visual_acuity_open'
+                It should be closed
+                Capture 'visual_acuity_closed'
+            Test the 'Nurse physical exam' MIEsection
+                It should be open
+                Test the "General Appearance" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Functional and cognitive" vartree
+                    Close it
+                Test the "Head/Face" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Ears, Nose, Mouth, Throat" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Jugular Veins" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Neck and Thyroid" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Auscultation & Palpation" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Arterial Pulses" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Edema/Varicosities of Extremities" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Abdomen" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Liver/Kidney/Spleen" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Gait/Station" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Muscle Strength/Tone" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Digits/Nails" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Orientation/Mood/Affect" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Neurology" vartree
+                    Click the "Add New" text
+                    Test the "Add Item" MIEwindow
+                        Type "Mind Bullets" in the textfield on the "Display Name" row
+                        Type "Patient killed a receptionist with his mind" in the textarea in the "Text" row
+                        Type "Patient's brain is unloaded" in the textarea on the "Negative Text" row
+                        Click the "Save" button
+                Capture "npe_open"
+                Click the next button
+                It should be closed
+                Capture "npe_closed"
+            Test the "Physical exam" MIEsection
+                It should be open
+                Test the "General Appearance" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Functional and cognitive" vartree
+                    Close it
+                Test the "Head/Face" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Ears, Nose, Mouth, Throat" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Jugular Veins" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Neck and Thyroid" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Auscultation & Palpation" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Arterial Pulses" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Edema/Varicosities of Extremities" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Abdomen" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Liver/Kidney/Spleen" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Gait/Station" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Muscle Strength/Tone" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Digits/Nails" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Orientation/Mood/Affect" vartree
+                    Click the "ALL NORMAL" varitem
+                Test the "Neurology" vartree
+                    Click the "Add New" text
+                    Test the "Add Item" MIEwindow
+                        Type "Mind Bullets" in the textfield on the "Display Name" row
+                        Type "Patient killed a receptionist with his mind" in the textarea in the "Text" row
+                        Type "Patient's brain is unloaded" in the textarea on the "Negative Text" row
+                        Click the "Save" button
+                Capture "pe_open"
+                Click the next button
+                It should be closed
+                Capture "pe_closed"
+            Test the "Tests & procedures" MIEsection
+                It should be open
+                Click the "Add tests and procedures" link
+                Test the "In House Testing" MIEwindow
+                    Click the "Celestone Soluspan" checkbox
+                    Capture "in_house_testing"
+                    Click the "Add Procedures" button
+                It should be closed
+                Capture 'in_house_procedures'
+                Test the "Celestone Soluspan" MIEsection in the "Objective" context
+                    It should be closed
+                    Click the header
+                    It should be open
+                    Select "Hep A, adult" from the "Injection / Immunization" autocomplete
+                    Type "12345" in the "Vial / Lot #" textfield
+                    Select "Abbott" from the "Manufacturer" autocomplete
+                    Type "08-08-1980" in the "Expiration Date" date
+                    Capture "celestone_soluspan_open"
+                    Click the next button
+                    It should be closed
+                    Capture "celestone_soluspan_closed"
+                It should be closed
+                Capture "in_house_procedures_closed"
+            Capture 'objective_group_end'
+        Test the "Assessment" MIEgroup
+            Capture "assessment_group_start"
+            Test the "Assessment" MIEsection
+                It should be open
+                Select "Abscess of nasal cavity" from the "Problem" autocomplete
+                Select "Chronic" from the 7th dropdown
+                Type "08-08-1980" in the 7th textfield
+                Select "Selenium, Selenium" from the 9th dropdown
+                Click the "Add" button
+                Type "Mr. Hart's nose is melting" in the 5th textarea
+                Capture "assessment_open"
+                Click the next button
+                It should be closed
+                Capture "assessment_closed"
+            Test the "Care plan" MIEsection
+                It should be open
+                Capture "care_plan_open"
+                Click the next button
+                It should be closed
+                Capture "care_plan_closed"
+            Test the "Warnings and Guidelines" MIEsection
+                It should be open
+                Capture "warnings_guidelines_open"
+                Click the next button
+                It should be closed
+                Capture "warnings_guidelines_closed"
+            Test the "Incident summary" MIEsection
+                It should be open
+                Capture "incident_summary_open"
+                Click the next button
+                It should be closed
+                Capture "incident_summary_closed"
+            Test the "California items" MIEsection
+                It should be open
+                Capture "california_items_open"
+                Click the 1st "Yes" radio button
+                Click the 2nd "No" radio button
+                Click the 1st "Undetermined" radio button
+                Click the 4th "Yes" radio button
+                Click the next button
+                It should be closed
+                Capture "california_items_closed"
+            Test the "Quality" MIEsection
+                It should be open
+                Capture "quality_open"
+                Click the next button
+                It should be closed
+                Capture "quality_closed"
+            Capture "assessment_group_end"
+        Test the "Plan" MIEgroup
+            Capture "plan_group_start"
+            Test the "Plan narrative" MIEsection
+                It should be open
+                Type "First we'll hose the crap off of him, THEN we'll get him a new nose." in the textarea
+                Capture "plan_narrative_open"
+                Click the next button
+                It should be closed
+                Capture "plan_narrative_closed"
+            Test the "Medication orders" MIEsection
+                It should be open
+                Click the "Refill" button
+                Test the "Refill All Meds" MIEwindow
+                    Capture "refill_all_meds_window_start"
+                    Click the "Refill" button on the "Aspirin" row
+                    Type "Make them pink" in the textarea
+                    Click the "Refill" button on the "Lasix" row
+                    Type "30d" in the 1st textfield in the "Lasix" row
+                    Type "30" in the 2nd textfield in the "Lasix" row
+                    Capture "refill_all_meds_window_end"
+                    Click the "Save" button
+                Select "amox" from the 1st autocomplete
+                Select "tablet" from the 2nd autocomplete
+                Select "Oral 1 tablet per day" in the 3rd autocomplete
+                Test the "Dose Calculation Alert" MIEwindow
+                    Capture 'dose_calculation_window'
+                    Click the "X" button
+                Type "10d" in the 2nd textfield
+                Type "0" in the 4th textfield
+                Select "Abscess of nasal cavity" from the 4th autocomplete
+                Click the "Add" button
+                The "Start amoxicillin" text should exist
+                Capture 'medication_orders_open'
+                Click the next button
+                It should be closed
+                Capture 'medication_orders_closed'
+            Test the "Visit orders" MIEsection
+                It should be open
+                Click the "Edit" button
+                Type "All done" in the textfield
+                Type "08-08-1980" in the date
+                Select "Completed" from the dropdown
+                Click the "OK" button
+                Select "24 HOUR CHLORIDE URINE" from the 1st autocomplete
+                Type "Who likes salty pee?" in the 1st textfield
+                Type "08-08-1980" in the 1st date
+                Click the "Add" button
+                Click the "Panels" link
+                Test the "Order Pick Lists" MIEwindow
+                    Click the "Department of Transportation (DOT)" link
+                    Accept the "No orders in panel Department of Transportation" alert
+                Click the "Pick Lists" link
+                Test the "Order Pick Lists" MIEwindow
+                    Capture "order_pick_lists_window"
+                    Click the "Health Promotion" link
+                    Test the "Health Promotion" MIEwindow
+                        Click the "Dietary Consult" checkbox
+                        Capture "health_promotion_window"
+                        Click the "Ok" button
+                Click the "Make Labs Order" link
+                Test the "Start Order Request" MIEwindow
+                    Capture 'start_order_request_window'
+                    Click the "Cancel" button
+                    Accept the "Are you sure you want to cancel this order?" alert
+                Capture 'visit_orders_open'
+                Click the next button
+                It should be closed
+                Capture 'visit_orders_closed'
+            Test the "Restrictions and accommodations" MIEsection
+                It should be open
+                Capture 'restrictions_and_accommodations_open'
+                Click the next button
+                It should be closed
+                Capture 'restrictions_and_accommodations_closed'
+            Test the "Restrictions pending accommodation" MIEsection
+                It should be open
+                Capture 'restrictions_pending_accommodation_open'
+                Click the next button
+                It should be closed
+                Capture 'restrictions_pending_accommodation_closed'
+            Test the "Emergency transport by paramedics" MIEsection
+                It should be open
+                Type "EMTs brought him in on a pogo stick." in the textarea
+                Capture 'emergency_transport_open'
+                Click the next button
+                It should be closed
+                Capture 'emergency_transport_closed'
+            Test the "Billing" MIEsection
+                It should be open
+                Type "50" in the 1st textfield
+                Type "25" in the 2nd textfield
+                Capture 'billing_open'
+                Click the next button
+                It should be closed
+                Capture 'billing_closed'
+            Test the "Charges" MIEsection
+                It should be open
+                Click the "Picklist" link
+                Test the "Immunizations" MIEwindow
+                    Click the "Flu Vaccine" checkbox
+                    Capture 'immunizations_window'
+                    Click the 'Ok' button
+                It should be open
+                Capture 'charges_open'
+                Click the next button
+                It should be closed
+                Capture 'charges_closed'
+            Test the "CC" MIEsection
+                It should be open
+                Select "Sample, John" from the autocomplete
+                Select "Referring Physician" from the dropdown
+                Click the "Add" button
+                Capture 'encounter_users_open'
+                Click the next button
+                It should be closed
+                Capture 'encounter_users_closed'
+            Test the "Addendum" MIEsection
+                It should be open
+                Type "08-08-1980" in the 'Date/Time' date
+                Select "Sample, John" from the autocomplete
+                Type "Testing the Addendum" in the textarea
+                Capture 'addendum_open'
+                Click the next button
+                It should be closed
+                Capture 'addendum_closed'
+            Test "Patient Education" in the "Patient education" MIEsection
+                It should be open
+                Click the "Patient education material given" checkbox
+                Capture 'patient_education_open'
+                Click the next button
+                It should be closed
+                Capture 'patient_education_closed'
+            Test the "Future appointments" MIEsection
+                It should be open
+                Capture 'future_appointments'
+                Click the next button
+                It should be closed
+                Capture 'future_appointments_closed'
+            Test the "CCDA / Clinical Summary" MIEsection
+                It should be open
+                Capture 'ccda_clinical_summary_open'
+                Click the next button
+                It should be closed
+                Capture 'ccda_clinical_summary_closed'
+            Test the "Depart instructions" MIEsection
+                It should be open
+                Click the "Patient understands the plan and next steps" checkbox
+                Type "Take a shower, then follow up with Mister Sinister." in the textarea
+                Capture 'depart_instructions_open'
+                Click the next button
+                It should be closed
+                Capture 'depart_instructions_closed'
+            Capture 'plan_end'
+        Test the "Summary" MIEgroup
+            Capture 'summary_start'
+            Test the "Final medications" MIEsection
+                It should be open
+                Capture 'final_medications_open'
+                Click the next button
+                It should be closed
+                Capture 'final_medications_closed'
+            Test the "Final allergies" MIEsection
+                It should be open
+                Capture 'final_allergies_open'
+                Click the next button
+                It should be closed
+                Capture 'final_allergies_closed'
+            Test the "Final medical history" MIEsection
+                It should be open
+                Capture 'final_medical_history_open'
+                Click the next button
+                It should be closed
+                Capture 'final_medical_history_closed'
+            Test the "Final restrictions & accommodations" MIEsection
+                It should be open
+                Capture 'final_resrictions_and_accommodations_open'
+                Click the next button
+                It should be closed
+                Capture 'final_resrictions_and_accommodations_closed'
+            Capture 'summary_end'
+        Capture 'visit_end'
+    Click the "Archive & Close" button
+    Click the "Room 1" link
+    Test the "Enter New Station Details" MIEwindow
+        Select "Checkout" from the "New Station" dropdown
+        Type "Checking out William Hart" in the "Comment" textarea
+        Capture "station_details_check_out"
+        Click the "Save" button
+    Capture "checked_out"
+  	
+  </textarea>
+
+</body>
+</html>
