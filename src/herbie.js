@@ -87,25 +87,34 @@ function ParseScript(script) {
 	return cmdtree;
 }
 
-function ExecuteScript(cmdtree) {
-	
-	for (var i=0; i<cmdtree.length;i++) {
-		switch (cmdtree[i].code[0]) {
-			case 'type':
-				var inclause = $.inArray("in", cmdtree[i].code);
-				var tag = FindDesc( cmdtree[i].code[inclause+1] );
+function ExecuteScript( /* cmdtree, options, callback */) {
+  var cmdtree = arguments[0], options = { line: 0, running: true } , callback;
 
-				if (tag) tag.fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-
-				var seq = cmdtree[i].code[1];
-				if (seq.charAt(0)==='"'||seq.charAt(0)==="'")
-					seq = seq.slice(1,-1);
-
-				tag.simulate("key-sequence", {sequence: seq });
-
-
-				break;
-			default:
+	if (arguments.length == 2) { // only two arguments supplied
+		if (Object.prototype.toString.call(arguments[1]) == "[object Function]") {
+			callback = arguments[1]; // if is a function, set as 'callback'
+		} else {
+			options = arguments[1]; // if not a function, set as 'options'
 		}
+	} else if (arguments.length == 3) { // three arguments supplied
+		options = arguments[1];
+		callback = arguments[2];
+	}
+
+	var i=options.line;
+	switch (cmdtree[i].code[0]) {
+		case 'type':
+			var inclause = $.inArray("in", cmdtree[i].code);
+			var tag = FindDesc( cmdtree[i].code[inclause+1] );
+
+			var seq = cmdtree[i].code[1];
+			if (seq.charAt(0)==='"'||seq.charAt(0)==="'")
+				seq = seq.slice(1,-1);
+
+			if (tag) tag.fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).simulate("key-sequence", {sequence: seq, delay: 100 });
+
+
+			break;
+		default:
 	}
 }
