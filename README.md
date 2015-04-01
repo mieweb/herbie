@@ -1,3 +1,5 @@
+http://mieweb.github.io/herbie/
+
 Herbie
 ======
 
@@ -12,6 +14,10 @@ There are several different components to Herbie:
 The jQuery Simulate Extended plug-in (a.k.a. jquery-simulate-ext) provides methods for simulating complex
 user interactions based on the [jQuery.simulate()](https://github.com/jquery/jquery-simulate) plug-in.
 The plug-in provides simulation of: Drag & Drop, Key Sequences, Key Combinations
+
+Demo
+----
+An online demo is available here: http://mieweb.github.io/herbie/demo/index.html
 
 About
 -----
