@@ -8,14 +8,24 @@ function FindDesc(desc) {
 		hadterm = 1;
 
 	el = $('label:contains(' +desc+')');
-	if (el.length===1) return $('#'+el.attr("for"));  // return the element the label is for
+	if (el.length) { 
+		el = el.first();
+		return $('#'+el.attr("for"));  // return the element the label is for
+	}
 
 	desc = desc.slice(0,-1);  // remove the traling :
 
 	el = $('label:contains(' +desc+')');
-	if (el.length===1) return $('#'+el.attr("for")); // return the element the label is for
+	if (el.length) { 
+		el = el.first();
+		return $('#'+el.attr("for"));  // return the element the label is for
+	}
 
 	if (hadterm) desc += ':';
+
+	el = $('button:contains(' +desc+')');  // look for buttons that contain that text.
+	if (el.length) 
+		return el.first();
 
 //	if (desc.match('^#')) {
 	// as a last ditch effort see if it's a path
@@ -41,7 +51,7 @@ function ParseScript(script) {
 
 		var stmt = lines[i].match(/\w+|'[^']+'|"[^"]+"|\{\{(.*?)\}\}|\*|:/g);   // break the line into words, "quoted" or 'quoted' tokens, and {{tags}}
 		if (stmt)
-			if (stmt[0].charAt(0)!=='*') {
+			if (stmt[0].charAt(0)!=='*') { 					//  We support bulleted lists of field/value pair.  If this is not one, then we process it differently.
 				for (j = 0; j < stmt.length; j++) {
 					var z = stmt[j].charAt(0);
 					if (z == '{' || z == '"' || z == "'" ) {
@@ -51,6 +61,9 @@ function ParseScript(script) {
 						switch (candidate) {
 							// verbs
 							case 'click':
+								cmd.code.push(candidate);
+								cmd.code.push('in');
+								break;
 							case 'type':
 							case 'capture':
 							case 'test':
@@ -70,12 +83,15 @@ function ParseScript(script) {
 							case 'on':
 							case 'in':
 							case 'into':
-								cmd.code.push('in');
+								if ((cmd.code.length)  && (cmd.code[ cmd.code.length - 1 ] == 'in'))
+									; // do nothing
+								else
+									cmd.code.push('in');
 								break;
 						}
 					}
 				}
-			} else {
+			} else {  // this is a field value pair.  ie:  * Field: value
 				cmd.code.push('type');
 				stmt = lines[i].match(/\*[^:]+|:.+/g);
 				cmd.code.push(stmt[1].slice(1).trim());
@@ -88,7 +104,7 @@ function ParseScript(script) {
 }
 
 function ExecuteScript( /* cmdtree, options, callback */) {
-  var cmdtree = arguments[0], options = { line: 0, running: true } , callback;
+  var cmdtree = arguments[0], options = { line: 0, delay: 100, cmdtree:cmdtree } , callback, tag;
 
 	if (arguments.length == 2) { // only two arguments supplied
 		if (Object.prototype.toString.call(arguments[1]) == "[object Function]") {
@@ -102,19 +118,58 @@ function ExecuteScript( /* cmdtree, options, callback */) {
 	}
 
 	var i=options.line;
+
+	if (i<cmdtree.length) {
+		if (callback) callback(false, options);
+	} else {
+		if (callback) callback(true, options);
+		return;
+	}
+
+	var inclause = $.inArray("in", cmdtree[i].code);
+	if (inclause!=-1) {
+		var tagname = cmdtree[i].code[inclause+1];
+		if (tagname.charAt(0)==='"'||tagname.charAt(0)==="'")
+			tagname = tagname.slice(1,-1);
+
+		tag = FindDesc( tagname );
+		if (!tag) if (callback) callback(false, options, "Cannot find tag named: '" + tagname + "'");
+	}
+
 	switch (cmdtree[i].code[0]) {
 		case 'type':
-			var inclause = $.inArray("in", cmdtree[i].code);
-			var tag = FindDesc( cmdtree[i].code[inclause+1] );
 
 			var seq = cmdtree[i].code[1];
 			if (seq.charAt(0)==='"'||seq.charAt(0)==="'")
 				seq = seq.slice(1,-1);
 
-			if (tag) tag.fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).simulate("key-sequence", {sequence: seq, delay: 100 });
+			if (tag) tag.fadeOut(100)
+						.fadeIn(100)
+						.fadeOut(100)
+						.fadeIn(100)
+						.simulate("key-sequence", {sequence: seq, delay: options.delay, callback: 
+								function () { 
+									options.line++; // ok, setting the options to the next line here.
+									ExecuteScript(cmdtree,options,callback); 
+								}
+							});
+			return;
+		case 'click':
+			if (tag) tag.fadeOut(100)
+						.fadeIn(100)
+						.fadeOut(100)
+						.fadeIn(100)
+						.simulate("click");
+			return setTimeout(function () {
+					options.line++; // ok, setting the options to the next line here.
+					ExecuteScript(cmdtree,options,callback);
+				}, options.delay);
 
-
-			break;
 		default:
+			return setTimeout(function () {
+					options.line++; // ok, setting the options to the next line here.
+					ExecuteScript(cmdtree,options,callback);
+				}, options.delay);
+
 	}
 }
