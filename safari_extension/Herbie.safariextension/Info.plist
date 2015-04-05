@@ -13,22 +13,37 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.1</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Bars</key>
 		<array>
 			<dict>
 				<key>Filename</key>
-				<string>main.html</string>
+				<string>menubar.html</string>
+				<key>Identifier</key>
+				<string>HerbieBar</string>
 				<key>Label</key>
 				<string>Herbie</string>
 			</dict>
 		</array>
 		<key>Global Page</key>
 		<string>main.html</string>
+		<key>Popovers</key>
+		<array>
+			<dict>
+				<key>Filename</key>
+				<string>popover.html</string>
+				<key>Height</key>
+				<real>400</real>
+				<key>Identifier</key>
+				<string>HerbieScript</string>
+				<key>Width</key>
+				<real>600</real>
+			</dict>
+		</array>
 	</dict>
 	<key>Content</key>
 	<dict>
@@ -36,7 +51,7 @@
 		<dict/>
 	</dict>
 	<key>Description</key>
-	<string>Mind reading tool to assist automated testing of web pages.</string>
+	<string>Robot mind reading tool to assist automated testing of web pages.</string>
 	<key>DeveloperIdentifier</key>
 	<string>X5873NL7XM</string>
 	<key>ExtensionInfoDictionaryVersion</key>

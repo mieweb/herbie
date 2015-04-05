@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Herbie the mind reading scripting tool bar</title>
+<script type="text/javascript" src="scripts/jquery.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.simulate.js"></script>
+<script type="text/javascript" src="scripts/bililiteRange.js"></script>
+<script type="text/javascript" src="scripts/jquery.simulate.ext.js"></script>
+<script type="text/javascript" src="scripts/jquery.simulate.drag-n-drop.js"></script>
+<script type="text/javascript" src="scripts/jquery.simulate.key-sequence.js"></script>
+<script type="text/javascript" src="scripts/jquery.simulate.key-combo.js"></script>
+
+<script type="text/javascript" src="scripts/inspector.js"></script>
+<script type="text/javascript" src="scripts/herbie.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+    $("#add").click(function(){
+    	if (!$('#script').val().match(/\n$/)) {
+			$('#script').append('\n'); 
+    	}
+		$('#script').append($("#command").val() + '\n'); 
+		$("#command").val('').focus();
+    });
+    $("#parse").click(function(){
+		var cmdtree = ParseScript($('#script').val());
+		$('#cmdtree').text(JSON.stringify(cmdtree,null,2));
+    });
+   $("#run").click(function(){
+		var cmdtree = ParseScript($('#script').val());
+		$('#cmdtree').text('');
+		ExecuteScript(cmdtree, function (done, option, comment) { 
+            if (done) {
+                alert('Scipt finished');
+                $('#progress').text('Finished.');
+            } else {
+                $('#progress').text('Line: ' + option.line)
+                $('#cmdtree').append('Line: ' + option.line + ', Cmd:' + option.cmdtree[option.line].src);
+                if (comment) $('#cmdtree').append('[' + comment + ']\n');
+                else $('#cmdtree').append('\n');
+            }
+        } );
+    });
+   $("#inspect").click(function(){
+	   document.RunInspector($("#inspector"));
+    });
+
+});
+</script>
+
+
+</head>
+<body>
+  <img style="vertical-align: top;" height=18 src="logos/herbie.png">
+  	<select tabindex="-1" name="indent">
+	<option>1</option>
+	<option>2</option>
+	<option>3</option>
+	<option>4</option>
+	<option>5</option>
+	<option>6</option>
+	<option>7</option>
+  </select>
+  <button tabindex="6" id="inc">-</button>
+  <button tabindex="7" id="dec">+</button>
+  <label class="prompt" for="command">Command:</label>
+  <input tabindex="1" type="text" name="Command" id="command" size="80" maxlength="100" />
+  <button tabindex="2" id="add">Add</button>
+  <button tabindex="3" id="parse">Parse</button>
+  <button tabindex="4" id="run">Run</button><span id="progress"></span>
+  <button tabindex="5" id="inspect">Inspect</button> <span id="inspector"></span>
+</body>
+</html>
+
