@@ -7,25 +7,31 @@ function FindDesc(desc) {
 	} else 
 		hadterm = 1;
 
-	el = $('label:contains(' +desc+')');
-	if (el.length) { 
-		el = el.first();
-		return $('#'+el.attr("for"));  // return the element the label is for
-	}
+	try {
+		el = $('label:contains(' +desc+')');
+		if (el.length) { 
+			el = el.first();
+			return $('#'+el.attr("for"));  // return the element the label is for
+		}
+	} catch (ex) {}
 
-	desc = desc.slice(0,-1);  // remove the traling :
+		desc = desc.slice(0,-1);  // remove the traling :
 
-	el = $('label:contains(' +desc+')');
-	if (el.length) { 
-		el = el.first();
-		return $('#'+el.attr("for"));  // return the element the label is for
-	}
+	try {
+		el = $('label:contains(' +desc+')');
+		if (el.length) { 
+			el = el.first();
+			return $('#'+el.attr("for"));  // return the element the label is for
+		}
+	} catch (ex) {}
 
-	if (hadterm) desc += ':';
+		if (hadterm) desc += ':';
 
-	el = $('button:contains(' +desc+')');  // look for buttons that contain that text.
-	if (el.length) 
-		return el.first();
+	try {
+		el = $('button:contains(' +desc+')');  // look for buttons that contain that text.
+		if (el.length) 
+			return el.first();
+	} catch (ex) {}
 
 //	if (desc.match('^#')) {
 	// as a last ditch effort see if it's a path
