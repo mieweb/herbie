@@ -76,6 +76,8 @@
     }).on('mouseup', function() {
       var t = $('.herbie_draging');
       if (t.length) {
+          if (t.offset().left < 0) 
+              t.offset({left:0});
           if (t.offset().top < 0) 
               t.offset({top:0});
           t.removeClass('herbie_draging');
