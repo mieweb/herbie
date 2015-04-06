@@ -39,7 +39,9 @@
 </style>
 
 <div class="herbie_div">
-  <div class="herbie_buttons" style="text-align:right;">  
+  <div class="herbie_buttons" style="text-align:right;">
+    <img align="left" height="20" style="padding-top: 2px; padding-left: 4px;" src="../logos/herbie.svg">
+    <span style="float:left; padding: 2px;"><a target="_blank" href="http://mieweb.github.io/herbie/">Herbie</a></span>
     <button id="herbie_inspect">Inspect</button>
     <button class="herbie_hide">Hide</button>
   </div>
@@ -136,6 +138,7 @@ Click on the 'links' link.
   $("#herbie_inspect").click(function(){
       $('.herbie_bar').hide();
       $('.herbie_script').hide();
+      $('.herbie_output').show();
       document.RunInspector($("#herbie_output"), function() {
           $('.herbie_bar').show();
           $('.herbie_script').show();
