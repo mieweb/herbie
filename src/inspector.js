@@ -6,6 +6,7 @@
 (function(document) {
 	var last;
 	var report;
+	var done_callback;
 
 	function getLabel(el) {
 		var label;
@@ -161,7 +162,7 @@
 
 		// Set outline:
 		element.style.outline = '2px solid #f00';
-		if (report) report.text( cssPath(e.target) );
+		if (report) report.text(  " Label: " +  getLabel(e.target) + ' / ' + cssPath(e.target));
 
 		// Set last selected element so it can be 'deselected' on cancel.
 		last = element;
@@ -188,7 +189,9 @@
 		// Really, these could do anything:
 		console.log( cssPath(e.target) );
 		console.log( getLabel(e.target) );
-		if (report) report.text( cssPath(e.target) + " Label: " +  getLabel(e.target));
+		if (report) report.text(  " Label: " +  getLabel(e.target) + ' / ' + cssPath(e.target));
+		if (done_callback) done_callback();
+
 		/* console.log( getXPath(e.target).join('/') ); */
 
 		inspectorCancel(null);
@@ -222,8 +225,9 @@
 	/**
 	 * Add event listeners for DOM-inspectorey actions
 	 */
-	document.RunInspector = function(div) {
+	document.RunInspector = function(div, donefunc) {
 		report = div;
+		done_callback = donefunc;
 		if ( document.addEventListener ) {
 			document.addEventListener("mouseover", inspectorMouseOver, true);
 			document.addEventListener("mouseout", inspectorMouseOut, true);
