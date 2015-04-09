@@ -9,6 +9,16 @@
 
 <script type="text/javascript" src="../dist/jquery.min.js"></script>
 
+<script type="text/javascript" src="../dist/jquery.simulate.js"></script>
+<script type="text/javascript" src="../dist/bililiteRange.js"></script>
+<script type="text/javascript" src="../dist/jquery.simulate.ext.js"></script>
+<script type="text/javascript" src="../dist/jquery.simulate.drag-n-drop.js"></script>
+<script type="text/javascript" src="../dist/jquery.simulate.key-sequence.js"></script>
+<script type="text/javascript" src="../dist/jquery.simulate.key-combo.js"></script>
+
+<script type="text/javascript" src="../src/inspector.js"></script>
+<script type="text/javascript" src="../src/herbie.js"></script>
+
 <script>
 
  $(function(){
@@ -16,13 +26,8 @@
         $(this).contents().unwrap();
         $("#herbie_script").text(
 "Type 'hi' in to 'Address' input.\n\
-Fill out the following fields: \n\
-* Last Name: Horner\n\
-* Phone: 260-459-6270\n\
-Click on the 'Save' button. \n\
-Click 'OK'.\n\
-Click 'html body div.sample:nth-child(14) button:nth-child(24)'\n\
-Click on the 'links' link.");
+Press the 'tab' key.\n\
+");
     });
 })
 </script>
