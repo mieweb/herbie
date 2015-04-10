@@ -3,7 +3,7 @@ http://mieweb.github.io/herbie/
 Herbie
 ======
 
-Herbie is a set of tools for developing BBD (https://en.wikipedia.org/wiki/Behavior-driven_development) scripts for testing.  The premise is that the scripts should be human understandable and author-able.
+Herbie is a set of tools for developing BDD (https://en.wikipedia.org/wiki/Behavior-driven_development) scripts for testing.  The premise is that the scripts should be human understandable and author-able.
 
 There are several different components to Herbie:
 
