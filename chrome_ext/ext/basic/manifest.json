@@ -1,0 +1,32 @@
+{
+  "name": "Event Page Example",
+  "description": "Demonstrates usage and features of the event page",
+  "version": "1.1",
+  "manifest_version": 2,
+  "icons": { "16": "herbie16.png",
+             "48": "herbie48.png",
+            "128": "herbie128.png" },
+  "permissions": ["alarms", "notifications", "tabs", "*://*/*", "file:///*"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "web_accessible_resources": [
+    "dist/*",
+    "herbie/*",
+    "*.png"
+  ],
+    "browser_action": {
+    "default_icon" : "herbie48.png",
+    "default_title": "Start Event Page"
+  },
+  "commands": {
+    "open-google": {
+      "description": "Open a tab to google.com",
+      "suggested_key": { "default": "Ctrl+Shift+L" }
+    },
+    "_execute_browser_action": {
+      "suggested_key": { "default": "Ctrl+Shift+K" }
+    }
+  }
+}
