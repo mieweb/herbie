@@ -37,10 +37,10 @@ chrome.browserAction.onClicked.addListener(function() {
   chrome.tabs.query({currentWindow: true}, function(tabs) {
     if (tabs && tabs.length) {
       var tab = tabs[0];
-      chrome.tabs.executeScript(null, {file: "dist/jquery.min.js"}, function() {
-        var id = tab.id;
-        chrome.tabs.executeScript(null, {file: "content.js"}, function() {
-          sendMessage(id);
+      var tid = tab.id;
+      chrome.tabs.executeScript(tid, {file: "dist/jquery.min.js"}, function() {
+        chrome.tabs.executeScript(tid, {file: "content.js"}, function() {
+          sendMessage(tid);
         });
       });
     }
