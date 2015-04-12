@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+  h2 { font-size: 1.1em; margin: 0.1em; }
+  div.sample { border: solid #000 1px; display: inline-block; }
+</style>
+
+<script type="text/javascript" src="../dist/jquery.min.js"></script>
+
+</head>
+
+
+<body>
+
+
+This is an example page.  It had many sample elements:<br>
+<div class="sample">
+<h2>Inputs without labels:</h2>
+Name: <input name="name" size="15" type="text" /><br>
+Address: <TEXTAREA NAME="address" ROWS=3 COLS=30 ></TEXTAREA><br>
+Type: <select  name="type">
+<option>Home</option>
+<option>Office</option>
+<option>Family</option>
+</select><br>
+Phone: <input name="phone" size="15" type="text" />
+<input name="phone" type="checkbox" value="business" /> business
+<input name="phone" type="checkbox" value="personal" /> personal
+<input name="phone" type="checkbox" value="other" /> other
+<br>
+A save button: <button>Save</button><br>
+An ok button: <button>OK</button><br>
+A cancel button: <button>Cancel</button><br>
+And finally, it has a link <a href="http://www.google.com/">going away</a>
+</div>
+
+<div class="sample">
+<h2>Inputs with labels:</h2>
+<label for="input_name">Last Name:</label>
+<input id="input_name" name="name" size="15" type="text" /><br>
+<label for="input_address">Address:</label>
+<textarea id="input_address" name="address" rows=3 cols=30></textarea><br>
+<label for="input_type">Type:</label>
+<select id="input_type" name="type">
+<option>Home</option>
+<option>Office</option>
+<option>Family</option>
+</select><br>
+<label for="input_phone">Phone:</label>
+
+<input id="input_phone" name="phone" size="15" type="text" />
+<input id="input_business" name="phone" type="checkbox" value="business" /> <label for="input_business">business</label>
+<input id="input_personal" name="phone" type="checkbox" value="personal" /> <label for="input_personal">personal</label>
+<input id="input_other" name="phone" type="checkbox" value="other" /> <label for="input_other">other</label>
+<br>
+A save button: <button>Save</button><br>
+An ok button: <button>OK</button><br>
+A cancel button: <button>Cancel</button><br>
+And finally, it has a link <a href="http://www.google.com/">going away</a>
+</div>
+
+<div class="sample">
+<h2>Inputs w/o labels, but using IDs:</h2>
+Name: <input id="name" name="name" size="15" type="text" /><br>
+Address: <TEXTAREA id="address" NAME="address" ROWS=3 COLS=30 ></TEXTAREA><br>
+Type: <select id="type" name="type">
+<option>Home</option>
+<option>Office</option>
+<option>Family</option>
+</select><br>
+Phone: <input id="phone" name="phone" size="15" type="text" />
+<input id="business" name="phone" type="checkbox" value="business" /> business
+<input id="personal" name="phone" type="checkbox" value="personal" /> personal
+<input id="other" name="phone" type="checkbox" value="other" /> other
+<br>
+A save button: <button id="save">Save</button><br>
+An ok button: <button id="ok">OK</button><br>
+A cancel button: <button id="cancel">Cancel</button><br>
+And finally, it has a link <a href="http://www.google.com/">going away</a>
+</div>
+
+</body>
+</html>
