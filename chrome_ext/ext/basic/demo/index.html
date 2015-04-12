@@ -7,11 +7,7 @@
   div.sample { border: solid #000 1px; display: inline-block; }
 </style>
 
-<script type="text/javascript" src="../dist/jquery.min.js"></script>
-
-</head>
-
-
+<!--<script type="text/javascript" src="../dist/jquery.min.js"></script>-->
 <body>
 
 
@@ -31,7 +27,7 @@ Phone: <input name="phone" size="15" type="text" />
 <input name="phone" type="checkbox" value="other" /> other
 <br>
 A save button: <button>Save</button><br>
-An ok button: <button>OK</button><br>
+An ok button: <button id="slowok">OK</button><br>
 A cancel button: <button>Cancel</button><br>
 And finally, it has a link <a href="http://www.google.com/">going away</a>
 </div>
@@ -81,5 +77,25 @@ A cancel button: <button id="cancel">Cancel</button><br>
 And finally, it has a link <a href="http://www.google.com/">going away</a>
 </div>
 
+<script type="text/javascript">
+var runonce=false;
+(function() {
+	var button = document.getElementById("slowok");
+	button.addEventListener("click",function(e){
+		if (runonce) return;
+		runonce = true;
+		setTimeout(function() {
+			var button = e.toElement;
+			var div = document.createElement('span');
+			div.innerHTML = '<label for="input_slow">Slow Input:</label><input id="input_slow" name="slowly" size="15" type="text" /><br>';
+			button.parentNode.insertBefore(div, button.nextSibling.nextSibling);
+//			while (div.children.length > 0) {
+//				button.appendChild(div.children[0]);
+//			}
+		}, 1500);
+	},false);
+})();
+</script>
+</head>
 </body>
 </html>
