@@ -33,6 +33,12 @@ function FindDesc(desc) {
 			return el.first();
 	} catch (ex) {}
 
+	try {
+		el = $('a:contains(' +desc+')');  // look for buttons that contain that text.
+		if (el.length) 
+			return el.first();
+	} catch (ex) {}
+
 //	if (desc.match('^#')) {
 	// as a last ditch effort see if it's a path
 		try {

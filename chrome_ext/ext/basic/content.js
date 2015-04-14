@@ -35,7 +35,7 @@ if (t.length) {
   Click 'OK'.\n\
   Type 'finally' in 'Slow Input'\n\
   Click 'html body div.sample:nth-child(14) button:nth-child(24)'\n\
-  Click on the 'links' link.");
+  Click on the 'going away' link.");
   });
 }
 

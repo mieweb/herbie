@@ -1,6 +1,6 @@
 {
-  "name": "Event Page Example",
-  "description": "Demonstrates usage and features of the event page",
+  "name": "Herbie",
+  "description": "Herbie is the 'mind reading' robot for browser automation and testing.",
   "version": "1.1",
   "manifest_version": 2,
   "icons": { "16": "herbie16.png",
@@ -18,15 +18,6 @@
   ],
     "browser_action": {
     "default_icon" : "herbie48.png",
-    "default_title": "Start Event Page"
-  },
-  "commands": {
-    "open-google": {
-      "description": "Open a tab to google.com",
-      "suggested_key": { "default": "Ctrl+Shift+L" }
-    },
-    "_execute_browser_action": {
-      "suggested_key": { "default": "Ctrl+Shift+K" }
-    }
+    "default_title": "Start Herbie"
   }
 }
