@@ -6,7 +6,7 @@
   "icons": { "16": "herbie16.png",
              "48": "herbie48.png",
             "128": "herbie128.png" },
-  "permissions": ["alarms", "notifications", "tabs", "*://*/*", "file:///*"],
+  "permissions": ["alarms", "notifications", "tabs", "webNavigation", "*://*/*", "file:///*"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
