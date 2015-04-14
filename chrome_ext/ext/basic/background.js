@@ -20,7 +20,7 @@ function sendMessage(id) {
 }
 
 sendMessage();
-chrome.browserAction.setBadgeText({text: "ON"});
+//chrome.browserAction.setBadgeText({text: "ON"});
 console.log("Loaded.");
 
 chrome.runtime.onInstalled.addListener(function() {
@@ -32,23 +32,43 @@ chrome.runtime.onInstalled.addListener(function() {
 
 });
 
+var running=false;
+
+function RunContent(tid) {
+  chrome.tabs.executeScript(tid, {file: "dist/jquery.min.js"}, function() {
+    chrome.tabs.executeScript(tid, {file: "content.js"}, function() {
+      sendMessage(tid);
+    });
+  });
+}
 
 chrome.browserAction.onClicked.addListener(function() {
+  if (running) {
+    chrome.browserAction.setBadgeText({text: ""});
+    running = false;
+    chrome.tabs.sendMessage(lastTabId, "Stop");
+    return;
+  }
   chrome.tabs.query({currentWindow: true}, function(tabs) {
     if (tabs && tabs.length) {
       var tab = tabs[0];
       var tid = tab.id;
-      chrome.tabs.executeScript(tid, {file: "dist/jquery.min.js"}, function() {
-        chrome.tabs.executeScript(tid, {file: "content.js"}, function() {
-          sendMessage(tid);
-        });
-      });
+      running = true;
+      chrome.browserAction.setBadgeText({text: "ON"});
+      RunContent(tid);
     }
   });
 });
 
-chrome.commands.onCommand.addListener(function(command) {
-  chrome.tabs.create({url: "http://www.google.com/"});
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+  console.log("onUpdated:", tabId ,", details: " , changeInfo , ", Tab:" , tab);
+  if (running) {
+    if (changeInfo.status == "complete")
+      RunContent(tabId);
+  }
+});
+chrome.tabs.onSelectionChanged.addListener(function(tabId, selectInfo) {
+  console.log("onSelectionChanged:" , tabId , ", details: " , selectInfo);
 });
 
 chrome.runtime.onMessage.addListener(function(msg, _, sendResponse) {
@@ -83,6 +103,5 @@ chrome.runtime.onSuspend.addListener(function() {
     console.log("This does not show up.");
   });
   console.log("Unloading.");
-  chrome.browserAction.setBadgeText({text: ""});
   chrome.tabs.sendMessage(lastTabId, "Background page unloaded.");
 });
