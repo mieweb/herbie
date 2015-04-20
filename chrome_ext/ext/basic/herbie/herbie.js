@@ -2,6 +2,8 @@
 (function(window) {
 
 var loaderCallback = null;
+var stopScript = false;
+
 window.Herbie = [];
 
 function FindDesc(desc) {
@@ -121,6 +123,9 @@ function ParseScript(script) {
 	}
 	return cmdtree;
 }
+window.Herbie.StopScript = function() {
+  stopScript = true;
+}
 
 function ExecuteScript( /* cmdtree, options, callback */) {
   var cmdtree = arguments[0], options = { line: 0, delay: 100, cmdtree:cmdtree } , callback, tag = [];
@@ -138,7 +143,11 @@ function ExecuteScript( /* cmdtree, options, callback */) {
 
 	var i=options.line;
 	if (i>=cmdtree.length) {
-		if (callback) callback(true, options);
+		if (callback) callback(true, options, "Finished.");
+		return;
+	}
+	if (stopScript) {
+		if (callback) callback(true, null, "Stopped.");
 		return;
 	}
 
@@ -154,7 +163,9 @@ function ExecuteScript( /* cmdtree, options, callback */) {
 				cmdtree[i].timeout -= options.delay;
 				return setTimeout(function () { ExecuteScript(cmdtree,options,callback); }, options.delay);
 			} else {
-				if (callback) callback(false, options, "Cannot find tag named: '" + tagname + "'");
+				//  If we want to continue on error, we should callback(false), and then schedule the next call.
+				if (callback) callback(true, options, "Aborting. Cannot find tag named: '" + tagname + "'");
+				return;
 			}
 		}
 	}
@@ -214,6 +225,7 @@ function ExecuteScript( /* cmdtree, options, callback */) {
 window.Herbie.StartScript = function(opt, progress) {
 
   if (progress) loaderCallback = progress;
+  stopScript = false;
 
   var script = '';
   var cmdtree = [];
@@ -232,25 +244,29 @@ window.Herbie.StartScript = function(opt, progress) {
 
   if (loaderCallback) loaderCallback( { event: "starting", script: script, options:opt } );
 
+  $("#herbie_run").text('Stop');
 
   if (cmdtree.length) {
 	  ExecuteScript(cmdtree, options, function (done, option, comment) { 
 	  	var out = $("#herbie_output");
 	  	if (out.length) {
 	      if (done) {
-	          out.append('Finished.');
-	      } else {
-	          out.append('Line: ' + option.line + ', Cmd:' + option.cmdtree[option.line].src);
-	          if (comment) out.append('[' + comment + ']\n');
-	          else out.append('\n');
+	          $("#herbie_run").text('Run');
 	      }
+          if ((option) && (option.line < option.cmdtree.length)) {
+          	$("#herbie_line").val(option.line+1);
+          	out.append('Line: ' + (option.line+1) + ', Cmd:' + option.cmdtree[option.line].src + '\n');
+          } else if (option) {
+          	$("#herbie_line").val('');          	
+          }
+          if (comment) out.append('[' + comment + ']\n');
 	      out.animate({ scrollTop: out[0].scrollHeight}, 10);
 	    } else {
 	      console.log(done, option, comment);
 	    }
 		if (loaderCallback) {
 		  if (done)
-		 	loaderCallback( { event: "done" } );
+		 	loaderCallback( { event: "done", details: option, comment: comment } );
 		  else
 		  	loaderCallback( { event: "progress", details: option, comment: comment } );
 		}
@@ -259,6 +275,7 @@ window.Herbie.StartScript = function(opt, progress) {
 }
 
 window.Herbie.Stop = function() {
+  Herbie.StopScript();
   $(".herbie_div").hide();
 }
 
@@ -277,7 +294,6 @@ window.Herbie.BuildUI = function(path, script, callback) {
 	$(this).contents().unwrap();
 	$('#herbie_logo').attr("src",path+"herbie48.png");
 	if (script) $("#herbie_script").text(script);
-
 	$('.herbie_div').on('mousedown', function(e) {
 	  if ($(e.target).prop('tagName')=="DIV") {
 	      $(this).addClass('herbie_draging').parents().on('mousemove', function(e) {
@@ -332,8 +348,18 @@ window.Herbie.BuildUI = function(path, script, callback) {
 	  $('#herbie_output').text(JSON.stringify(cmdtree,null,2));
 	});
 	$("#herbie_run").click(function(){
-	  $('#herbie_output').text('');
-	  Herbie.StartScript();
+	  switch ($(this).text()) {
+	  	case 'Run':
+		  $('#herbie_output').text('');
+		  Herbie.StartScript({ 
+		  	script: $('#herbie_script').val(), 
+		  	line: Math.max(Number($("#herbie_line").val())-1, 0)  
+		  });
+		  break;
+	  	case 'Stop':
+		  Herbie.StopScript();
+		  break;
+	  }
 	});
 	$("#herbie_inspect").click(function(){
 	  $('.herbie_bar').hide();
