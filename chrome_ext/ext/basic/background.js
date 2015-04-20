@@ -102,20 +102,24 @@ chrome.browserAction.onClicked.addListener(function() {
 });
 
 chrome.webNavigation.onCommitted.addListener(function(data) {
-  if (enabled) 
+  if (enabled) {
     if (data.transitionType==='link') {
       InjectHerbie(data.tabId, function() { 
-        if (runScript) 
+        if (runScript && data.transitionQualifiers[0]!=='forward_back') 
           sendMessage(data.tabId, { cmd: "Run", script: exampleScript, line: lastLine+1 });
         else
           sendMessage(data.tabId, { cmd: "Show", script: exampleScript });
+      });
+    } else if (data.transitionType==='reload') {
+      InjectHerbie(data.tabId, function() { 
+        sendMessage(data.tabId, { cmd: "Show", script: exampleScript });
       });
     } else {
       var i = tabstack.indexOf(data.tabId);
       if (i>=0) tabstack.splice(i,1);
     }
-
-  console.log("onCommitted", data);
+    console.log("onCommitted", data);
+  }
 });
 
 /*
