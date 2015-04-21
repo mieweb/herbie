@@ -295,7 +295,7 @@ window.Herbie.BuildUI = function(path, script, callback) {
 	$('#herbie_logo').attr("src",path+"../logos/herbie48.png");
 	if (script) $("#herbie_script").text(script);
 	$('.herbie_div').on('mousedown', function(e) {
-	  if ($(e.target).prop('tagName')=="DIV") {
+	  if (e.target.tagName === 'DIV') {
 	      $(this).addClass('herbie_draging').parents().on('mousemove', function(e) {
 	          $('.herbie_draging').css('right','auto').offset({
 	              top: e.pageY - $('.herbie_draging').outerHeight() / 2,
@@ -316,22 +316,24 @@ window.Herbie.BuildUI = function(path, script, callback) {
 	  }
 	});
 	$('.herbie_hide').on('click', function() {
-	  switch ($(this).text()) {
+	  var ele = $(this),
+	      parent = ele.parent(),
+	      pparent = parent.parent();
+		  
+	  switch (ele.text()) {
 	      case 'Hide':
-	          $(this).parent().parent().find('div').hide();
-	          $(this).parent().show();
-	          $(this).parent().parent().css('width','auto');
-	          $(this).parent().parent().css('left','auto');
-	          $(this).parent().parent().css('right','0');
-	          $(this).text('Show');
+	          pparent.find('div').hide();
+	          parent.show();
+	          pparent.css('width','auto').css('left','auto').css('right','0');
+	          ele.text('Show');
 	          break;
 	      case 'Small':
-	          $(this).parent().next().hide();
-	          $(this).text('Hide');
+	          parent.next().hide();
+	          ele.text('Hide');
 	          break;
 	      case 'Show':
-	          $(this).parent().parent().find('div').show();
-	          $(this).text('Small');
+	          pparent.find('div').show();
+	          ele.text('Small');
 	          default:
 	  }
 	});
