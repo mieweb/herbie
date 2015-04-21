@@ -176,17 +176,7 @@ chrome.runtime.onMessage.addListener(function(msg, _, sendResponse) {
   // of whether we called sendResponse.
 });
 
-chrome.alarms.onAlarm.addListener(function() {
-  console.log("Time's up!");
-});
-
 chrome.runtime.onSuspend.addListener(function() {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    // After the unload event listener runs, the page will unload, so any
-    // asynchronous callback will not fire.
-    console.log("This does not show up.");
-  });
-  console.log("Unloading.");
-  chrome.tabs.sendMessage(null, "Background page unloaded.");
+  console.log("Suspending.");
 });
 
