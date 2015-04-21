@@ -3,7 +3,7 @@ http://mieweb.github.io/herbie/
 Herbie
 ======
 
-Herbie is a set of tools for developing BBD (https://en.wikipedia.org/wiki/Behavior-driven_development) scripts for testing.  The premise is that the scripts should be human understandable and author-able.
+Herbie is a set of tools for developing BDD (https://en.wikipedia.org/wiki/Behavior-driven_development) scripts for testing.  The premise is that the scripts should be human understandable and author-able.
 
 There are several different components to Herbie:
 
@@ -14,6 +14,12 @@ There are several different components to Herbie:
 The jQuery Simulate Extended plug-in (a.k.a. jquery-simulate-ext) provides methods for simulating complex
 user interactions based on the [jQuery.simulate()](https://github.com/jquery/jquery-simulate) plug-in.
 The plug-in provides simulation of: Drag & Drop, Key Sequences, Key Combinations
+
+Inspiration has been drawn from:
+* [Gherkin](https://github.com/cucumber/cucumber/wiki/Gherkin) and [Cucumber](https://cukes.info/) but Vision has a slightly different goals.
+* [Sikuli Script] (http://www.sikuli.org/) tho specific to the web, and mean to be browser independant.
+* [DalekJS](http://dalekjs.com/pages/documentation.html)
+* [Nightwatch.js](http://nightwatchjs.org/)
 
 Demo
 ----
