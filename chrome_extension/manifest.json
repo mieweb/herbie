@@ -3,9 +3,9 @@
   "description": "Herbie is the 'mind reading' robot for browser automation and testing.",
   "version": "1.1",
   "manifest_version": 2,
-  "icons": { "16": "herbie16.png",
-             "48": "herbie48.png",
-            "128": "herbie128.png" },
+  "icons": { "16": "logos/herbie16.png",
+             "48": "logos/herbie48.png",
+            "128": "logos/herbie128.png" },
   "permissions": ["alarms", "notifications", "tabs", "webNavigation", "*://*/*", "file:///*"],
   "background": {
     "scripts": ["background.js"],
@@ -17,7 +17,7 @@
     "*.png"
   ],
     "browser_action": {
-    "default_icon" : "herbie48.png",
+    "default_icon" : "logos/herbie48.png",
     "default_title": "Start Herbie"
   }
 }
