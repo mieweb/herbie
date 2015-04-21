@@ -23,7 +23,7 @@ Inspiration has been drawn from:
 
 Demo
 ----
-An online demo is available here: http://mieweb.github.io/herbie/demo/index.html
+An online demo is available here: http://mieweb.github.io/herbie/demo/index.html#run_hebie
 
 About
 -----

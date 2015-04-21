@@ -78,6 +78,17 @@ And finally, it has a link <a href="http://www.google.com/">going away</a>
 
 <script type="text/javascript">
 var runonce=false;
+
+herbie_sample_script = "Type 'hi' in to 'Address' input.\n\
+Fill out the following fields: \n\
+* Last Name: Horner\n\
+* Phone: 260-459-6270\n\
+Click on the 'Save' button. \n\
+Click 'OK'.\n\
+Type 'finally' in 'Slow Input'\n\
+Click on the 'going away' link.\n\
+Type 'it worked' in '#lst-ib'";
+
 (function() {
 	var button = document.getElementById("slowok");
 	button.addEventListener("click",function(e){
@@ -101,7 +112,7 @@ var runonce=false;
 		fileref.setAttribute("src", filename)
         document.getElementsByTagName("head")[0].appendChild(fileref)
 	}
-	// If herbie is on the 
+	// If #run_herbie is on the URL, then we can load this in the page.
 	if (window.location.hash=="#run_hebie") {
 		loadjsfile("../dist/jquery.min.js");
 		loadjsfile("../dist/jquery.simulate.js");
@@ -112,18 +123,15 @@ var runonce=false;
 		loadjsfile("../dist/jquery.simulate.key-combo.js");
 		loadjsfile("../src/inspector.js");
 		loadjsfile("../src/herbie.js");
-		setTimeout(function() { 
-			Herbie.BuildUI("../src/",
-"Type 'hi' in to 'Address' input.\n\
-Fill out the following fields: \n\
-* Last Name: Horner\n\
-* Phone: 260-459-6270\n\
-Click on the 'Save' button. \n\
-Click 'OK'.\n\
-Type 'finally' in 'Slow Input'\n\
-Click on the 'going away' link.\n\
-Type 'it worked' in '#lst-ib'"); 
-		}, 10);
+
+		// This code is to load herbie whenever the above script injection finishes.
+		function TryHerbie() {
+			if (typeof(Herbie) != "undefined")
+				Herbie.BuildUI("../src/", herbie_sample_script);
+			else
+				setTimeout(TryHerbie, 500);
+		}
+		setTimeout(TryHerbie, 10);
 	}
 })();
 </script>
