@@ -25,6 +25,8 @@ Demo
 ----
 An online demo is available here: http://mieweb.github.io/herbie/demo/index.html#run_hebie
 
+![Herbie example movie](http://mieweb.github.io/herbie/herbie_movie.gif)
+
 About
 -----
 Through a fault in manufacturing, a robot, RB-34 (a.k.a. Herbie), is created that possesses telepathic abilities. https://en.wikipedia.org/wiki/Liar!_(short_story)
