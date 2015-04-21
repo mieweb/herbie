@@ -1,8 +1,7 @@
-
 <style>
   .herbie_div {  
     cursor: move;
-    z-index: 10;  
+    z-index: 9999;  
     position: absolute;  
     top: 0; 
     right: 0;
@@ -15,10 +14,12 @@
   .herbie_div label { width: 6em; float: left; text-align: right;  clear:both;}
   .herbie_div textarea { width: 400px; }
   .herbie_div input { width: 300px; }
+  #herbie_line { width:auto; text-align: right; }
   .herbie_div pre { 
     margin: 5px; 
     height: auto;
     max-height: 200px;
+    max-width: 520px;
     overflow: auto;
     background-color: #eeeeee;
     word-break: normal !important;
@@ -31,8 +32,10 @@
 
 <div class="herbie_div">
   <div class="herbie_buttons" style="text-align:right;">
-    <img align="left" height="20" style="padding-top: 2px; padding-left: 4px;" src="../logos/herbie.svg">
+    <img id="herbie_logo" align="left" height="20" style="padding-top: 2px; padding-left: 4px;">
     <span style="float:left; padding: 2px;"><a target="_blank" href="http://mieweb.github.io/herbie/">Herbie</a></span>
+    <button id="herbie_run">Run</button><span id="progress"></span>
+    <input  id="herbie_line" type="text" name="line" size="3"/>
     <button id="herbie_inspect">Inspect</button>
     <button class="herbie_hide">Hide</button>
   </div>
@@ -45,89 +48,9 @@
       <input  id="herbie_command" type="text" name="Command" size="80" maxlength="100" />
       <button id="herbie_add">Add</button>
       <button id="herbie_parse">Parse</button>
-      <button id="herbie_run">Run</button><span id="progress"></span>
   </div>
   <div class="herbie_output">
       <pre id="herbie_output">Click parse or run</pre>
   </div>
 </div>
-
-<script type="text/javascript">
-
-  $('.herbie_div').on('mousedown', function(e) {
-      if ($(e.target).prop('tagName')=="DIV") {
-          $(this).addClass('herbie_draging').parents().on('mousemove', function(e) {
-              $('.herbie_draging').css('right','auto').offset({
-                  top: e.pageY - $('.herbie_draging').outerHeight() / 2,
-                  left: e.pageX - $('.herbie_draging').outerWidth() / 2
-              })
-          });
-          e.preventDefault();
-      }
-    }).on('mouseup', function() {
-      var t = $('.herbie_draging');
-      if (t.length) {
-          if (t.offset().left < 0) 
-              t.offset({left:0});
-          if (t.offset().top < 0) 
-              t.offset({top:0});
-          t.removeClass('herbie_draging');
-          t.css('right','auto');
-      }
-    });
-  $('.herbie_hide').on('click', function() {
-      switch ($(this).text()) {
-          case 'Hide':
-              $(this).parent().parent().find('div').hide();
-              $(this).parent().show();
-              $(this).parent().parent().css('width','auto');
-              $(this).parent().parent().css('left','auto');
-              $(this).parent().parent().css('right','0');
-              $(this).text('Show');
-              break;
-          case 'Small':
-              $(this).parent().next().hide();
-              $(this).text('Hide');
-              break;
-          case 'Show':
-              $(this).parent().parent().find('div').show();
-              $(this).text('Small');
-              default:
-      }
-  });
-  $("#herbie_add").click(function(){
-      if (!$('#herbie_script').val().match(/\n$/)) {
-        $('#herbie_script').append('\n'); 
-      }
-      $('#herbie_script').append($("#herbie_command").val() + '\n'); 
-      $("#herbie_command").val('').focus();
-    });
-  $("#herbie_parse").click(function(){
-      var cmdtree = ParseScript($('#herbie_script').val());
-      $('#herbie_output').text(JSON.stringify(cmdtree,null,2));
-    });
-  $("#herbie_run").click(function(){
-      var cmdtree = ParseScript($('#herbie_script').val());
-      $('#herbie_output').text('');
-      ExecuteScript(cmdtree, function (done, option, comment) { 
-          if (done) {
-              $('#herbie_output').append('Finished.');
-          } else {
-              $('#herbie_output').append('Line: ' + option.line + ', Cmd:' + option.cmdtree[option.line].src);
-              if (comment) $('#herbie_output').append('[' + comment + ']\n');
-              else $('#herbie_output').append('\n');
-          }
-          $("#herbie_output").animate({ scrollTop: $('#herbie_output')[0].scrollHeight}, 10);
-        });
-  });
-  $("#herbie_inspect").click(function(){
-      $('.herbie_bar').hide();
-      $('.herbie_script').hide();
-      $('.herbie_output').show();
-      document.RunInspector($("#herbie_output"), function() {
-          $('.herbie_bar').show();
-          $('.herbie_script').show();
-      });
-    });
-</script>
 

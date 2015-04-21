@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener(function(msg, _, sendResponse) {
         Herbie.Stop();
         break;
       case "Show":
-          Herbie.BuildUI(chrome.extension.getURL("/"), msg.script, HerbieonMessage);
+          Herbie.BuildUI(chrome.extension.getURL("/herbie/"), msg.script, HerbieonMessage);
         break;
       case "Run":
         Herbie.StartScript( { script: msg.script, line: msg.line } ,HerbieonMessage);
