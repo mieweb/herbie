@@ -23,7 +23,7 @@ A Goole Chrome extension is maintained here: [Chrome Plugin Source](chrome_exten
 * Make sure "Developer mode" is checked (upper left)
 * Press "Load unpacked extension..."
 * Browse to the chrome_extension folder in the project.
-* viola.  Now a Herbie, robot button should display on the toolbar.  It will inject Herbie into the current tab of any webpage.
+* viola.  Now a Herbie robot button should exist on the toolbar.  It will inject Herbie into the backgound of the current tab of any webpage.
 
 Demo
 ----
