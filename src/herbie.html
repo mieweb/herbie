@@ -1,21 +1,21 @@
 <style>
-  .herbie_div {  
-    cursor: move;
+  #herbie_div {
     z-index: 9999;  
-    position: absolute;  
-    top: 0; 
-    right: 0;
+    position: fixed;
+    top: 2px;
+    right: 2px;
     width: auto;
     background-color: white; 
     border:1px solid rgba(0,0,0,0.5); 
     border-radius: 6px;
     box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    box-sizing: border-box;
   }
-  .herbie_div label { width: 6em; float: left; text-align: right;  clear:both;}
-  .herbie_div textarea { width: 400px; }
-  .herbie_div input { width: 300px; }
-  #herbie_line { width:auto; text-align: right; }
-  .herbie_div pre { 
+  #herbie_div label { width: 6em; float: left; text-align: right;  clear:both;}
+  #herbie_div textarea { width: 400px; }
+  #herbie_div input { width: 300px; }
+  #herbie_div #herbie_line { width:auto; text-align: right; }
+  #herbie_div pre { 
     margin: 5px; 
     height: auto;
     max-height: 200px;
@@ -27,11 +27,12 @@
     white-space: pre !important;
     cursor: auto;
   }
-  .herbie_dragging { background-color: LightGray;  right: auto;}
+  #herbie_div.herbie_dragging { background-color: whitesmoke; }
+  #herbie_div #herbie_buttons { cursor: move; }
 </style>
 
-<div class="herbie_div">
-  <div class="herbie_buttons" style="text-align:right;">
+<div id="herbie_div">
+  <div id="herbie_buttons" style="text-align:right;">
     <img id="herbie_logo" align="left" height="20" style="padding-top: 2px; padding-left: 4px;">
     <span style="float:left; padding: 2px;"><a target="_blank" href="http://mieweb.github.io/herbie/">Herbie</a></span>
     <button id="herbie_run">Run</button><span id="progress"></span>
