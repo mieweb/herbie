@@ -23,7 +23,7 @@ function FindDesc(desc) {
 		}
 	} catch (ex) {}
 
-		desc = desc.slice(0,-1);  // remove the traling :
+	desc = desc.slice(0,-1);  // remove the traling :
 
 	try {
 		el = $('label').filter(':contains(' +desc+')');
@@ -33,9 +33,9 @@ function FindDesc(desc) {
 		}
 	} catch (ex) {}
 
-		if (hadterm) {
-			desc += ':';
-		}
+	if (hadterm) {
+		desc += ':';
+	}
 
 	try {
 		el = $('button').filter(':contains(' +desc+')');  // look for buttons that contain that text.
@@ -62,7 +62,7 @@ function FindDesc(desc) {
 	}
 
 	return [];
-}
+};
 
 // This function takes a human readable potientially multi-lined script and turns it into a structured array.
 function ParseScript(script) {
@@ -131,11 +131,11 @@ function ParseScript(script) {
 		cmdtree.push(cmd);
 	}
 	return cmdtree;
-}
+};
 
 window.Herbie.StopScript = function() {
 	stopScript = true;
-}
+};
 
 function ExecuteScript() {
 	var cmdtree = arguments[0], options = { line: 0, delay: 100, cmdtree:cmdtree } , callback, tag = [];
@@ -246,12 +246,12 @@ function ExecuteScript() {
 
 		default:
 			return setTimeout(function () {
-					options.line++; // ok, setting the options to the next line here.
-					ExecuteScript(cmdtree,options,callback);
-				}, options.delay);
+				options.line++; // ok, setting the options to the next line here.
+				ExecuteScript(cmdtree,options,callback);
+			}, options.delay);
 
 	}
-}
+};
 
 window.Herbie.StartScript = function(opt, progress) {
 
@@ -264,15 +264,15 @@ window.Herbie.StartScript = function(opt, progress) {
 	var cmdtree = [];
 	var options = undefined;
 	if (!opt) {
-	script = $('#herbie_script').val();
-	cmdtree = ParseScript(script);
+		script = $('#herbie_script').val();
+		cmdtree = ParseScript(script);
 	} else if (typeof opt === 'object') {
-	script = opt.script;
-	cmdtree = ParseScript(script);
-	options = { line: opt.line, delay: 100, cmdtree:cmdtree }
+		script = opt.script;
+		cmdtree = ParseScript(script);
+		options = { line: opt.line, delay: 100, cmdtree:cmdtree }
 	} else {
-	script = opt;
-	cmdtree = ParseScript(script);
+		script = opt;
+		cmdtree = ParseScript(script);
 	}
 
 	if (loaderCallback) {
@@ -303,7 +303,7 @@ window.Herbie.StartScript = function(opt, progress) {
 				}
 				out.animate({ scrollTop: out[0].scrollHeight}, 10);
 			} else {
-				console.log(done, option, comment);
+				herbielog([done, option, comment]);
 			}
 			if (loaderCallback) {
 				if (done) {
@@ -322,12 +322,12 @@ window.Herbie.StartScript = function(opt, progress) {
 			}
 		});
 	}
-}
+};
 
 window.Herbie.Stop = function() {
 	Herbie.StopScript();
 	$('#herbie_div').hide();
-}
+};
 
 window.Herbie.BuildUI = function(path, script, callback) {
 	if (callback) {
@@ -457,7 +457,7 @@ window.Herbie.BuildUI = function(path, script, callback) {
 			loaderCallback( { event: 'UIdone'} );
 		}
 	});
-}
+};
 
 function rangeLimit(num, min, max) {
 	if (num > max) {
@@ -467,6 +467,12 @@ function rangeLimit(num, min, max) {
 	} else {
 		return num;
 	}
-}
+};
+
+var herbielog = function(msg) {
+	if (window.console && console.log) {
+		console.log(msg);
+	}
+};
 
 })(jQuery);
