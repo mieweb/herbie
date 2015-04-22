@@ -91,7 +91,7 @@ Type 'it worked' in '#lst-ib'";
 
 (function() {
 	var button = document.getElementById("slowok");
-	button.addEventListener("click",function(e){
+	var slowokclick = function(e){
 		if (runonce) return;
 		runonce = true;
 		setTimeout(function() {
@@ -103,7 +103,13 @@ Type 'it worked' in '#lst-ib'";
 //				button.appendChild(div.children[0]);
 //			}
 		}, 1500);
-	},false);
+	};
+	
+	if (document.addEventListener) {
+		button.addEventListener('click', slowokclick, false);
+	} else if ( document.attachEvent ) {
+		button.attachEvent('click', slowokclick);
+	}
 
 	function loadjsfile(filename){
 		var fileref=document.createElement('script')

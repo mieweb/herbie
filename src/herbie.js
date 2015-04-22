@@ -1,7 +1,7 @@
 /*
 NOTES FOR DOUG TO READ
 
-1. console.log() will throw errors in old IE.  This needs fixed.
+1. console.log() will throw errors in old IE. (fixed now)
 
 2. Wrapping an element in jQuery every time is not efficient, especially when jQuery has to search the DOM each time. The rule of thumb is "the DOM IS SLOW".
 
@@ -71,7 +71,7 @@ var FindDesc = function(desc) {
 		}
 	} catch (ex) {}
 
-		desc = desc.slice(0,-1);  // remove the traling :
+	desc = desc.slice(0,-1);  // remove the traling :
 
 	try {
 		el = $('label').filter(':contains(' +desc+')');
@@ -81,9 +81,9 @@ var FindDesc = function(desc) {
 		}
 	} catch (ex) {}
 
-		if (hadterm) {
-			desc += ':';
-		}
+	if (hadterm) {
+		desc += ':';
+	}
 
 	try {
 		el = $('button').filter(':contains(' +desc+')');  // look for buttons that contain that text.
@@ -110,7 +110,7 @@ var FindDesc = function(desc) {
 	}
 
 	return [];
-}
+};
 
 // This function takes a human readable potientially multi-lined script and turns it into a structured array.
 var ParseScript = function(script) {
@@ -179,11 +179,11 @@ var ParseScript = function(script) {
 		cmdtree.push(cmd);
 	}
 	return cmdtree;
-}
+};
 
 window.Herbie.StopScript = function() {
 	stopScript = true;
-}
+};
 
 var ExecuteScript = function() {
 	var cmdtree = arguments[0], options = { line: 0, delay: 100, cmdtree:cmdtree } , callback, tag = [];
@@ -294,12 +294,12 @@ var ExecuteScript = function() {
 
 		default:
 			return setTimeout(function () {
-					options.line++; // ok, setting the options to the next line here.
-					ExecuteScript(cmdtree,options,callback);
-				}, options.delay);
+				options.line++; // ok, setting the options to the next line here.
+				ExecuteScript(cmdtree,options,callback);
+			}, options.delay);
 
 	}
-}
+};
 
 window.Herbie.StartScript = function(opt, progress) {
 
@@ -312,15 +312,15 @@ window.Herbie.StartScript = function(opt, progress) {
 	var cmdtree = [];
 	var options = undefined;
 	if (!opt) {
-	script = $('#herbie_script').val();
-	cmdtree = ParseScript(script);
+		script = $('#herbie_script').val();
+		cmdtree = ParseScript(script);
 	} else if (typeof opt === 'object') {
-	script = opt.script;
-	cmdtree = ParseScript(script);
-	options = { line: opt.line, delay: 100, cmdtree:cmdtree }
+		script = opt.script;
+		cmdtree = ParseScript(script);
+		options = { line: opt.line, delay: 100, cmdtree:cmdtree }
 	} else {
-	script = opt;
-	cmdtree = ParseScript(script);
+		script = opt;
+		cmdtree = ParseScript(script);
 	}
 
 	if (loaderCallback) {
@@ -351,7 +351,7 @@ window.Herbie.StartScript = function(opt, progress) {
 				}
 				out.animate({ scrollTop: out[0].scrollHeight}, 10);
 			} else {
-				console.log(done, option, comment);
+				herbielog([done, option, comment]);
 			}
 			if (loaderCallback) {
 				if (done) {
@@ -370,12 +370,12 @@ window.Herbie.StartScript = function(opt, progress) {
 			}
 		});
 	}
-}
+};
 
 window.Herbie.Stop = function() {
 	Herbie.StopScript();
 	$('#herbie_div').hide();
-}
+};
 
 window.Herbie.BuildUI = function(path, script, callback) {
 	if (callback) {
@@ -505,7 +505,7 @@ window.Herbie.BuildUI = function(path, script, callback) {
 			loaderCallback( { event: 'UIdone'} );
 		}
 	});
-}
+};
 
 var rangeLimit = function(num, min, max) {
 	if (num > max) {
@@ -515,6 +515,12 @@ var rangeLimit = function(num, min, max) {
 	} else {
 		return num;
 	}
-}
+};
+
+var herbielog = function(msg) {
+	if (window.console && console.log) {
+		console.log(msg);
+	}
+};
 
 })(jQuery);
