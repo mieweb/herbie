@@ -27,7 +27,7 @@ A Goole Chrome extension is maintained here: [Chrome Plugin Source](chrome_exten
 
 Demo
 ----
-An online demo is available here: http://mieweb.github.io/herbie/demo/index.html#run_hebie
+An online demo is available here: http://mieweb.github.io/herbie/demo/index.html#run_herbie
 
 ![Herbie example movie](http://mieweb.github.io/herbie/herbie_movie.gif)
 
