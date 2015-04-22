@@ -162,7 +162,6 @@ function ParseScript(script) {
 							case 'on':
 							case 'in':
 							case 'into':
-								console.log(cmd.code);
 								if ((cmd.code.length) && (cmd.code[ cmd.code.length - 1 ] === 'in'))
 									; // do nothing
 								else
