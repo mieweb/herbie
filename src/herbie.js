@@ -49,7 +49,7 @@ $('label').filter(':contains(sometext)');
 
 */
 
-(function(window) {
+(function($) {
 
 var loaderCallback = null;
 var stopScript = false;
@@ -377,7 +377,7 @@ window.Herbie.StartScript = function(opt, progress) {
 
 window.Herbie.Stop = function() {
 	Herbie.StopScript();
-	$('.herbie_div').hide();
+	$('#herbie_div').hide();
 }
 
 window.Herbie.BuildUI = function(path, script, callback) {
@@ -386,7 +386,7 @@ window.Herbie.BuildUI = function(path, script, callback) {
 	}
 
 	// check to see if it's already in the page.  If it is, then no need to reload it.
-	if ($('.herbie_div').show().length) {
+	if ($('#herbie_div').show().length) {
 		if (script) {
 			$('#herbie_script').text(script);
 		}
@@ -403,29 +403,39 @@ window.Herbie.BuildUI = function(path, script, callback) {
 		if (script) {
 			$('#herbie_script').text(script);
 		}
-		$('.herbie_div').on('mousedown', function(e) {
-			if (e.target.tagName === 'DIV') {
-				$(this).addClass('herbie_draging').parents().on('mousemove', function(e) {
-					var drag = $('.herbie_draging');
-					drag.css('right','auto').offset({
-						top: e.pageY - drag.outerHeight() / 2,
-						left: e.pageX - drag.outerWidth() / 2
-					});
+
+		// window moving
+		$('#herbie_buttons').on('mousedown', function(e) {
+			if (e.target.id === 'herbie_buttons') {
+				var div = $('#herbie_div'),
+					maxX = $(window).width() - parseInt(div.css('width')),
+					maxY = $(window).height() - parseInt(div.css('height')),
+					offset = div.offset(),
+					xStart = e.pageX - offset.left,
+					yStart = e.pageY - offset.top,
+					htmlmousemove = function(e) {
+						div.css('right', 'auto').offset({
+							left: rangeLimit(e.pageX - xStart, 0, maxX),
+							top: rangeLimit(e.pageY - yStart, 0, maxY)
+						});
+					},
+					htmlmouseup = function(e) {
+						div.removeClass('herbie_dragging');
+						$(this).off({
+							'mousemove': htmlmousemove,
+							'mouseup': htmlmouseup
+						});
+					};
+
+				div.addClass('herbie_dragging');
+				$('html').on({
+					'mousemove': htmlmousemove,
+					'mouseup': htmlmouseup
 				});
 				e.preventDefault();
 			}
-		}).on('mouseup', function() {
-			var t = $('.herbie_draging');
-			if (t.length) {
-				if (t.offset().left < 0) {
-					t.offset({left:0});
-				}
-				if (t.offset().top < 0) {
-					t.offset({top:0});
-				}
-				t.removeClass('herbie_draging').css('right','auto');
-			}
 		});
+
 		$('.herbie_hide').on('click', function() {
 			var ele = $(this),
 				parent = ele.parent(),
@@ -500,5 +510,14 @@ window.Herbie.BuildUI = function(path, script, callback) {
 	});
 }
 
-})(window);
+function rangeLimit(num, min, max) {
+	if (num > max) {
+		return max;
+	} else if (num < min) {
+		return min;
+	} else {
+		return num;
+	}
+}
 
+})(jQuery);
