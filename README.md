@@ -40,6 +40,12 @@ References
 
 Inspiration has been drawn from:
 * [Gherkin](https://github.com/cucumber/cucumber/wiki/Gherkin) and [Cucumber](https://cukes.info/) but Vision has a slightly different goals.
-* [Sikuli Script] (http://www.sikuli.org/) tho specific to the web, and mean to be browser independant.
+* [Sikuli Script](http://www.sikuli.org/) tho specific to the web, and mean to be browser independant.
 * [DalekJS](http://dalekjs.com/pages/documentation.html)
 * [Nightwatch.js](http://nightwatchjs.org/)
+* [Selenium Web Driver](https://code.google.com/p/selenium/wiki/JsonWireProtocol) of course.
+* For recording [xss-keylogger](https://github.com/hadynz/xss-keylogger)
+* [Chrome Extension Examples](https://developer.chrome.com/extensions/samples#search:webnavigation.oncommitted)
+* [Mozilla FireFox Extension](https://developer.mozilla.org/en-US/Add-ons/SDK/Tutorials/Modifying_the_Page_Hosted_by_a_Tab)
+* [Safari Extension Developer](https://developer.apple.com/library/safari/documentation/Tools/Conceptual/SafariExtensionGuide/Introduction/Introduction.html)
+* [Developing Internet Explorer Extensions](http://stackoverflow.com/questions/5643819/developing-internet-explorer-extensions)
