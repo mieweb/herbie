@@ -190,7 +190,6 @@
 		console.log( cssPath(e.target) );
 		console.log( getLabel(e.target) );
 		if (report) report.text(  " Label: " +  getLabel(e.target) + ' / ' + cssPath(e.target));
-		if (done_callback) done_callback();
 
 		/* console.log( getXPath(e.target).join('/') ); */
 
@@ -209,7 +208,7 @@
 			document.detachEvent("mouseout", inspectorMouseOut);
 			document.detachEvent("click", inspectorOnClick);
 			document.detachEvent("keydown", inspectorCancel);
-			last.style.outlineStyle = 'none';
+			last.style.outlineStyle = '';
 		} else if(e === null || e.which === 27) { // Better browsers:
 			document.removeEventListener("mouseover", inspectorMouseOver, true);
 			document.removeEventListener("mouseout", inspectorMouseOut, true);
@@ -217,7 +216,10 @@
 			document.removeEventListener("keydown", inspectorCancel, true);
 
 			// Remove outline on last-selected element:
-			last.style.outline = 'none';
+			last.style.outline = '';
+		}
+		if (done_callback)  {
+			done_callback();
 		}
 	}
 

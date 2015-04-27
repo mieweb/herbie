@@ -1,12 +1,9 @@
-
 (function($) {
 
+window.Herbie = {};
 var loaderCallback = null;
 var stopScript = false;
-
-window.Herbie = [];
-
-function FindDesc(desc) {
+var FindDesc = function(desc) {
 	var el, hadterm=0;
 
 	if (!desc.match(':$')) { // We should first try to find labels ending with a :
@@ -65,7 +62,7 @@ function FindDesc(desc) {
 };
 
 // This function takes a human readable potientially multi-lined script and turns it into a structured array.
-function ParseScript(script) {
+var ParseScript = function(script) {
 	if (!script) {
 		return [];
 	}
@@ -137,7 +134,7 @@ window.Herbie.StopScript = function() {
 	stopScript = true;
 };
 
-function ExecuteScript() {
+var ExecuteScript = function() {
 	var cmdtree = arguments[0], options = { line: 0, delay: 100, cmdtree:cmdtree } , callback, tag = [];
 
 	if (arguments.length === 2) { // only two arguments supplied
@@ -354,33 +351,35 @@ window.Herbie.BuildUI = function(path, script, callback) {
 		}
 
 		// window moving
-		$('#herbie_div').on('mousedown', function(e) {
-			var div = $('#herbie_div'),
-				maxX = $(window).width() - parseInt(div.css('width')),
-				maxY = $(window).height() - parseInt(div.css('height')),
-				offset = div.offset(),
-				xStart = e.pageX - offset.left,
-				yStart = e.pageY - offset.top,
-				htmlmousemove = function(e) {
-					div.css('right', 'auto').offset({
-						left: rangeLimit(e.pageX - xStart, 0, maxX),
-						top: rangeLimit(e.pageY - yStart, 0, maxY)
-					});
-				},
-				htmlmouseup = function(e) {
-					div.removeClass('herbie_dragging');
-					$(this).off({
-						'mousemove': htmlmousemove,
-						'mouseup': htmlmouseup
-					});
-				};
+		$('#herbie_buttons').on('mousedown', function(e) {
+			if (e.target.id === 'herbie_buttons') {
+				var div = $('#herbie_div'),
+					maxX = $(window).width() - parseInt(div.css('width')),
+					maxY = $(window).height() - parseInt(div.css('height')),
+					offset = div.offset(),
+					xStart = e.pageX - offset.left,
+					yStart = e.pageY - offset.top,
+					htmlmousemove = function(e) {
+						div.css('right', 'auto').offset({
+							left: rangeLimit(e.pageX - xStart, 0, maxX),
+							top: rangeLimit(e.pageY - yStart, 0, maxY)
+						});
+					},
+					htmlmouseup = function(e) {
+						div.removeClass('herbie_dragging');
+						$(this).off({
+							'mousemove': htmlmousemove,
+							'mouseup': htmlmouseup
+						});
+					};
 
-			div.addClass('herbie_dragging');
-			$('html').on({
-				'mousemove': htmlmousemove,
-				'mouseup': htmlmouseup
-			});
-			e.preventDefault();
+				div.addClass('herbie_dragging');
+				$('html').on({
+					'mousemove': htmlmousemove,
+					'mouseup': htmlmouseup
+				});
+				e.preventDefault();
+			}
 		});
 
 		$('.herbie_hide').on('click', function() {
@@ -457,7 +456,7 @@ window.Herbie.BuildUI = function(path, script, callback) {
 	});
 };
 
-function rangeLimit(num, min, max) {
+var rangeLimit = function(num, min, max) {
 	if (num > max) {
 		return max;
 	} else if (num < min) {
