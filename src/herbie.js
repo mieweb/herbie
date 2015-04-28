@@ -467,7 +467,7 @@ function rangeLimit(num, min, max) {
 	}
 };
 
-var herbielog = function(msg) {
+function herbielog(msg) {
 	if (window.console && console.log) {
 		console.log(msg);
 	}
