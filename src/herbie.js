@@ -1,10 +1,32 @@
+"use strict";
+/*
+   This enables ECMAScript 5 strict mode.
+   It eliminates poor developer practices and less efficient methods.
+   The browser will throw errors in places where bad code used to be allowed.
+   One example I just fixed is using a variable in a for loop without declaring it.
+*/
 
 (function($) {
 
 var loaderCallback = null;
 var stopScript = false;
+var h = {}; // local Herbie object for storing element references (more efficient than searching the DOM every time)
 
 window.Herbie = [];
+
+function setHerbieObj() {
+	h.parent = $('#herbie_div');
+	h.script = h.parent.find('#herbie_script');
+	h.output = h.parent.find('#herbie_output');
+	h.run = h.parent.find('#herbie_run');
+	h.line = h.parent.find('#herbie_line');
+	h.inspect = h.parent.find('#herbie_inspect');
+	h.add = h.parent.find('#herbie_add');
+	h.buttons= h.parent.find('#herbie_buttons');
+	h.hide = h.parent.find('#herbie_hide');
+	h.parse = h.parent.find('#herbie_parse');
+	h.command = h.parent.find('#herbie_command');
+}
 
 function FindDesc(desc) {
 	var el, hadterm=0;
@@ -72,6 +94,7 @@ function ParseScript(script) {
 	
 	var lines = script.split('\n');
 	var cmdtree = [];
+	var i, j;
 
 	for (i = 0; i < lines.length; i++) {  // Go thru each line.
 
@@ -264,7 +287,7 @@ window.Herbie.StartScript = function(opt, progress) {
 	var cmdtree = [];
 	var options = undefined;
 	if (!opt) {
-		script = $('#herbie_script').val();
+		script = h.script.val();
 		cmdtree = ParseScript(script);
 	} else if (typeof opt === 'object') {
 		script = opt.script;
@@ -283,25 +306,26 @@ window.Herbie.StartScript = function(opt, progress) {
 		});
 	}
 
-	$('#herbie_run').text('Stop');
+	h.run[0].title = 'Stop';
+	h.run[0].innerHTML = '&#xf04d;';
 
 	if (cmdtree.length) {
 		ExecuteScript(cmdtree, options, function (done, option, comment) {
-			var out = $('#herbie_output');
-			if (out.length) {
+			if (h.output.length) {
 				if (done) {
-					$('#herbie_run').text('Run');
+					h.run[0].title = 'Run';
+					h.run[0].innerHTML = '&#xf04b;';
 				}
 				if ((option) && (option.line < option.cmdtree.length)) {
-					$('#herbie_line').val(option.line+1);
-					out.append('Line: ' + (option.line+1) + ', Cmd:' + option.cmdtree[option.line].src + '\n');
+					h.line.val(option.line+1);
+					h.output.append('Line: ' + (option.line+1) + ', Cmd:' + option.cmdtree[option.line].src + '\n');
 				} else if (option) {
-					$('#herbie_line').val('');
+					h.line.val('');
 				}
 				if (comment) {
-					out.append('[' + comment + ']\n');
+					h.output.append('[' + comment + ']\n');
 				}
-				out.animate({ scrollTop: out[0].scrollHeight}, 10);
+				h.output.animate({ scrollTop: h.output[0].scrollHeight}, 10);
 			} else {
 				herbielog([done, option, comment]);
 			}
@@ -326,7 +350,7 @@ window.Herbie.StartScript = function(opt, progress) {
 
 window.Herbie.Stop = function() {
 	Herbie.StopScript();
-	$('#herbie_div').hide();
+	h.parent.hide();
 };
 
 window.Herbie.BuildUI = function(path, script, callback) {
@@ -336,8 +360,9 @@ window.Herbie.BuildUI = function(path, script, callback) {
 
 	// check to see if it's already in the page.  If it is, then no need to reload it.
 	if ($('#herbie_div').show().length) {
+		setHerbieOjb();
 		if (script) {
-			$('#herbie_script').text(script);
+			h.script.text(script);
 		}
 		if (loaderCallback) {
 			loaderCallback( { event: 'UIdone'} );
@@ -348,35 +373,35 @@ window.Herbie.BuildUI = function(path, script, callback) {
 	$('body').append('<div id="herbie"></div>');
 	$('#herbie').load(path+'herbie.html', function() {
 		$(this).contents().unwrap();
-		$('#herbie_logo').attr('src',path+'../logos/herbie48.png');
+		setHerbieObj();
+		$('#herbie_logo').attr('src',path+'../logos/herbie128.png');
 		if (script) {
-			$('#herbie_script').text(script);
+			h.script.text(script);
 		}
 
 		// window moving
-		$('#herbie_buttons').on('mousedown', function(e) {
+		h.buttons.on('mousedown', function(e) {
 			if (e.button === 0  && e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
-				var div = $('#herbie_div'),
-					maxX = $(window).width() - parseInt(div.css('width')),
-					maxY = $(window).height() - parseInt(div.css('height')),
-					offset = div.offset(),
+				var maxX = $(window).width() - parseInt(h.parent.css('width')),
+					maxY = $(window).height() - parseInt(h.parent.css('height')),
+					offset = h.parent.offset(),
 					xStart = e.pageX - offset.left,
 					yStart = e.pageY - offset.top,
 					htmlmousemove = function(e) {
-						div.css('right', 'auto').offset({
+						h.parent.css('right', 'auto').offset({
 							left: rangeLimit(e.pageX - xStart, 0, maxX),
 							top: rangeLimit(e.pageY - yStart, 0, maxY)
 						});
 					},
 					htmlmouseup = function(e) {
-						div.removeClass('herbie_dragging');
+						h.parent.removeClass('herbie_dragging');
 						$(this).off({
 							'mousemove': htmlmousemove,
 							'mouseup': htmlmouseup
 						});
 					};
 
-				div.addClass('herbie_dragging');
+				h.parent.addClass('herbie_dragging');
 				$('html').on({
 					'mousemove': htmlmousemove,
 					'mouseup': htmlmouseup
@@ -385,39 +410,33 @@ window.Herbie.BuildUI = function(path, script, callback) {
 			}
 		});
 
-		$('.herbie_hide').on('click', function() {
-			var ele = $(this),
-				parent = ele.parent(),
-				pparent = parent.parent();
-
-			switch (ele.text()) {
+		h.hide.on('click', function() {
+			switch (this.title) {
 				case 'Hide':
-					pparent.find('div').hide();
-					parent.show();
-					pparent.css('width','auto').css('left','auto').css('right','0');
-					ele.text('Show');
+					h.parent.removeClass('show_all show_small').addClass('show_hide');
+					$(this).html('&#xf078;').attr('title', 'Show');
 					break;
 				case 'Small':
-					parent.next().hide();
-					ele.text('Hide');
+					h.parent.removeClass('show_hide show_all').addClass('show_small');
+					$(this).html('&#xf077;').attr('title', 'Hide');
 					break;
 				case 'Show':
-					pparent.find('div').show();
-					ele.text('Small');
-					default:
+					h.parent.removeClass('show_hide show_small').addClass('show_all');
+					$(this).html('&#xf068;').attr('title', 'Small');
+					break;
 			}
 		});
-		$('#herbie_add').click(function(){
+
+		h.add.click(function(){
 			var cmd = $('#herbie_command');
-			var script = $('#herbie_script');
-			var txt = script.val();
-		
+			var txt = h.script.val();
+
 			if (!txt.match(/\n$/)) {
 				txt = txt + '\n'; // add a newline;
 			}
-			txt += cmd.val() + '\n';
-			script.val(txt);
-			cmd.val('').focus();
+			txt += h.command.val() + '\n';
+			h.script.val(txt);
+			h.command.val('').focus();
 			if (loaderCallback) {
 				loaderCallback({
 					event: 'update',
@@ -425,17 +444,19 @@ window.Herbie.BuildUI = function(path, script, callback) {
 				});
 			}
 		});
-		$('#herbie_parse').click(function(){
-			var cmdtree = ParseScript($('#herbie_script').val());
-			$('#herbie_output').text(JSON.stringify(cmdtree,null,2));
+
+		h.parse.click(function(){
+			var cmdtree = ParseScript(h.script.val());
+			h.output.text(JSON.stringify(cmdtree,null,2));
 		});
-		$('#herbie_run').click(function(){
-			switch ($(this).text()) {
+
+		h.run.click(function(){
+			switch (this.title) {
 			case 'Run':
-				$('#herbie_output').text('');
+				h.output.text('');
 				Herbie.StartScript({
-					script: $('#herbie_script').val(),
-					line: Math.max(Number($('#herbie_line').val())-1, 0)
+					script: h.script.val(),
+					line: Math.max(Number(h.line.val())-1, 0)
 				});
 				break;
 			case 'Stop':
@@ -443,13 +464,13 @@ window.Herbie.BuildUI = function(path, script, callback) {
 				break;
 			}
 		});
-		$('#herbie_inspect').click(function(){
-			$('.herbie_bar').hide();
-			$('.herbie_script').hide();
-			$('.herbie_output').show();
-			document.RunInspector($('#herbie_output'), function() {
-				$('.herbie_bar').show();
-				$('.herbie_script').show();
+
+		h.inspect.click(function(){
+			var current = h.parent[0].className;
+
+			h.parent.removeClass('show_all show_small show_hide').addClass('show_inspect');
+			document.RunInspector(h.output, function() {
+				h.parent.removeClass('show_inspect').addClass(current);
 			});
 		});
 
