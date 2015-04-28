@@ -62,7 +62,7 @@ function FindDesc(desc) {
 	}
 
 	return [];
-};
+}
 
 // This function takes a human readable potientially multi-lined script and turns it into a structured array.
 function ParseScript(script) {
@@ -131,7 +131,7 @@ function ParseScript(script) {
 		cmdtree.push(cmd);
 	}
 	return cmdtree;
-};
+}
 
 window.Herbie.StopScript = function() {
 	stopScript = true;
@@ -251,7 +251,7 @@ function ExecuteScript() {
 			}, options.delay);
 
 	}
-};
+}
 
 window.Herbie.StartScript = function(opt, progress) {
 
@@ -467,12 +467,12 @@ function rangeLimit(num, min, max) {
 	} else {
 		return num;
 	}
-};
+}
 
 function herbielog(msg) {
 	if (window.console && console.log) {
 		console.log(msg);
 	}
-};
+}
 
 })(jQuery);
