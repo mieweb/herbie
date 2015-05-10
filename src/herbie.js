@@ -62,7 +62,7 @@ function FindDesc(desc) {
 	}
 
 	return [];
-};
+}
 
 // This function takes a human readable potientially multi-lined script and turns it into a structured array.
 function ParseScript(script) {
@@ -131,7 +131,7 @@ function ParseScript(script) {
 		cmdtree.push(cmd);
 	}
 	return cmdtree;
-};
+}
 
 window.Herbie.StopScript = function() {
 	stopScript = true;
@@ -251,7 +251,7 @@ function ExecuteScript() {
 			}, options.delay);
 
 	}
-};
+}
 
 window.Herbie.StartScript = function(opt, progress) {
 
@@ -354,33 +354,35 @@ window.Herbie.BuildUI = function(path, script, callback) {
 		}
 
 		// window moving
-		$('#herbie_div').on('mousedown', function(e) {
-			var div = $('#herbie_div'),
-				maxX = $(window).width() - parseInt(div.css('width')),
-				maxY = $(window).height() - parseInt(div.css('height')),
-				offset = div.offset(),
-				xStart = e.pageX - offset.left,
-				yStart = e.pageY - offset.top,
-				htmlmousemove = function(e) {
-					div.css('right', 'auto').offset({
-						left: rangeLimit(e.pageX - xStart, 0, maxX),
-						top: rangeLimit(e.pageY - yStart, 0, maxY)
-					});
-				},
-				htmlmouseup = function(e) {
-					div.removeClass('herbie_dragging');
-					$(this).off({
-						'mousemove': htmlmousemove,
-						'mouseup': htmlmouseup
-					});
-				};
+		$('#herbie_buttons').on('mousedown', function(e) {
+			if (e.button === 0  && e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+				var div = $('#herbie_div'),
+					maxX = $(window).width() - parseInt(div.css('width')),
+					maxY = $(window).height() - parseInt(div.css('height')),
+					offset = div.offset(),
+					xStart = e.pageX - offset.left,
+					yStart = e.pageY - offset.top,
+					htmlmousemove = function(e) {
+						div.css('right', 'auto').offset({
+							left: rangeLimit(e.pageX - xStart, 0, maxX),
+							top: rangeLimit(e.pageY - yStart, 0, maxY)
+						});
+					},
+					htmlmouseup = function(e) {
+						div.removeClass('herbie_dragging');
+						$(this).off({
+							'mousemove': htmlmousemove,
+							'mouseup': htmlmouseup
+						});
+					};
 
-			div.addClass('herbie_dragging');
-			$('html').on({
-				'mousemove': htmlmousemove,
-				'mouseup': htmlmouseup
-			});
-			e.preventDefault();
+				div.addClass('herbie_dragging');
+				$('html').on({
+					'mousemove': htmlmousemove,
+					'mouseup': htmlmouseup
+				});
+				e.preventDefault();
+			}
 		});
 
 		$('.herbie_hide').on('click', function() {
@@ -465,12 +467,12 @@ function rangeLimit(num, min, max) {
 	} else {
 		return num;
 	}
-};
+}
 
-var herbielog = function(msg) {
+function herbielog(msg) {
 	if (window.console && console.log) {
 		console.log(msg);
 	}
-};
+}
 
 })(jQuery);
