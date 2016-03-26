@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+
+  "name": "Vision-Chrome",
+  "description": "Extension to generate Vision based on user's actions on a web page",
+  "version": "1.0",
+
+  "content_scripts": [
+    {
+        "matches": ["https://zeus-web.med-web.com/webchart/*"],
+        "js": [
+            "thirdParty/jquery-2.2.2.js",
+            "watcher.js"
+        ],
+        "all_frames": true
+    }
+  ],
+  "background": {
+    "scripts": [
+        "command_store.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html",
+    "default_title": "Click here to tell Vision to watch you!"
+  },
+  "permissions": [
+    "activeTab",
+    "https://ajax.googleapis.com/"
+  ]
+}
