@@ -8,21 +8,38 @@ document.getElementById('startHerbie').addEventListener('click', () => {
       chrome.scripting.executeScript(
         {
           target: { tabId: tabs[0].id },
-          func: startHerbie
+          func: simulateTyping,
+          args: ['#lastname', 'Hello, world!'] // Provide the selector and the text as arguments
         },
         () => {
           if (chrome.runtime.lastError) {
             console.error(chrome.runtime.lastError.message);
           } else {
-            console.log('Herbie script executed successfully');
+            console.log('Simulated typing executed successfully');
           }
         }
       );
     });
   });
   
-  function startHerbie() {
-    // You can replace this with the actual logic you want Herbie to perform
-    alert('Herbie is starting!');
+  function simulateTyping(selector, text) {
+    const element = document.querySelector(selector);
+    if (element) {
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const keydownEvent = new KeyboardEvent('keydown', { key: char, bubbles: true });
+        const keyupEvent = new KeyboardEvent('keyup', { key: char, bubbles: true });
+        const inputEvent = new InputEvent('input', { bubbles: true, data: char });
+        
+        element.dispatchEvent(keydownEvent);
+        element.value += char;
+        element.dispatchEvent(inputEvent);
+        element.dispatchEvent(keyupEvent);
+      }
+      const changeEvent = new Event('change', { bubbles: true });
+      element.dispatchEvent(changeEvent);
+    } else {
+      console.error('Element not found');
+    }
   }
   
