@@ -52,7 +52,7 @@ And finally, it has a link <a href="http://www.google.com/">going away</a>
 <input id="input_other" name="phone" type="checkbox" value="other" /> <label for="input_other">other</label>
 <br>
 A save button: <button>Save</button><br>
-An ok button: <button>OK</button><br>
+An ok button: <button id="OK" onclick="fun()">OK</button><br>
 A cancel button: <button>Cancel</button><br>
 And finally, it has a link <a href="http://www.google.com/">going away</a>
 </div>
@@ -76,8 +76,12 @@ An ok button: <button id="ok">OK</button><br>
 A cancel button: <button id="cancel">Cancel</button><br>
 And finally, it has a link <a href="http://www.google.com/">going away</a>
 </div>
-
-<script type="text/javascript">
+<script>
+	function fun(){
+		alert(1);
+	}
+</script>
+<!-- <script type="text/javascript">
 var runonce=false;
 
 herbie_sample_script = "Type 'hi' in to 'Address' input.\n\
@@ -141,6 +145,6 @@ Type 'it worked' in '#lst-ib'";
 		setTimeout(TryHerbie, 10);
 	}
 })();
-</script>
+</script> -->
 </body>
 </html>
