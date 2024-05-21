@@ -4,31 +4,149 @@
   <title>Herbie Popup</title>
   <style>
     body {
-      width: 200px;
-      height: 100px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    button {
+      font-family: Arial, sans-serif;
+      margin: 0;
       padding: 10px;
-      background-color: #4CAF50;
-      color: white;
+      width: 400px;
+    }
+
+    #herbie_div {
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    #herbie_buttons {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    #herbie_logo {
+      height: 30px;
+      margin-right: 10px;
+    }
+
+    #herbie_buttons span {
+      flex-grow: 1;
+      margin-left: 10px;
+      font-size: 16px;
+    }
+
+    #herbie_buttons button, 
+    #herbie_buttons input {
+      margin: 5px 5px 0 5px;
+      padding: 5px 10px;
+      font-size: 14px;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
+      background-color: #007bff;
+      color: white;
+    }
+
+    #herbie_buttons button:hover {
+      background-color: #0056b3;
+    }
+
+    .herbie_script, .herbie_bar, .herbie_output {
+      margin-top: 10px;
+    }
+
+    .herbie_script label, .herbie_bar label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .herbie_script textarea {
+      width: 100%;
+      max-width: 100%;
+      font-family: monospace;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: none;
+    }
+
+    .herbie_bar {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .herbie_bar input {
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 5px;
+      flex-grow: 1;
+    }
+
+    .herbie_bar button {
+      padding: 5px 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      margin-bottom: 5px;
+    }
+
+    .herbie_bar button:hover {
+      background-color: #0056b3;
+    }
+
+    .herbie_output {
+      background-color: #f1f1f1;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 10px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    #herbie_line {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <button id="startHerbie">Start Herbie</button>
-  <script src="dist/jquery.min.js"></script>
-  <script src="dist/jquery.simulate.js"></script>
-  <script src="dist/jquery.simulate.drag-n-drop.js"></script>
-  <script src="dist/jquery.simulate.ext.js"></script>
-  <script src="dist/jquery.simulate.key-combo.js"></script>
-  <script src="dist/jquery.simulate.key-sequence.js"></script>
-  <script src="dist/bililiteRange.js"></script>
-  <script src="popup.js"></script>
+  <div id="herbie_div">
+    <div id="herbie_buttons">
+      <img id="herbie_logo" align="left" src="logos/herbie48.png" height="30" style="padding-top: 2px; padding-left: 4px;">
+      <span><a target="_blank" href="http://mieweb.github.io/herbie/">Herbie</a></span>
+      <button id="herbie_run">Run</button>
+      <button id="herbie_inspect">Inspect</button>
+      <button class="herbie_hide">Hide</button>
+    </div>
+    <input id="herbie_line" type="text" name="line" size="30"/>
+    <div class="herbie_script">
+      <label class="prompt" for="herbie_script">Script:</label>
+      <textarea id="herbie_script" name="Script" rows="10" cols="80"></textarea>
+    </div>
+    <div class="herbie_bar">
+      <label for="herbie_command">Command:</label>
+      <input id="herbie_command" type="text" name="Command" maxlength="100"/>
+      <div>
+        <button id="herbie_add">Add</button>
+        <button id="herbie_parse">Parse</button>
+      </div>
+    </div>
+    <div class="herbie_output">
+      <pre id="herbie_output">Click parse or run</pre>
+    </div>
+  </div>
 </body>
 </html>

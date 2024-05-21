@@ -40,5 +40,11 @@
     "default_icon": "logos/herbie48.png",
     "default_title": "Start Herbie",
     "default_popup": "popup.html"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["dist/bililiteRange.js", "dist/jquery.min.js","dist/jquery.simulate.drag-n-drop.js","dist/jquery.simulate.ext.js","dist/jquery.simulate.key-combo.js","dist/jquery.simulate.key-sequence.js", "content.js"]
+    }
+  ]
 }
