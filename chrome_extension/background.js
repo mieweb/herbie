@@ -66,7 +66,7 @@ function ParseScript(script) {
 	return cmdtree;
 }
 
-// background.js
+
 
 self.addEventListener('install', (event) => {
   console.log('Service Worker installed');
@@ -84,9 +84,17 @@ self.addEventListener('fetch', (event) => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'parse') {
       const scriptContent = message.data;
-      console.log('Received script content:', scriptContent);
+      //console.log('Received script content:', scriptContent);
       
       var k = ParseScript(scriptContent);
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]) {
+            chrome.tabs.sendMessage(tabs[0].id, { action: 'parsed', data: k }, (response) => {
+                console.log('Response from content script:', response);
+                sendResponse({ status: 'success', data: 'Script sent to content script' });
+            });
+        }
+    });
       sendResponse({ status: 'success', data: k });
   }
   return true; // Keep the messaging channel open for asynchronous responses

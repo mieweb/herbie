@@ -55,5 +55,12 @@ function FindDesc(desc) {
 
 	return [];
 }
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'parsed') {
+      const scriptContent = message.data;
+      console.log('Script content received from background:', scriptContent);
+  }
+});
 
-console.log(FindDesc("#lastname"))
+
+
