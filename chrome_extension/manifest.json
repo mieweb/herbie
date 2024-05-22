@@ -13,8 +13,8 @@
     "notifications",
     "tabs",
     "scripting",
-    "webNavigation"
-   
+    "webNavigation",
+    "storage"
   ],
   
   "host_permissions": [
