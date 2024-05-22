@@ -1,10 +1,18 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('herbie_parse').addEventListener('click', parseCommand);
+    document.getElementById('herbie_add').addEventListener('click', addCommand);
   });
   
- 
-  
+  function addCommand() {
+    const commandInput = document.getElementById('herbie_command').value;
+    const scriptTextarea = document.getElementById('herbie_script');
+
+    if (commandInput.trim() !== '') {
+        scriptTextarea.value += `\n${commandInput}`;
+        document.getElementById('herbie_command').value = '';  // Clear the input after adding
+    }
+}
 function parseCommand() {
      // Get the content of the herbie_script textarea
      const scriptContent = document.getElementById('herbie_script').value;

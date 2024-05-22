@@ -60,6 +60,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const scriptContent = message.data;
       console.log('Script content received from background:', scriptContent);
   }
+ 
 });
 
 
