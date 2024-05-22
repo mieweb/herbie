@@ -1,36 +1,66 @@
+function FindDesc(desc) {
+	var el, hadterm=0;
 
-// // content.js is for holding chrome specific code to interface to herbie that runs in the page's content.
-// // This code is the interface between the background page and the herbie code that is meant to be browser independent.
+	if (!desc.match(':$')) { // We should first try to find labels ending with a :
+		desc += ':';
+	} else {
+		hadterm = 1;
+	}
 
-// function HerbieonMessage(msg) {
-//   console.log("Herbie Message", msg );
-//   chrome.runtime.sendMessage( msg );
-// }
+	try {
+		el = $('label').filter(':contains(' +desc+')');
+		if (el.length) {
+			el = el.first();
+			return $('#'+el.attr('for'));  // return the element the label is for
+		}
+	} catch (ex) {}
 
-// chrome.runtime.onMessage.addListener(function(msg, _, sendResponse) {
-//   //$('#herbie_output').append("Got message from background page: " + msg + "\n");
-//   console.log("onMessage: ",msg);
+	desc = desc.slice(0,-1);  // remove the traling :
 
-//   try {
-//     var cmd;
-//     if (typeof msg === 'string') {
-//       cmd = msg;
-//     } else {
-//       cmd = msg.cmd;
-//     }
+	try {
+		el = $('label').filter(':contains(' +desc+')');
+		if (el.length) {
+			el = el.first();
+			return $('#'+el.attr('for'));  // return the element the label is for
+		}
+	} catch (ex) {}
 
-//     switch (cmd) {
-//       case "Stop":
-//         Herbie.Stop();
-//         break;
-//       case "Show":
-//           Herbie.BuildUI(chrome.extension.getURL("/herbie/"), msg.script, HerbieonMessage);
-//         break;
-//       case "Run":
-//         Herbie.StartScript( { script: msg.script, line: msg.line } ,HerbieonMessage);
-//         break;
-//     }
-//   } catch (e) {
-//     console.log(e.stack);
-//   }
-// });
+	if (hadterm) {
+		desc += ':';
+	}
+
+	try {
+		el = $('button').filter(':contains(' +desc+')');  // look for buttons that contain that text.
+		if (el.length) {
+			return el.first();
+		}
+	} catch (ex) {}
+
+	try {
+		el = $('a').filter(':contains(' +desc+')');  // look for buttons that contain that text.
+		if (el.length) {
+			return el.first();
+		}
+	} catch (ex) {}
+
+	// as a last ditch effort see if it's a path
+	try {
+		el = $( desc );
+	} catch(e) {
+		el = [];
+	}
+	if (el.length===1) {
+		return el;
+	}
+
+	return [];
+}
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'parsed') {
+      const scriptContent = message.data;
+      console.log('Script content received from background:', scriptContent);
+  }
+});
+
+
+

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Herbie Popup</title>
   <style>
     body {
@@ -137,28 +139,38 @@
 <body>
   <div id="herbie_div">
     <div id="herbie_buttons">
-      <img id="herbie_logo" align="left" src="logos/herbie48.png" height="30" style="padding-top: 2px; padding-left: 4px;">
+      <img id="herbie_logo" align="left" src="logos/herbie48.png" alt="Herbie Logo" height="30" style="padding-top: 2px; padding-left: 4px;">
       <span><a target="_blank" href="http://mieweb.github.io/herbie/">Herbie</a></span>
-      <button id="herbie_run">Run</button>
-      <button id="herbie_inspect">Inspect</button>
-      <button class="herbie_hide">Hide</button>
+      <button id="herbie_run" aria-label="Run Herbie">Run</button>
+      <button id="herbie_inspect" aria-label="Inspect Herbie">Inspect</button>
+      <button class="herbie_hide" aria-label="Hide Herbie">Hide</button>
     </div>
-    <input id="herbie_line" type="text" name="line" size="30"/>
+    <input id="herbie_line" type="text" name="line" size="30" aria-label="Herbie Command Line"/>
     <div class="herbie_script">
       <label class="prompt" for="herbie_script">Script:</label>
-      <textarea id="herbie_script" name="Script" rows="10" cols="80"></textarea>
+      <textarea id="herbie_script" name="Script" rows="10" cols="80" aria-label="Herbie Script Area">
+Type 'hi' in to 'Address' input.
+Fill out the following fields: 
+* Last Name: Horner
+* Phone: 260-459-6270
+Click on the 'Save' button. 
+Click 'OK'.
+Type 'finally' in 'Slow Input'
+Type 'it worked' in '#lst-ib'
+      </textarea>
     </div>
     <div class="herbie_bar">
       <label for="herbie_command">Command:</label>
-      <input id="herbie_command" type="text" name="Command" maxlength="100"/>
+      <input id="herbie_command" type="text" name="Command" maxlength="100" aria-label="Herbie Command Input"/>
       <div>
-        <button id="herbie_add">Add</button>
-        <button id="herbie_parse">Parse</button>
+        <button id="herbie_add" aria-label="Add Command">Add</button>
+        <button id="herbie_parse" aria-label="Parse Command">Parse</button>
       </div>
     </div>
-    <div class="herbie_output">
-      <pre id="herbie_output">Click parse or run</pre>
+    <div class="herbie_output" aria-label="Herbie Output Area">
+      <span id="herbie_output">Click parse or run</span>
     </div>
   </div>
+  <script src="popup.js"></script>
 </body>
 </html>
