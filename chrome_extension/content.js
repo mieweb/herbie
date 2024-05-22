@@ -56,11 +56,22 @@ function FindDesc(desc) {
 	return [];
 }
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'parsed') {
-      const scriptContent = message.data;
-      console.log('Script content received from background:', scriptContent);
+
+  if (message.action === 'RUN') {
+    const scriptContent = message.data;
+    FindDesc(scriptContent[0].code[3]).fadeOut(100)
+    .fadeIn(100)
+    .fadeOut(100)
+    .fadeIn(100)
+    .simulate('key-sequence', {
+      sequence: "Hello world",
+      
+    });
+    sendResponse({ status: 'success', data: 'Script received' });
+    console.log('Script content received from background:',scriptContent);
+    
   }
- 
+  return true;
 });
 
 
