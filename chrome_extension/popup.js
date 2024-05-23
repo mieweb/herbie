@@ -3,8 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('herbie_parse').addEventListener('click', parseCommand);
     document.getElementById('herbie_add').addEventListener('click', addCommand);
     document.getElementById('herbie_run').addEventListener('click', runCommand);
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if(message.action === 'log_msg'){
+            appendLogMessage(message.message);
+        }
+      });
   });
   
+
 
 
 
@@ -19,6 +25,7 @@ function addCommand() {
 }
 
 function  runCommand(){
+    document.getElementById('herbie_output').textContent="";
       // Get the content of the herbie_script textarea
       const scriptContent = document.getElementById('herbie_script').value;
       // Send the content to the background script
@@ -39,5 +46,12 @@ function parseCommand() {
         document.getElementById('herbie_output').textContent = prettyResponse;
      });
 
+}
+
+function appendLogMessage(msg) {
+    const outputElement = document.getElementById('herbie_output');
+    outputElement.textContent += `\n${msg}`;
+    // Auto-scroll to the bottom of the output
+    outputElement.scrollTop = outputElement.scrollHeight;
 }
   
