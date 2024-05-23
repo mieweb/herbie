@@ -81,6 +81,7 @@ self.addEventListener('fetch', (event) => {
 });
 
 
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'parse') {
       const scriptContent = message.data;
@@ -106,6 +107,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
    });  
     sendResponse({ status: 'success', data: k });
 }
-  return true; // Keep the messaging channel open for asynchronous responses
-});
 
+if (message.action === 'log') {
+	log(message.data);
+    sendResponse({ status: 'success', data: "log received" });
+}
+
+
+
+//   return true; // Keep the messaging channel open for asynchronous responses
+});
+function log(log_msg) {
+	chrome.runtime.sendMessage({ action: 'log_msg', message: log_msg});
+  }
