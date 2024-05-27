@@ -1,62 +1,80 @@
 var cmdtree = []
 const stopScript = false;
 function FindDesc(desc) {
-	var el, hadterm=0;
+    var el, hadterm = 0;
 
-	if (!desc.match(':$')) { // We should first try to find labels ending with a :
-		desc += ':';
-	} else {
-		hadterm = 1;
-	}
+    // Append colon if not present
+    if (!desc.match(':$')) { 
+        desc += ':';
+    } else {
+        hadterm = 1;
+    }
 
-	try {
-		el = $('label').filter(':contains(' +desc+')');
-		if (el.length) {
-			el = el.first();
-			return $('#'+el.attr('for'));  // return the element the label is for
-		}
-	} catch (ex) {}
+    // Find label with text containing the description
+    try {
+        el = $('label').filter(':contains(' + desc + ')');
+        if (el.length) {
+            el = el.first();
+            return $('#' + el.attr('for'));
+        }
+    } catch (ex) {}
 
-	desc = desc.slice(0,-1);  // remove the traling :
+    // Remove trailing colon and try again
+    desc = desc.slice(0, -1);
 
-	try {
-		el = $('label').filter(':contains(' +desc+')');
-		if (el.length) {
-			el = el.first();
-			return $('#'+el.attr('for'));  // return the element the label is for
-		}
-	} catch (ex) {}
+    try {
+        el = $('label').filter(':contains(' + desc + ')');
+        if (el.length) {
+            el = el.first();
+            return $('#' + el.attr('for'));
+        }
+    } catch (ex) {}
 
-	if (hadterm) {
-		desc += ':';
-	}
+    // Add colon back if it was originally present
+    if (hadterm) {
+        desc += ':';
+    }
 
-	try {
-		el = $('button').filter(':contains(' +desc+')');  // look for buttons that contain that text.
-		if (el.length) {
-			return el.first();
-		}
-	} catch (ex) {}
+    // Look for buttons containing the description
+    try {
+        el = $('button').filter(':contains(' + desc + ')');
+        if (el.length) {
+            return el.first();
+        }
+    } catch (ex) {}
 
-	try {
-		el = $('a').filter(':contains(' +desc+')');  // look for buttons that contain that text.
-		if (el.length) {
-			return el.first();
-		}
-	} catch (ex) {}
+    // Look for links containing the description
+    try {
+        el = $('a').filter(':contains(' + desc + ')');
+        if (el.length) {
+            return el.first();
+        }
+    } catch (ex) {}
 
-	// as a last ditch effort see if it's a path
-	try {
-		el = $( desc );
-	} catch(e) {
-		el = [];
-	}
-	if (el.length===1) {
-		return el;
-	}
+    // Try to use the description as a jQuery selector
+    try {
+        el = $(desc);
+    } catch (e) {
+        el = [];
+    }
 
-	return [];
+    // Return the element if only one match is found
+    if (el.length === 1) {
+        return el;
+    }
+
+    // Check if the description is an XPath
+    try {
+        var xpathResult = document.evaluate(desc, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+        if (xpathResult.singleNodeValue) {
+            return $(xpathResult.singleNodeValue);
+        }
+    } catch (e) {}
+
+    // Return empty array if no match is found
+    return [];
 }
+
 
 
 function ExecuteScript() {

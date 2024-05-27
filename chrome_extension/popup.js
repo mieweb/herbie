@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('herbie_parse').addEventListener('click', parseCommand);
     document.getElementById('herbie_add').addEventListener('click', addCommand);
     document.getElementById('herbie_run').addEventListener('click', runCommand);
+    document.getElementById('herbie_inspect').addEventListener('click', inspectCommand);
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if(message.action === 'log_msg'){
             appendLogMessage(message.message);
@@ -12,7 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
 
 
-
+function inspectCommand(){
+    chrome.runtime.sendMessage({ action: 'start_inspecting', data: "start_inspecting"}, (response) => {
+        console.log('Response from background:', response.data);
+     });
+}
 
 function addCommand() {
     const commandInput = document.getElementById('herbie_command').value;
