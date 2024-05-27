@@ -120,11 +120,11 @@ function ExecuteScript() {
 				cmdtree[i].timeout -= options.delay;
 				return setTimeout(function () { ExecuteScript(cmdtree,options,callback); }, options.delay);
 			} else {
-				//  If we want to continue on error, we should callback(false), and then schedule the next call.
-				if (callback) {
-					callback(true, options, 'Aborting. Cannot find tag named: "' + tagname + '"');
-				}
-				return;
+				log('Cannot find tag named: "' + tagname + '". Proceeding to next command.');
+				options.line++; 
+				return setTimeout(function () {
+					ExecuteScript(cmdtree, options, callback);
+				}, options.delay);
 			}
 		}
 	}
