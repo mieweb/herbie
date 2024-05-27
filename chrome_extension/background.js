@@ -112,11 +112,30 @@ if (message.action === 'log') {
 	log(message.data);
     sendResponse({ status: 'success', data: "log received" });
 }
+if(message.action === 'start_inspecting'){
+	
+	chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+		if (tabs[0]) {
+			chrome.tabs.sendMessage(tabs[0].id, { action: 'start_inspection', data: k }, (response) => {
+				console.log('Response from inspector.js:', response);
+		   
+			});
+		}
+	 }); 
 
 
+	sendResponse({ status: 'success', data: "move the mouse over inspection started" });
+}
 
-//   return true; // Keep the messaging channel open for asynchronous responses
+
+return true; // Keep the messaging channel open for asynchronous responses
 });
+
+
+
+
 function log(log_msg) {
 	chrome.runtime.sendMessage({ action: 'log_msg', message: log_msg});
-  }
+}
+
+
