@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if(message.action === 'log_msg'){
             appendLogMessage(message.message);
         }
+        if (message.action === 'progress') {
+            updateProgressBar(message.current, message.total);
+        }
       });
   });
   
@@ -36,6 +39,7 @@ function  runCommand(){
       // Send the content to the background script
       chrome.runtime.sendMessage({ action: 'RUN', data: scriptContent }, (response) => {
          console.log('Response from background:', response.data);
+         updateProgressBar(0,response.data.length);
       });
 }
 function parseCommand() {
@@ -59,4 +63,9 @@ function appendLogMessage(msg) {
     // Auto-scroll to the bottom of the output
     outputElement.scrollTop = outputElement.scrollHeight;
 }
-  
+
+function updateProgressBar(current, total) {
+    const progressBar = document.getElementById('herbie_progress');
+    const percentage = Math.round((current / total) * 100);
+    progressBar.style.width = `${percentage}%`;
+}

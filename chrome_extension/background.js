@@ -68,20 +68,8 @@ function ParseScript(script) {
 
 
 
-self.addEventListener('install', (event) => {
-  console.log('Service Worker installed');
-});
-
-self.addEventListener('activate', (event) => {
-  console.log('Service Worker activated');
-});
-
-self.addEventListener('fetch', (event) => {
-  console.log('Fetch event for ', event.request.url);
-});
-
-
-
+var cmdtree =[];
+let currentLine = 0;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'parse') {
       const scriptContent = message.data;
@@ -97,21 +85,26 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('Received RUN script from extension to background.js:', scriptContent);
     
     var k = ParseScript(scriptContent);
+	
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]) {
-          chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: k }, (response) => {
+          chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: k,line:0 }, (response) => {
               console.log('Response RUN script from content js:', response);
          
           });
       }
-   });  
-    sendResponse({ status: 'success', data: k });
+   }); 
+   cmdtree = k;
+   currentLine = 0; // Reset the current line counter
+   sendResponse({ status: 'success', data: k });
 }
 
 if (message.action === 'log') {
-	log(message.data);
-    sendResponse({ status: 'success', data: "log received" });
+		log(message.data);
+        currentLine++;
+        chrome.runtime.sendMessage({ action: 'progress', current: currentLine, total: cmdtree.length });
 }
+        sendResponse({ status: 'success', data: "log received" });
 if(message.action === 'start_inspecting'){
 	
 	chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -139,3 +132,19 @@ function log(log_msg) {
 }
 
 
+
+
+
+
+chrome.webNavigation.onDOMContentLoaded.addListener((details) => {
+	log("Navigating to :" +details.url)
+	// Perform actions when the DOM content is fully loaded
+	chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+		if (tabs[0]) {
+			chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: cmdtree,line:currentLine }, (response) => {
+				console.log('Response RUN script from content js:', response);
+		   
+			});
+		}
+	 }); 
+  });
