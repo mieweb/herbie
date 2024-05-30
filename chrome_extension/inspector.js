@@ -143,13 +143,13 @@ function mouseOverHandler(event) {
     }
   }
 
-document.addEventListener('click', (e) => {
-    console.log( cssPath(e.target) );
-    console.log( getLabel(e.target) );
-    console.log('XPath of the clicked element:', getXPath(e.target));
-    document.removeEventListener('mouseout',mouseOutHandler,true);
-    document.removeEventListener('mouseover',mouseOverHandler,true);
-  });
+// document.addEventListener('click', (e) => {
+//     console.log( cssPath(e.target) );
+//     console.log( getLabel(e.target) );
+//     console.log('XPath of the clicked element:', getXPath(e.target));
+//     document.removeEventListener('mouseout',mouseOutHandler,true);
+//     document.removeEventListener('mouseover',mouseOverHandler,true);
+//   });
   
   
   

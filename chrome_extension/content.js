@@ -1,3 +1,4 @@
+
 var cmdtree = []
 const stopScript = false;
 function FindDesc(desc) {
@@ -79,7 +80,6 @@ function FindDesc(desc) {
 
 function ExecuteScript() {
 	var cmdtree = arguments[0], options = { line: 0, delay: 100, cmdtree:cmdtree } , callback, tag = [];
-
 	if (arguments.length === 2) { // only two arguments supplied
 		if (Object.prototype.toString.call(arguments[1]) === '[object Function]') {
 			callback = arguments[1]; // if is a function, set as 'callback'
@@ -194,89 +194,45 @@ function ExecuteScript() {
 }
 
 
-// function ExecuteScript(){
-// for(var i=0;i<cmdtree.length;i++){
-//   var inclause = $.inArray('in', cmdtree[i].code);
- 
-//  var  tag= [];
- 
-//   if(cmdtree[i].code[inclause+1]){
-//     //console.log(cmdtree[i].code[inclause+1]);
-//    //console.log(FindDesc(cmdtree[i].code[inclause+1]));
-//     tag=FindDesc(cmdtree[i].code[inclause+1]);
-//   }
-//   if(tag.length !=0){
-//     switch (cmdtree[i].code[0]) {
-    
-//       case 'type':
-//         var seq = cmdtree[i].code[1];
-//         if (seq.charAt(0)==='"'||seq.charAt(0)==='\'') {
-//           seq = seq.slice(1,-1);
-//         }
-  
-//         if (tag.length) {
-//           tag.fadeOut(100)
-//             .fadeIn(100)
-//             .fadeOut(100)
-//             .fadeIn(100)
-//             .simulate('key-sequence', {
-//               sequence: seq,
-//             });
-//         }
-        
-//       case 'click':
-//         if (tag.length) {
-//           tag.fadeOut(100)
-//             .fadeIn(100)
-//             .fadeOut(100)
-//             .fadeIn(100)
-//             .simulate('click');
-//         }
-//     }
-//   }
-  
+document.addEventListener('DOMContentLoaded', () => {
+console.log("DOM fully loaded and altered");
+})
 
 
-// }
-// }
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === 'RUN') {
     const scriptContent = message.data;
     cmdtree = scriptContent;
-    // FindDesc(scriptContent[0].code[3]).fadeOut(100)
-    // .fadeIn(100)
-    // .fadeOut(100)
-    // .fadeIn(100)
-    // .simulate('key-sequence', {
-    //   sequence: "Hello world",
-      
-    // });
+ 
   
-	var options =  { line: 0, delay: 100, cmdtree:cmdtree };
+	var options =  { line: message.line, delay: 100, cmdtree:cmdtree };
     ExecuteScript(cmdtree,options,function (done, option, comment){
      
       if (option) {
         var txt = 'Line: ' + (option.line+1) + ', Cmd:' + option.cmdtree[option.line].src + '\n';
-      log(txt);
+      	log(txt);
       }
+	  
       if(comment){
-       // console.log(comment);
         log(comment);
       }
+	 
     });
     sendResponse({ status: 'success', data: 'Script received' });
     console.log('Script content received from background:',scriptContent);
     
   }
+
   return true;
 });
 
 
 function log(log){
-
   chrome.runtime.sendMessage({ action: 'log', data: log }, (response) => {
     console.log('Response from background:', response.data);
  });
 
 }
+
+
