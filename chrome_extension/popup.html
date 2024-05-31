@@ -20,12 +20,13 @@
         <img id="herbie_logo" align="left" src="logos/herbie48.png" alt="Herbie Logo" height="30" style="padding-top: 2px; padding-left: 4px;">
         <span><a target="_blank" href="http://mieweb.github.io/herbie/">Herbie</a></span>
         
-        <button id="herbie_run" class="run-button" aria-label="Run Herbie">
+        <button id="herbie_run" title="Run" class="run-button" aria-label="Run Herbie">
           <i class="fas fa-play"></i>
         </button>
-        <button id="herbie_save" class="save-button" aria-label="Save Herbie">
+        <button id="herbie_save" title="Add to Saved Scripts" class="save-button" aria-label="Save Herbie">
           <i class="fas fa-save"></i>
-        </button>
+          <i class="fas fa-check"></i>
+        </button>        
       </div>
       <div class="progress-container">
         <div id="herbie_progress" class="progress-bar"></div>
@@ -80,10 +81,13 @@ Click on the 'going away' link.
 </div>
 
 
-  <div id="tab3" class="tab-content">
-    <h2>Saved Scripts</h2>
-    <p>Saved Scripts</p>
+<div id="tab3" class="tab-content">
+  <h2>Saved Scripts</h2>
+  <div id="saved-scripts-container" class="saved-scripts-container">
+      <!-- Saved scripts will be loaded here -->
   </div>
+</div>
+
   
   <script src="popup.js"></script>
 </body>
