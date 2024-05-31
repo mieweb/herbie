@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const tabs = document.querySelectorAll('.tab-button');
       tabs.forEach(tab => {
         tab.addEventListener('click', function () {
-            loadLogs();
+            
+           
           // Remove active class from all tabs and tab buttons
           document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
           document.querySelectorAll('.tab-content').forEach(tabContent => tabContent.classList.remove('active'));
@@ -28,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
           tab.classList.add('active');
           const tabId = tab.getAttribute('data-tab');
           document.getElementById(tabId).classList.add('active');
+          if (tabId === 'tab2') {
+            loadLogs();
+        }
         });
       });
      
@@ -129,7 +133,9 @@ function loadLogs() {
                 logEntry.innerHTML = `
                     <div class="log-header">
                         <strong>${new Date(log.time).toLocaleString()}</strong>
-                        <button class="delete-log" data-index="${index}">Delete</button>
+                        <button class="delete-log" data-index="${index}" aria-label="Delete Log">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
                     </div>
                     <pre>${log.log}</pre>
                 `;
@@ -147,6 +153,7 @@ function loadLogs() {
         }
     });
 }
+
 function deleteLog(index) {
     chrome.storage.local.get({ herbieLogs: [] }, (result) => {
         const logs = result.herbieLogs;
@@ -162,11 +169,19 @@ function exportLogs() {
     chrome.storage.local.get({ herbieLogs: [] }, (result) => {
         const logs = result.herbieLogs;
         let logText = '';
+        const progressBarContainer = document.getElementById('logs-progress-bar-container');
+        const progressBar = document.getElementById('logs-progress-bar');
+
+        progressBarContainer.style.display = 'block'; // Show progress bar
+        progressBar.style.width = '0%'; // Reset progress bar
 
         logs.forEach((log, index) => {
             logText += `---- Log ${index + 1} ----\n`;
             logText += `Time: ${new Date(log.time).toLocaleString()}\n\n`;
             logText += `${log.log}\n\n`;
+            // Update progress bar
+            const progress = Math.round(((index + 1) / logs.length) * 100);
+            progressBar.style.width = `${progress}%`;
         });
 
         const dataStr = "data:text/plain;charset=utf-8," + encodeURIComponent(logText);
@@ -176,5 +191,8 @@ function exportLogs() {
         document.body.appendChild(downloadAnchorNode); // Required for Firefox
         downloadAnchorNode.click();
         document.body.removeChild(downloadAnchorNode); // Clean up
+
+        // Hide progress bar after download is complete
+        progressBarContainer.style.display = 'none';
     });
 }

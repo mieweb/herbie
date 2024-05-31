@@ -281,18 +281,19 @@ body {
     margin-bottom: 5px;
 }
 
-.log-header button.delete-log {
-    padding: 2px 6px;
-    font-size: 12px;
+.log-header .delete-log {
+    background: none;
     border: none;
-    border-radius: 4px;
-    background-color: #dc3545;
-    color: white;
     cursor: pointer;
+    color: #dc3545; /* Red color for the trash icon */
 }
 
-.log-header button.delete-log:hover {
-    background-color: #c82333;
+.log-header .delete-log:hover {
+    color: #c82333; /* Darker red on hover */
+}
+
+.log-header .delete-log i {
+    font-size: 18px; /* Adjust the size as needed */
 }
 
 .log-entry pre {
@@ -314,4 +315,20 @@ body {
 
 .tab-content.active {
     display: block;
+}
+/* Progress bar specific to Logs section */
+.logs-progress-bar-container {
+    width: 100%;
+    background-color: #f3f3f3;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 10px;
+    display: none; /* Initially hidden */
+}
+
+.logs-progress-bar {
+    height: 20px;
+    background-color: #007bff;
+    width: 0;
+    transition: width 0.4s;
 }
