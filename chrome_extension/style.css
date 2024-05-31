@@ -323,7 +323,8 @@ body {
     border-radius: 4px;
     overflow: hidden;
     margin-top: 10px;
-    display: none; /* Initially hidden */
+    margin-bottom: 10px;
+   display: none;
 }
 
 .logs-progress-bar {

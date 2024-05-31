@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (message.action === 'progress') {
             updateProgressBar(message.current, message.total);
+            if(message.current==message.total){
+                document.getElementById("herbie_progress").style.width="0px";
+            }
         }
       });
 
@@ -194,5 +197,6 @@ function exportLogs() {
 
         // Hide progress bar after download is complete
         progressBarContainer.style.display = 'none';
+   
     });
 }
