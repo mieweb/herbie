@@ -333,3 +333,87 @@ body {
     width: 0;
     transition: width 0.4s;
 }
+/* Styles for the tick animation */
+.save-button .fa-check {
+    display: none;
+}
+
+.save-button.saving .fa-check {
+    display: inline;
+}
+
+.save-button.saving .fa-save {
+    display: none;
+}
+
+.saved-scripts-container {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.saved-scripts-container {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.script-entry {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word;
+}
+
+.script-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.script-header .delete-script {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #dc3545; /* Red color for the trash icon */
+}
+
+.script-header .delete-script:hover {
+    color: #c82333; /* Darker red on hover */
+}
+
+.script-header .delete-script i {
+    font-size: 18px; /* Adjust the size as needed */
+}
+
+.script-entry pre {
+    white-space: pre-wrap; /* Wraps text in <pre> */
+    word-wrap: break-word; /* Breaks long words */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+.script-header .load-script {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #28a745; /* Green color for the upload icon */
+    margin-left: 5px;
+}
+
+.script-header .load-script:hover {
+    color: #218838; /* Darker green on hover */
+}
+
+.script-header .load-script i {
+    font-size: 18px; /* Adjust the size as needed */
+}

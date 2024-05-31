@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('herbie_run').addEventListener('click', runCommand);
     document.getElementById('herbie_clear').addEventListener('click', clearCommand);
     document.getElementById('herbie_save_logs').addEventListener('click', saveCommand);
-
+    document.getElementById('herbie_save').addEventListener('click', saveScript);
     document.getElementById('export-logs').addEventListener('click', exportLogs);
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if(message.action === 'log_msg'){
@@ -34,7 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById(tabId).classList.add('active');
           if (tabId === 'tab2') {
             loadLogs();
-        }
+            }
+           
+                loadSavedScripts();
+           
         });
       });
      
@@ -130,6 +133,9 @@ function loadLogs() {
         if (logs.length === 0) {
             logsContainer.innerHTML = "<p>No logs available.</p>";
         } else {
+            // Reverse the logs array to show the most recent first
+            logs.reverse();
+
             logs.forEach((log, index) => {
                 const logEntry = document.createElement('div');
                 logEntry.classList.add('log-entry');
@@ -137,7 +143,7 @@ function loadLogs() {
                     <div class="log-header">
                         <strong>${new Date(log.time).toLocaleString()}</strong>
                         <button class="delete-log" data-index="${index}" aria-label="Delete Log">
-                            <i class="fas fa-trash-alt"></i>
+                            <i title="Delete" class="fas fa-trash-alt"></i>
                         </button>
                     </div>
                     <pre>${log.log}</pre>
@@ -160,7 +166,7 @@ function loadLogs() {
 function deleteLog(index) {
     chrome.storage.local.get({ herbieLogs: [] }, (result) => {
         const logs = result.herbieLogs;
-        logs.splice(index, 1); // Remove the log at the specified index
+        logs.splice(logs.length - 1 - index, 1); // Adjust index for reversed array
 
         chrome.storage.local.set({ herbieLogs: logs }, () => {
             loadLogs(); // Reload the logs to update the UI
@@ -177,6 +183,9 @@ function exportLogs() {
 
         progressBarContainer.style.display = 'block'; // Show progress bar
         progressBar.style.width = '0%'; // Reset progress bar
+
+        // Reverse the logs array to show the most recent first
+        logs.reverse();
 
         logs.forEach((log, index) => {
             logText += `---- Log ${index + 1} ----\n`;
@@ -197,6 +206,111 @@ function exportLogs() {
 
         // Hide progress bar after download is complete
         progressBarContainer.style.display = 'none';
-   
+    });
+}
+
+function saveScript() {
+    const scriptContent = document.getElementById('herbie_script').value;
+    const timestamp = new Date().toISOString();
+    const scriptEntry = {
+        time: timestamp,
+        script: scriptContent
+    };
+
+    // Retrieve existing scripts from storage
+    chrome.storage.local.get({ herbieScripts: [] }, (result) => {
+        const scripts = result.herbieScripts;
+        scripts.push(scriptEntry); // Add the new script entry to the array
+
+        // Save the updated scripts array back to storage
+        chrome.storage.local.set({ herbieScripts: scripts }, () => {
+            // Show tick animation
+            const saveButton = document.getElementById('herbie_save');
+            saveButton.classList.add('saving');
+            setTimeout(() => {
+                saveButton.classList.remove('saving');
+            }, 1000);
+        });
+    });
+}
+
+
+function loadSavedScripts() {
+    chrome.storage.local.get({ herbieScripts: [] }, (result) => {
+        const scripts = result.herbieScripts;
+        const savedScriptsContainer = document.getElementById('saved-scripts-container');
+        savedScriptsContainer.innerHTML = ''; // Clear the container
+
+        if (scripts.length === 0) {
+            savedScriptsContainer.innerHTML = "<p>No saved scripts available.</p>";
+        } else {
+            // Reverse the scripts array to show the most recent first
+            scripts.reverse();
+
+            scripts.forEach((script, index) => {
+                const scriptEntry = document.createElement('div');
+                scriptEntry.classList.add('script-entry');
+                scriptEntry.innerHTML = `
+                    <div class="script-header">
+                        <strong>${new Date(script.time).toLocaleString()}</strong>
+                        <button class="delete-script" data-index="${index}" aria-label="Delete Script">
+                            <i title="Delete" class="fas fa-trash-alt"></i>
+                        </button>
+                        <button class="load-script" data-index="${index}" aria-label="Load Script">
+                            <i title="Load" class="fas fa-upload"></i>
+                        </button>
+                    </div>
+                    <pre>${script.script}</pre>
+                `;
+                savedScriptsContainer.appendChild(scriptEntry);
+            });
+
+            // Add event listeners for delete buttons
+            const deleteButtons = document.querySelectorAll('.delete-script');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const index = this.getAttribute('data-index');
+                    deleteScript(index);
+                });
+            });
+
+            // Add event listeners for load buttons
+            const loadButtons = document.querySelectorAll('.load-script');
+            loadButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const index = this.getAttribute('data-index');
+                    loadScript(index);
+                });
+            });
+        }
+    });
+}
+
+
+function loadScript(index) {
+    chrome.storage.local.get({ herbieScripts: [] }, (result) => {
+        const scripts = result.herbieScripts;
+        const script = scripts[scripts.length - 1 - index].script; // Adjust index for reversed array
+
+        // Load the script into herbie_script textarea
+        document.getElementById('herbie_script').value = script;
+
+        // Switch to tab1
+        document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tabContent => tabContent.classList.remove('active'));
+
+        document.querySelector('[data-tab="tab1"]').classList.add('active');
+        document.getElementById('tab1').classList.add('active');
+    });
+}
+
+function deleteScript(index) {
+    chrome.storage.local.get({ herbieScripts: [] }, (result) => {
+        const scripts = result.herbieScripts;
+        scripts.splice(scripts.length - 1 - index, 1); // Adjust index for reversed array
+
+        chrome.storage.local.set({ herbieScripts: scripts }, () => {
+            loadSavedScripts(); // Reload the scripts to update the UI
+        });
     });
 }
