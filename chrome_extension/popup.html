@@ -4,167 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Herbie Popup</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 10px;
-      width: 400px;
-    }
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    #herbie_div {
-      background-color: #f9f9f9;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    #herbie_buttons {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-      width: 100%;
-    }
-
-    #herbie_logo {
-      height: 30px;
-      margin-right: 10px;
-    }
-
-    #herbie_buttons span {
-      flex-grow: 1;
-      margin-left: 10px;
-      font-size: 16px;
-    }
-
-    #herbie_buttons button, 
-    #herbie_buttons input {
-      margin: 5px 5px 0 5px;
-      padding: 5px 10px;
-      font-size: 14px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      background-color: #007bff;
-      color: white;
-    }
-
-    #herbie_buttons button:hover {
-      background-color: #0056b3;
-    }
-
-    .herbie_script, .herbie_bar, .herbie_output {
-      margin-top: 10px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .herbie_script label, .herbie_bar label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    .herbie_script textarea {
-      width: 100%;
-      font-family: monospace;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      resize: none;
-      box-sizing: border-box;
-    }
-
-    .herbie_bar {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .herbie_bar input {
-      padding: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin-bottom: 5px;
-      flex-grow: 1;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .herbie_bar button {
-      padding: 5px 10px;
-      font-size: 14px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      background-color: #007bff;
-      color: white;
-      margin-bottom: 5px;
-      box-sizing: border-box;
-    }
-
-    .herbie_bar button:hover {
-      background-color: #0056b3;
-    }
-
-    .herbie_output {
-      background-color: #f1f1f1;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 10px;
-      margin-top: 10px;
-      white-space: pre-wrap;
-      max-height: 150px;
-      overflow-y: auto;
-      box-sizing: border-box;
-      width: 100%;
-    }
-
-    .progress-container {
-      width: 100%;
-      background-color: #f3f3f3;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-top: 10px;
-    }
-
-    .progress-bar {
-      height: 20px;
-      background-color: #007bff;
-      width: 0;
-      transition: width 0.4s;
-    }
-
-    #herbie_line {
-      display: block;
-      width: 100%;
-      margin-top: 10px;
-      padding: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-  </style>
 </head>
 <body>
-  <div id="herbie_div">
-    <div id="herbie_buttons">
-      <img id="herbie_logo" align="left" src="logos/herbie48.png" alt="Herbie Logo" height="30" style="padding-top: 2px; padding-left: 4px;">
-      <span><a target="_blank" href="http://mieweb.github.io/herbie/">Herbie</a></span>
-      <button id="herbie_run" aria-label="Run Herbie">Run</button>
-      <button id="herbie_inspect" aria-label="Inspect Herbie">Inspect</button>
-    </div>
-    <div class="progress-container">
-      <div id="herbie_progress" class="progress-bar"></div>
-    </div>
-    <div class="herbie_script">
-      <label class="prompt" for="herbie_script">Script:</label>
-      <textarea id="herbie_script" name="Script" rows="10" cols="80" aria-label="Herbie Script Area">
+  <div class="tab-container">
+    <button class="tab-button active" data-tab="tab1">Herbie</button>
+    <button class="tab-button" data-tab="tab2">Logs</button>
+    <button class="tab-button" data-tab="tab3">Saved Scripts</button>
+  </div>
+  <div id="tab1" class="tab-content active">
+    <div id="herbie_div">
+      <div id="herbie_buttons">
+        <img id="herbie_logo" align="left" src="logos/herbie48.png" alt="Herbie Logo" height="30" style="padding-top: 2px; padding-left: 4px;">
+        <span><a target="_blank" href="http://mieweb.github.io/herbie/">Herbie</a></span>
+        
+        <button id="herbie_run" class="run-button" aria-label="Run Herbie">
+          <i class="fas fa-play"></i>
+        </button>
+        <button id="herbie_save" class="save-button" aria-label="Save Herbie">
+          <i class="fas fa-save"></i>
+        </button>
+      </div>
+      <div class="progress-container">
+        <div id="herbie_progress" class="progress-bar"></div>
+      </div>
+      <div class="herbie_script">
+        <label class="prompt" for="herbie_script">Script:</label>
+        <textarea id="herbie_script" name="Script" rows="10" cols="80" aria-label="Herbie Script Area">
 type "Hrithik" into 'Name' input
 type "hi" into 'Message'
 click on 'Submit'
@@ -177,20 +45,45 @@ Click on the 'Save' button.
 Click 'OK'.
 Type 'finally' in 'Slow Input'
 Click on the 'going away' link.
-      </textarea>
-    </div>
-    <div class="herbie_bar">
-      <label for="herbie_command">Command:</label>
-      <input id="herbie_command" type="text" name="Command" maxlength="100" aria-label="Herbie Command Input"/>
-      <div>
-        <button id="herbie_add" aria-label="Add Command">Add</button>
-        <button id="herbie_parse" aria-label="Parse Command">Parse</button>
+        </textarea>
+      </div>
+      <div class="herbie_bar">
+        <label for="herbie_command">Command:</label>
+        <input id="herbie_command" type="text" name="Command" maxlength="100" aria-label="Herbie Command Input"/>
+        <div class="button-container">
+          <button id="herbie_add" aria-label="Add Command"><i class="fas fa-plus"></i> Add</button>
+          <button id="herbie_parse" aria-label="Parse Command"><i class="fas fa-code"></i> Parse</button>
+          <button id="herbie_clear" aria-label="Clear Command"><i class="fas fa-trash-alt"></i> Clear</button>
+          <button id="herbie_save_logs" aria-label="Save Command"><i class="fas fa-save"></i> Save</button>
+        </div>
+      </div>
+      <div class="herbie_output" aria-label="Herbie Output Area">
+        <span id="herbie_output">Click parse or run</span>
       </div>
     </div>
-    <div class="herbie_output" aria-label="Herbie Output Area">
-      <span id="herbie_output">Click parse or run</span>
-    </div>
   </div>
+  
+  <div id="tab2" class="tab-content">
+    <div class="log-header-container">
+        <h2>Logs</h2>
+        <button id="export-logs" class="export-logs" aria-label="Export Logs">
+            <i class="fas fa-file-export"></i> Export
+        </button>
+    </div>
+    <div id="logs-container" class="logs-container">
+        <!-- Log entries will be loaded here -->
+    </div>
+    <div class="logs-progress-bar-container" id="logs-progress-bar-container">
+        <div class="logs-progress-bar" id="logs-progress-bar"></div>
+    </div>
+</div>
+
+
+  <div id="tab3" class="tab-content">
+    <h2>Saved Scripts</h2>
+    <p>Saved Scripts</p>
+  </div>
+  
   <script src="popup.js"></script>
 </body>
 </html>
