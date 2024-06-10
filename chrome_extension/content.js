@@ -102,118 +102,129 @@ function FindDesc(desc) {
 
 
 function ExecuteScript() {
-	var cmdtree = arguments[0], options = { line: 0, delay: 100, cmdtree:cmdtree } , callback, tag = [];
-	if (arguments.length === 2) { // only two arguments supplied
-		if (Object.prototype.toString.call(arguments[1]) === '[object Function]') {
-			callback = arguments[1]; // if is a function, set as 'callback'
-		} else {
-			options = arguments[1]; // if not a function, set as 'options'
-		}
-	} else if (arguments.length === 3) { // three arguments supplied
-		if (arguments[1]) {
-			options = arguments[1];
-		}
-		callback = arguments[2];
-	}
+    var cmdtree = arguments[0], options = { line: 0, delay: 100, cmdtree: cmdtree }, callback, tag = [];
+    if (arguments.length === 2) { // only two arguments supplied
+        if (Object.prototype.toString.call(arguments[1]) === '[object Function]') {
+            callback = arguments[1]; // if is a function, set as 'callback'
+        } else {
+            options = arguments[1]; // if not a function, set as 'options'
+        }
+    } else if (arguments.length === 3) { // three arguments supplied
+        if (arguments[1]) {
+            options = arguments[1];
+        }
+        callback = arguments[2];
+    }
 
-	var i=options.line;
-	if (i>=cmdtree.length) {
-		if (callback) {
-			callback(true, options, 'Finished.');
-		}
-		return;
-	}
-	if (stopScript) {
-		if (callback) {
-			callback(true, null, 'Stopped.');
-		}
-		return;
-	}
+    var i = options.line;
+    if (i >= cmdtree.length) {
+        if (callback) {
+            callback(true, options, 'Finished.');
+        }
+        return;
+    }
+    if (stopScript) {
+        if (callback) {
+            callback(true, null, 'Stopped.');
+        }
+        return;
+    }
 
-	var inclause = $.inArray('in', cmdtree[i].code);
-	if (inclause !== -1) {
-		var tagname = cmdtree[i].code[inclause+1];
-		if (tagname.charAt(0)==='"'||tagname.charAt(0)==='\'') {
-			tagname = tagname.slice(1,-1);
-		}
+    var cmd = cmdtree[i];
+    if (!cmd || !cmd.code) {
+        console.error(`Invalid command at line ${i}:`, cmd);
+        if (callback) {
+            callback(true, options, 'Error: Invalid command');
+        }
+        return;
+    }
 
-		tag = FindDesc( tagname );
-		if (!tag.length) {
-			if (cmdtree[i].timeout>0) {
-				cmdtree[i].timeout -= options.delay;
-				return setTimeout(function () { ExecuteScript(cmdtree,options,callback); }, options.delay);
-			} else {
-				log('Cannot find tag named: "' + tagname + '". Proceeding to next command.');
-				options.line++; 
-				return setTimeout(function () {
-					ExecuteScript(cmdtree, options, callback);
-				}, options.delay);
-			}
-		}
-	}
+    var inclause = $.inArray('in', cmd.code);
+    if (inclause !== -1) {
+        var tagname = cmd.code[inclause + 1];
+        if (tagname.charAt(0) === '"' || tagname.charAt(0) === '\'') {
+            tagname = tagname.slice(1, -1);
+        }
 
-	if (callback) {
-		callback(false, options);
-	}
+        tag = FindDesc(tagname);
+        if (!tag.length) {
+            if (cmd.timeout > 0) {
+                cmd.timeout -= options.delay;
+                console.log(`Waiting for element: ${tagname}`);
+                return setTimeout(function () { ExecuteScript(cmdtree, options, callback); }, options.delay);
+            } else {
+                log(`Cannot find tag named: "${tagname}". Proceeding to next command.`);
+                options.line++;
+                return setTimeout(function () {
+                    ExecuteScript(cmdtree, options, callback);
+                }, options.delay);
+            }
+        }
+    }
 
-	switch (cmdtree[i].code[0]) {
-		case 'press':
-			var seq = cmdtree[i].code[1];
-			if (seq.charAt(0)==='"'||seq.charAt(0)==='\'') {
-				seq = seq.slice(1,-1);
-			}
+    if (callback) {
+        callback(false, options);
+    }
 
-			if (!tag.length) {
-				tag = $( document.activeElement );
-			}
-			tag.simulate('key-combo', {combo: seq });
-			tag.next().focus();
-			return setTimeout(function () {
-					options.line++; // ok, setting the options to the next line here.
-					ExecuteScript(cmdtree,options,callback);
-				}, options.delay);
+    console.log(`Executing command: ${cmd.code.join(' ')}`);
+    switch (cmd.code[0]) {
+        case 'press':
+            var seq = cmd.code[1];
+            if (seq.charAt(0) === '"' || seq.charAt(0) === '\'') {
+                seq = seq.slice(1, -1);
+            }
 
-		case 'type':
-			var seq = cmdtree[i].code[1];
-			if (seq.charAt(0)==='"'||seq.charAt(0)==='\'') {
-				seq = seq.slice(1,-1);
-			}
+            if (!tag.length) {
+                tag = $(document.activeElement);
+            }
+            tag.simulate('key-combo', { combo: seq });
+            tag.next().focus();
+            return setTimeout(function () {
+                options.line++;
+                ExecuteScript(cmdtree, options, callback);
+            }, options.delay);
 
-			if (tag.length) {
-				tag.fadeOut(100)
-					.fadeIn(100)
-					.fadeOut(100)
-					.fadeIn(100)
-					.simulate('key-sequence', {
-						sequence: seq,
-						delay: options.delay,
-						callback: function () {
-							options.line++; // ok, setting the options to the next line here.
-							ExecuteScript(cmdtree,options,callback);
-						}
-					});
-			}
-			return;
-		case 'click':
-			if (tag.length) {
-				tag.fadeOut(100)
-					.fadeIn(100)
-					.fadeOut(100)
-					.fadeIn(100)
-					.simulate('click');
-			}
-			return setTimeout(function () {
-				options.line++; // ok, setting the options to the next line here.
-				ExecuteScript(cmdtree,options,callback);
-			}, options.delay);
+        case 'type':
+            var seq = cmd.code[1];
+            if (seq.charAt(0) === '"' || seq.charAt(0) === '\'') {
+                seq = seq.slice(1, -1);
+            }
 
-		default:
-			return setTimeout(function () {
-				options.line++; // ok, setting the options to the next line here.
-				ExecuteScript(cmdtree,options,callback);
-			}, options.delay);
+            if (tag.length) {
+                tag.fadeOut(100)
+                    .fadeIn(100)
+                    .fadeOut(100)
+                    .fadeIn(100)
+                    .simulate('key-sequence', {
+                        sequence: seq,
+                        delay: options.delay,
+                        callback: function () {
+                            options.line++;
+                            ExecuteScript(cmdtree, options, callback);
+                        }
+                    });
+            }
+            return;
 
-	}
+        case 'click':
+            if (tag.length) {
+                tag.fadeOut(100)
+                    .fadeIn(100)
+                    .fadeOut(100)
+                    .fadeIn(100)
+                    .simulate('click');
+            }
+            return setTimeout(function () {
+                options.line++;
+                ExecuteScript(cmdtree, options, callback);
+            }, options.delay);
+
+        default:
+            return setTimeout(function () {
+                options.line++;
+                ExecuteScript(cmdtree, options, callback);
+            }, options.delay);
+    }
 }
 
 
@@ -243,7 +254,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     var txt = 'Line: ' + (option.line + 1) + ', Cmd:' + currentCmd.src + '\n';
                     log(txt);
                 } else {
-                    log(`Error: Invalid command at line ${option.line + 1}`);
+                    log(`Error: Invalid command at line ${option.line}`);
                 }
             }
 
