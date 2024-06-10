@@ -418,17 +418,11 @@ body {
     font-size: 18px; /* Adjust the size as needed */
 }
 /* Inside style.css */
-.import-section {
-  margin: 10px 0;
-}
-
-.import-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.import-input {
-  margin-right: 10px;
+.saved-scripts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 .import-button {
@@ -439,8 +433,18 @@ body {
   cursor: pointer;
   background-color: #007bff;
   color: white;
+  display: flex;
+  align-items: center;
+}
+
+.import-button i {
+  margin-right: 5px;
 }
 
 .import-button:hover {
   background-color: #0056b3;
+}
+
+.import-input {
+  display: none;
 }
