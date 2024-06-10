@@ -84,12 +84,17 @@ function loadScript(index) {
 }
 
 function deleteScript(index) {
-    chrome.storage.local.get({ herbieScripts: [] }, (result) => {
-        const scripts = result.herbieScripts;
-        scripts.splice(scripts.length - 1 - index, 1); // Adjust index for reversed array
+    const confirmation = window.confirm("Are you sure you want to delete this script? This action cannot be undone.");
+    
+    if (confirmation) {
+        chrome.storage.local.get({ herbieScripts: [] }, (result) => {
+            const scripts = result.herbieScripts;
+            scripts.splice(scripts.length - 1 - index, 1); // Adjust index for reversed array
 
-        chrome.storage.local.set({ herbieScripts: scripts }, () => {
-            loadSavedScripts(); // Reload the scripts to update the UI
+            chrome.storage.local.set({ herbieScripts: scripts }, () => {
+                loadSavedScripts(); // Reload the scripts to update the UI
+            });
         });
-    });
+    }
 }
+

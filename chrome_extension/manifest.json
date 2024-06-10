@@ -52,8 +52,7 @@
         "dist/jquery.simulate.ext.js",
         "dist/jquery.simulate.key-combo.js",
         "dist/jquery.simulate.key-sequence.js",
-        "content.js",
-        "inspector.js"
+        "content.js"
       ]
     }
   ]
