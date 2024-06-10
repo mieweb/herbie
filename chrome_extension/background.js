@@ -137,7 +137,7 @@ function log(log_msg) {
 
 
 chrome.webNavigation.onDOMContentLoaded.addListener((details) => {
-	log("Navigating to :" +details.url)
+	log("Navigating to :" +details.url+"\n")
 	// Perform actions when the DOM content is fully loaded
 	chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 		if (tabs[0]) {

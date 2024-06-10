@@ -3,20 +3,37 @@ var cmdtree = []
 const stopScript = false;
 function FindDesc(desc) {
     var el, hadterm = 0;
+    var originalDesc = desc;
+
+    // Normalize description to be case-insensitive
+    desc = desc.toLowerCase();
 
     // Append colon if not present
-    if (!desc.match(':$')) { 
+    if (!desc.match(':$')) {
         desc += ':';
     } else {
         hadterm = 1;
     }
 
-    // Find label with text containing the description
+    // Function to log attempts and results
+    function logAttempt(method, result) {
+        if (result.length) {
+            console.log(`Found element using ${method} for description: "${originalDesc}"`);
+        } else {
+            console.log(`No element found using ${method} for description: "${originalDesc}"`);
+        }
+    }
+
+    // 1. Try to find label with text containing the description
     try {
-        el = $('label').filter(':contains(' + desc + ')');
+        el = $('label').filter(function() {
+            return $(this).text().trim().toLowerCase().includes(desc);
+        });
         if (el.length) {
             el = el.first();
-            return $('#' + el.attr('for'));
+            el = $('#' + el.attr('for'));
+            logAttempt('label text', el);
+            if (el.length) return el;
         }
     } catch (ex) {}
 
@@ -24,10 +41,14 @@ function FindDesc(desc) {
     desc = desc.slice(0, -1);
 
     try {
-        el = $('label').filter(':contains(' + desc + ')');
+        el = $('label').filter(function() {
+            return $(this).text().trim().toLowerCase().includes(desc);
+        });
         if (el.length) {
             el = el.first();
-            return $('#' + el.attr('for'));
+            el = $('#' + el.attr('for'));
+            logAttempt('label text without colon', el);
+            if (el.length) return el;
         }
     } catch (ex) {}
 
@@ -36,41 +57,43 @@ function FindDesc(desc) {
         desc += ':';
     }
 
-    // Look for buttons containing the description
+    // 2. Look for buttons containing the description
     try {
-        el = $('button').filter(':contains(' + desc + ')');
-        if (el.length) {
-            return el.first();
-        }
+        el = $('button').filter(function() {
+            return $(this).text().trim().toLowerCase().includes(desc);
+        });
+        logAttempt('button text', el);
+        if (el.length) return el.first();
     } catch (ex) {}
 
-    // Look for links containing the description
+    // 3. Look for links containing the description
     try {
-        el = $('a').filter(':contains(' + desc + ')');
-        if (el.length) {
-            return el.first();
-        }
+        el = $('a').filter(function() {
+            return $(this).text().trim().toLowerCase().includes(desc);
+        });
+        logAttempt('link text', el);
+        if (el.length) return el.first();
     } catch (ex) {}
 
-    // Try to use the description as a jQuery selector
+    // 4. Try to use the description as a jQuery selector
     try {
         el = $(desc);
-    } catch (e) {
-        el = [];
-    }
+        logAttempt('jQuery selector', el);
+        if (el.length === 1) return el;
+    } catch (e) {}
 
-    // Return the element if only one match is found
-    if (el.length === 1) {
-        return el;
-    }
-
-    // Check if the description is an XPath
+    // 5. Check if the description is an XPath
     try {
         var xpathResult = document.evaluate(desc, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
         if (xpathResult.singleNodeValue) {
-            return $(xpathResult.singleNodeValue);
+            el = $(xpathResult.singleNodeValue);
+            logAttempt('XPath', el);
+            if (el.length) return el;
         }
     } catch (e) {}
+
+    // Log final failure
+    console.log(`Failed to find element for description: "${originalDesc}"`);
 
     // Return empty array if no match is found
     return [];
@@ -200,32 +223,42 @@ console.log("DOM fully loaded and altered");
 
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'RUN') {
+        const scriptContent = message.data;
+        cmdtree = scriptContent;
 
-  if (message.action === 'RUN') {
-    const scriptContent = message.data;
-    cmdtree = scriptContent;
- 
-  
-	var options =  { line: message.line, delay: 100, cmdtree:cmdtree };
-    ExecuteScript(cmdtree,options,function (done, option, comment){
-     
-      if (option) {
-        var txt = 'Line: ' + (option.line+1) + ', Cmd:' + option.cmdtree[option.line].src + '\n';
-      	log(txt);
-      }
-	  
-      if(comment){
-        log(comment);
-      }
-	 
-    });
-    sendResponse({ status: 'success', data: 'Script received' });
-    console.log('Script content received from background:',scriptContent);
-    
-  }
+        var options = { line: message.line, delay: 100, cmdtree: cmdtree };
 
-  return true;
+        // Ensure cmdtree is properly structured
+        if (!Array.isArray(cmdtree) || cmdtree.length === 0) {
+            sendResponse({ status: 'error', data: 'Invalid script content received' });
+            console.error('Invalid script content received:', scriptContent);
+            return;
+        }
+
+        ExecuteScript(cmdtree, options, function (done, option, comment) {
+            if (option) {
+                var currentCmd = option.cmdtree[option.line];
+                if (currentCmd && currentCmd.src) {
+                    var txt = 'Line: ' + (option.line + 1) + ', Cmd:' + currentCmd.src + '\n';
+                    log(txt);
+                } else {
+                    log(`Error: Invalid command at line ${option.line + 1}`);
+                }
+            }
+
+            if (comment) {
+                log(comment);
+            }
+        });
+
+        sendResponse({ status: 'success', data: 'Script received' });
+        console.log('Script content received from background:', scriptContent);
+    }
+
+    return true; // Keep the messaging channel open for asynchronous responses
 });
+
 
 
 function log(log){
