@@ -219,6 +219,21 @@ function ExecuteScript() {
                 ExecuteScript(cmdtree, options, callback);
             }, options.delay);
 
+        case 'wait':
+            var waitTime = parseInt(cmd.code[1], 10);
+            if (isNaN(waitTime)) {
+                console.error(`Invalid wait time at line ${i}:`, cmd.code[1]);
+                if (callback) {
+                    callback(true, options, 'Error: Invalid wait time');
+                }
+                return;
+            }
+            console.log(`Waiting for ${waitTime} milliseconds`);
+            return setTimeout(function () {
+                options.line++;
+                ExecuteScript(cmdtree, options, callback);
+            }, waitTime);
+
         default:
             return setTimeout(function () {
                 options.line++;
@@ -253,8 +268,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 if (currentCmd && currentCmd.src) {
                     var txt = 'Line: ' + (option.line + 1) + ', Cmd:' + currentCmd.src + '\n';
                     log(txt);
-                } else {
-                    log(`Error: Invalid command at line ${option.line}`);
                 }
             }
 

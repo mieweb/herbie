@@ -29,7 +29,13 @@ function ParseScript(script) {
 							case 'capture':
 							case 'test':
 							case 'open':
-							case 'wait':
+							case 'wait':  // Handle the 'wait' command
+                                cmd.code.push(candidate);
+                                if (candidate === 'wait' && stmt[j + 1]) {
+                                    cmd.code.push(stmt[j + 1]);  // Add the wait duration
+                                    j++;  // Skip the next token as it has been added as wait duration
+                                }
+                                break;
 							case 'switch':
 							case 'navigate':
 							case 'press':
