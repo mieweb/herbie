@@ -127,4 +127,41 @@ function formatDate(timestamp) {
       });
     });
   }
+  function importScripts(event) {
+    const file = event.target.files[0];
+  
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const fileContent = event.target.result;
+        processImportedScripts(fileContent);
+      };
+      reader.readAsText(file);
+    } else {
+      alert('Please select a file to import.');
+    }
+  }
+  
+  function processImportedScripts(fileContent) {
+    const scripts = fileContent.split('\n\n'); // Assuming each script is separated by double newlines
+    const timestamp = new Date().toISOString();
+  
+    chrome.storage.local.get({ herbieScripts: [] }, (result) => {
+      const existingScripts = result.herbieScripts;
+  
+      scripts.forEach(script => {
+        const scriptEntry = {
+          time: timestamp,
+          title: 'Imported Script',
+          script: script.trim()
+        };
+        existingScripts.push(scriptEntry);
+      });
+  
+      chrome.storage.local.set({ herbieScripts: existingScripts }, () => {
+        loadSavedScripts(); // Reload the scripts to update the UI
+      });
+    });
+  }
+  
   
