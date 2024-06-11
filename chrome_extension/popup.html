@@ -11,8 +11,9 @@
 <body>
   <div class="tab-container">
     <button class="tab-button active" data-tab="tab1">Herbie</button>
-    <button class="tab-button" data-tab="tab2">Logs</button>
+    <button class="tab-button" data-tab="tab4">Keywords</button>
     <button class="tab-button" data-tab="tab3">Saved Scripts</button>
+    <button class="tab-button" data-tab="tab2">Logs</button>
   </div>
   <div id="tab1" class="tab-content active">
     <div id="herbie_div">
@@ -79,11 +80,31 @@
   <div id="saved-scripts-container" class="saved-scripts-container"></div>
 </div>
 
+
+<div id="tab4" class="tab-content">
+  <h2>Keywords</h2>
+  <div id="keywords-container">
+      <input type="text" id="new-keyword" placeholder="Enter keyword">
+      <input type="text" id="keyword-xpath" placeholder="Enter XPath">
+      <label><input type="checkbox" id="keyword-global"> Global</label>
+      <button id="add-keyword">Add Keyword</button>
+  </div>
+  <div id="global-keywords-container">
+      <h3>Global Keywords</h3>
+      <ul id="global-keywords-list"></ul>
+  </div>
+  <div id="local-keywords-container">
+      <h3>Local Keywords</h3>
+      <ul id="local-keywords-list"></ul>
+  </div>
+</div>
+
   
 <script src="popupjs/commands.js"></script>
 <script src="popupjs/logs.js"></script>
 <script src="popupjs/scripts.js"></script>
 <script src="popupjs/utils.js"></script>
+<script src="popupjs/keywords.js" ></script>
 <script src="popupjs/main.js"></script>
 
 </body>

@@ -6,11 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('herbie_clear').addEventListener('click', clearCommand);
     document.getElementById('herbie_save_logs').addEventListener('click', saveCommand);
     document.getElementById('herbie_save').addEventListener('click', saveScript);
+
+
     document.getElementById('export-logs').addEventListener('click', exportLogs);
+
     document.getElementById('import-button').addEventListener('click', () => {
         document.getElementById('import-file').click();
       });
       document.getElementById('import-file').addEventListener('change', importScripts);
+
+
+      document.getElementById('add-keyword').addEventListener('click', addKeyword);
+    
     // Chrome runtime message listener
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (message.action === 'log_msg') {
@@ -42,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-
+    loadKeywords();
     loadLogs();
     loadSavedScripts();
 });
