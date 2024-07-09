@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Load saved script content
+    chrome.storage.local.get(['herbieScriptContent'], (result) => {
+        if (result.herbieScriptContent) {
+            document.getElementById('herbie_script').value = result.herbieScriptContent;
+        }
+    });
+
     // Event listeners for command buttons
     document.getElementById('herbie_parse').addEventListener('click', parseCommand);
     document.getElementById('herbie_add').addEventListener('click', addCommand);
@@ -6,18 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('herbie_clear').addEventListener('click', clearCommand);
     document.getElementById('herbie_save_logs').addEventListener('click', saveCommand);
     document.getElementById('herbie_save').addEventListener('click', saveScript);
-
-
     document.getElementById('export-logs').addEventListener('click', exportLogs);
-
     document.getElementById('import-button').addEventListener('click', () => {
         document.getElementById('import-file').click();
-      });
-      document.getElementById('import-file').addEventListener('change', importScripts);
+    });
+    document.getElementById('import-file').addEventListener('change', importScripts);
+    document.getElementById('add-keyword').addEventListener('click', addKeyword);
 
+    // Save script content on change
+    document.getElementById('herbie_script').addEventListener('input', function() {
+        const scriptContent = document.getElementById('herbie_script').value;
+        chrome.storage.local.set({ herbieScriptContent: scriptContent }, () => {
+            console.log('Script content saved.');
+        });
+    });
 
-      document.getElementById('add-keyword').addEventListener('click', addKeyword);
-    
     // Chrome runtime message listener
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (message.action === 'log_msg') {
