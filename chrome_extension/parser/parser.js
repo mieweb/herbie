@@ -86,6 +86,8 @@ function parseStatement(stmt, cmd) {
                 case 'under':
                     cmd.code.push('under');
                     break;
+                case 'mouseover':
+                    cmd.code.push('mouseover');
             }
         }
     }

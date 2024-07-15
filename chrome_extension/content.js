@@ -1,6 +1,15 @@
 var cmdtree = []
 const stopScript = false;
 function FindDesc(desc) {
+    try {
+        var xpathResult = document.evaluate(desc, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+        if (xpathResult.singleNodeValue) {
+            el = $(xpathResult.singleNodeValue);
+            logAttempt('XPath', el);
+            if (el.length) return el;
+        }
+    } catch (e) {}
+     
     var el, hadterm = 0;
     var originalDesc = desc;
 
@@ -81,15 +90,7 @@ function FindDesc(desc) {
         if (el.length === 1) return el;
     } catch (e) {}
 
-    // 5. Check if the description is an XPath
-    try {
-        var xpathResult = document.evaluate(desc, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
-        if (xpathResult.singleNodeValue) {
-            el = $(xpathResult.singleNodeValue);
-            logAttempt('XPath', el);
-            if (el.length) return el;
-        }
-    } catch (e) {}
+ 
 
     // Log final failure
     console.log(`Failed to find element for description: "${originalDesc}"`);
@@ -223,6 +224,17 @@ function ExecuteScript() {
                 options.line++;
                 ExecuteScript(cmdtree, options, callback);
             }, waitTime);
+
+        case 'mouseover':
+            if (tag.length) {
+                console.log(tag);
+                simulijs.simulateMouseEnter(tag[0]);
+            }
+            return setTimeout(function () {
+                options.line++;
+                ExecuteScript(cmdtree, options, callback);
+            }, options.delay);
+
 
         default:
             return setTimeout(function () {
