@@ -59,7 +59,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    
+    const textarea =  document.getElementById('herbie_script');
+
+    textarea.addEventListener('keydown', function(event) {
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            const start = this.selectionStart;
+            const end = this.selectionEnd;
+
+            // Insert 4 spaces (or '\t' for a tab character)
+            const tabCharacter = '    '; // Or use '\t' for a tab character
+            this.value = this.value.substring(0, start) + tabCharacter + this.value.substring(end);
+
+            // Move the cursor after the inserted tab
+            this.selectionStart = this.selectionEnd = start + tabCharacter.length;
+        }
+    });
+    
+    
+    
     loadKeywords();
     loadLogs();
     loadSavedScripts();
+
+
+
 });

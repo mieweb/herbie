@@ -23,7 +23,8 @@
     "https://*/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type":"module"
   },
   "web_accessible_resources": [
     {
@@ -45,15 +46,11 @@
     {
       "matches": ["<all_urls>"],
       "js":[
-        "dist/bililiteRange.js",
         "dist/jquery.min.js",
-        "dist/jquery.simulate.js",
-        "dist/jquery.simulate.drag-n-drop.js",
-        "dist/jquery.simulate.ext.js",
-        "dist/jquery.simulate.key-combo.js",
-        "dist/jquery.simulate.key-sequence.js",
+        "dist/mie-simulijs.js", 
         "content.js"
-      ]
+      ],
+       "type":"module"
     }
   ]
 }

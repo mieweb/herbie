@@ -1,4 +1,3 @@
-
 var cmdtree = []
 const stopScript = false;
 function FindDesc(desc) {
@@ -100,7 +99,6 @@ function FindDesc(desc) {
 }
 
 
-
 function ExecuteScript() {
     var cmdtree = arguments[0], options = { line: 0, delay: 100, cmdtree: cmdtree }, callback, tag = [];
     if (arguments.length === 2) { // only two arguments supplied
@@ -191,28 +189,20 @@ function ExecuteScript() {
             }
 
             if (tag.length) {
-                tag.fadeOut(100)
-                    .fadeIn(100)
-                    .fadeOut(100)
-                    .fadeIn(100)
-                    .simulate('key-sequence', {
-                        sequence: seq,
-                        delay: options.delay,
-                        callback: function () {
-                            options.line++;
-                            ExecuteScript(cmdtree, options, callback);
-                        }
-                    });
+                simulijs.simulateFocus(tag[0],function(){
+                    simulijs.simulateKeyPress(tag[0],seq);
+                });
+                return setTimeout(function () {
+                    options.line++;
+                    ExecuteScript(cmdtree, options, callback);
+                }, options.delay);
             }
-            return;
+           
 
         case 'click':
             if (tag.length) {
-                tag.fadeOut(100)
-                    .fadeIn(100)
-                    .fadeOut(100)
-                    .fadeIn(100)
-                    .simulate('click');
+                console.log(tag);
+                simulijs.simulateClick(tag[0]);
             }
             return setTimeout(function () {
                 options.line++;
