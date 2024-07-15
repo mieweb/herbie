@@ -6,10 +6,68 @@
   h2 { font-size: 1.1em; margin: 0.1em; }
   div.sample { border: solid #000 1px; display: inline-block; }
 </style>
+<style>
+	ul {
+		list-style-type: none;
+		padding: 0;
+	}
+
+	li {
+		position: relative;
+		padding: 10px;
+		border: 1px solid #ccc;
+		margin-bottom: 5px;
+	}
+
+	.icons {
+		position: absolute;
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	.icon {
+		margin-left: 5px;
+		cursor: pointer;
+	}
+
+	.modal {
+		display: none;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		padding: 20px;
+		background: #fff;
+		border: 1px solid #ccc;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		z-index: 1000;
+	}
+
+	.modal.open {
+		display: block;
+	}
+
+	.modal-overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 999;
+	}
+
+	.modal-overlay.open {
+		display: block;
+	}
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-simulate/1.1.1/jquery.simulate.min.js"></script>
 
 </head>
 <body>
-
 
 This is an example page.  It has many sample elements:<br>
 <div class="sample">
@@ -45,7 +103,6 @@ And finally, it has a link <a href="page2.html">going away</a>
 <option>Family</option>
 </select><br>
 <label for="input_phone">Phone:</label>
-
 <input id="input_phone" name="phone" size="15" type="text" />
 <input id="input_business" name="phone" type="checkbox" value="business" /> <label for="input_business">business</label>
 <input id="input_personal" name="phone" type="checkbox" value="personal" /> <label for="input_personal">personal</label>
@@ -76,11 +133,23 @@ An ok button: <button id="ok">OK</button><br>
 A cancel button: <button id="cancel">Cancel</button><br>
 And finally, it has a link <a href="page2.html">going away</a>
 </div>
-<script>
-	function fun(){
-		alert(1);
-	}
-</script>
+<h1>
+	Hover Button Header
+</h1>
+<ul id="itemList">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+</ul>
+
+<div class="modal-overlay"></div>
+<div class="modal">
+    <h2>Edit Item</h2>
+    <input type="text" id="editInput">
+    <button id="saveBtn">Save</button>
+    <button id="closeBtn">Close</button>
+</div>
+
 <script type="text/javascript">
 var runonce=false;
 
@@ -104,9 +173,6 @@ Type 'it worked' in '#lst-ib'";
 			var div = document.createElement('span');
 			div.innerHTML = '<label for="input_slow">Slow Input:</label><input id="input_slow" name="slowly" size="15" type="text" /><br>';
 			button.parentNode.insertBefore(div, button.nextSibling.nextSibling);
-//			while (div.children.length > 0) {
-//				button.appendChild(div.children[0]);
-//			}
 		}, 1500);
 	};
 	
@@ -143,8 +209,80 @@ Type 'it worked' in '#lst-ib'";
 				setTimeout(TryHerbie, 500);
 		}
 		setTimeout(TryHerbie, 10);
+		
 	}
 })();
+
+
+
 </script>
+<script>
+
+
+$(document).ready(function(){
+	var targetElement = $('#itemList > li:nth-child(1)');
+               
+           
+              
+			   targetElement.simulate("mouseenter",function() {
+					$(this).css('border', '2px solid red');
+					console.log('Mouseover event simulated on the first list item of #itemList');
+					var editIcon = $(this).find('.icons .edit');
+					console.log(editIcon);
+					editIcon.simulate('click');
+			   });
+
+})
+
+		   
+
+
+    document.querySelectorAll('#itemList li').forEach(item => {
+        item.addEventListener('mouseenter', function () {
+            if (!this.querySelector('.icons')) {
+                const iconsDiv = document.createElement('div');
+                iconsDiv.classList.add('icons');
+                iconsDiv.innerHTML = '<span class="icon edit">✏️</span><span class="icon delete">❌</span>';
+                this.appendChild(iconsDiv);
+
+                iconsDiv.querySelector('.edit').addEventListener('click', function () {
+                    const itemText = this.closest('li').innerText;
+                    document.getElementById('editInput').value = itemText.replace('✏️❌', '').trim();
+                    document.querySelector('.modal').classList.add('open');
+                    document.querySelector('.modal-overlay').classList.add('open');
+                });
+            }
+        });
+
+        item.addEventListener('mouseleave', function () {
+            const iconsDiv = this.querySelector('.icons');
+            if (iconsDiv) {
+                iconsDiv.remove();
+            }
+        });
+    });
+
+    document.querySelector('.modal-overlay').addEventListener('click', function () {
+        closeModal();
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', function () {
+        const newText = document.getElementById('editInput').value;
+        const openModalItem = document.querySelector('.modal.open').closest('li');
+        openModalItem.firstChild.textContent = newText;
+        closeModal();
+    });
+
+    document.getElementById('closeBtn').addEventListener('click', function () {
+        closeModal();
+    });
+
+    function closeModal() {
+        document.querySelector('.modal').classList.remove('open');
+        document.querySelector('.modal-overlay').classList.remove('open');
+    }
+</script>
+
+
 </body>
 </html>
