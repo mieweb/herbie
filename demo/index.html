@@ -137,9 +137,9 @@ And finally, it has a link <a href="page2.html">going away</a>
 	Hover Button Header
 </h1>
 <ul id="itemList">
-    <li>Item 1</li>
-    <li>Item 2</li>
-    <li>Item 3</li>
+    <li id="item1">Item 1</li>
+    <li id="item2">Item 2</li>
+    <li id="item3">Item 3</li>
 </ul>
 
 <div class="modal-overlay"></div>
@@ -242,7 +242,7 @@ $(document).ready(function(){
             if (!this.querySelector('.icons')) {
                 const iconsDiv = document.createElement('div');
                 iconsDiv.classList.add('icons');
-                iconsDiv.innerHTML = '<span class="icon edit">✏️</span><span class="icon delete">❌</span>';
+                iconsDiv.innerHTML = '<span title="Edit" class="icon edit">✏️</span><span class="icon delete">❌</span>';
                 this.appendChild(iconsDiv);
 
                 iconsDiv.querySelector('.edit').addEventListener('click', function () {

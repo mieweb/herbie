@@ -6,18 +6,26 @@ function ParseScript(script) {
     var lines = script.split('\n');
     var cmdtree = [];
     var stack = [];
-    var currentIndentLevel = 0;
 
     function addCommand(cmd, indentLevel) {
+        // Remove commands from the stack until the correct indent level is found
         while (stack.length > 0 && indentLevel <= stack[stack.length - 1].indentLevel) {
             stack.pop();
         }
+        // Add command to the correct place in the tree and add header attribute
         if (stack.length === 0) {
             cmdtree.push(cmd);
         } else {
+            var parentCmd = stack[stack.length - 1].cmd;
+            cmd.header = extractHeader(parentCmd.src); // Set header attribute to parent command's header value
             stack[stack.length - 1].cmd.subcommands.push(cmd);
         }
         stack.push({ cmd: cmd, indentLevel: indentLevel });
+    }
+
+    function extractHeader(src) {
+        var match = src.match(/"(.*?)"/);
+        return match ? match[1] : null;
     }
 
     for (var i = 0; i < lines.length; i++) {
@@ -25,7 +33,7 @@ function ParseScript(script) {
         var indentLevel = line.search(/\S|$/); // Find the indentation level
         var cmd = { line: i, code: [], src: line.trim(), timeout: 5000, subcommands: [] };
 
-        var stmt = line.trim().match(/\w+|'[^']+'|"[^"]+"|\{\{(.*?)\}\}|\*|:/g); // tokenize line
+        var stmt = line.trim().match(/\w+|'[^']+'|"[^"]+"|\{\{(.*?)\}\}|\*|:/g); // Tokenize line
         if (stmt) {
             parseStatement(stmt, cmd);
             addCommand(cmd, indentLevel);
@@ -43,7 +51,7 @@ function parseStatement(stmt, cmd) {
         } else {
             var candidate = stmt[j].toLowerCase();
             switch (candidate) {
-                // verbs
+                // Verbs
                 case 'click':
                     cmd.code.push(candidate);
                     cmd.code.push('in');
@@ -52,11 +60,11 @@ function parseStatement(stmt, cmd) {
                 case 'capture':
                 case 'test':
                 case 'open':
-                case 'wait':  // Handle the 'wait' command
+                case 'wait': // Handle the 'wait' command
                     cmd.code.push(candidate);
                     if (candidate === 'wait' && stmt[j + 1]) {
-                        cmd.code.push(stmt[j + 1]);  // Add the wait duration
-                        j++;  // Skip the next token as it has been added as wait duration
+                        cmd.code.push(stmt[j + 1]); // Add the wait duration
+                        j++; // Skip the next token as it has been added as wait duration
                     }
                     break;
                 case 'switch':
@@ -64,7 +72,7 @@ function parseStatement(stmt, cmd) {
                 case 'press':
                     cmd.code.push(candidate);
                     break;
-                // nouns
+                // Nouns
                 case 'button':
                 case 'close':
                 case 'autocomplete':
@@ -86,10 +94,13 @@ function parseStatement(stmt, cmd) {
                 case 'under':
                     cmd.code.push('under');
                     break;
+                case 'mouseover':
+                    cmd.code.push('mouseover');
             }
         }
     }
 }
+
 function log(log_msg) {
     chrome.runtime.sendMessage({ action: 'log_msg', message: log_msg });
 }
