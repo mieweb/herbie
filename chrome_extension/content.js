@@ -1,5 +1,24 @@
 var cmdtree = []
 const stopScript = false;
+function findElementThroughHeading(htext, childtext, depth) {
+    // Construct the depth part of the XPath
+    let parentPath = '';
+    for (let i = 0; i < depth; i++) {
+        parentPath += '/..';
+    }
+   
+    // Construct the full XPath expression
+    const xpath = `//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::label or self::span or self::div][contains(text(),"${htext}")]${parentPath}/descendant::*[(contains(text(),${childtext}) or contains(@value,${childtext}) or contains(@title,${childtext}) or contains(@alt,${childtext}) or contains(@placeholder,${childtext}))]`;
+   
+    // Evaluate the XPath expression and return the matching elements
+    const result = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    const elements = [];
+    for (let i = 0; i < result.snapshotLength; i++) {
+        elements.push(result.snapshotItem(i));
+    }
+    return elements;
+}
+
 function FindDesc(desc) {
     try {
         var xpathResult = document.evaluate(desc, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
@@ -141,11 +160,18 @@ function ExecuteScript() {
     var inclause = $.inArray('in', cmd.code);
     if (inclause !== -1) {
         var tagname = cmd.code[inclause + 1];
-        if (tagname.charAt(0) === '"' || tagname.charAt(0) === '\'') {
-            tagname = tagname.slice(1, -1);
+       
+        if(cmd.header){
+            console.log("Subcommand : "+cmd.code[2]);
+            tag=findElementThroughHeading(cmd.header,cmd.code[2],2);
+            console.log(tag);
+        }else{
+            if (tagname.charAt(0) === '"' || tagname.charAt(0) === '\'') {
+                tagname = tagname.slice(1, -1);
+            }
+            tag = FindDesc(tagname);
         }
 
-        tag = FindDesc(tagname);
         if (!tag.length) {
             if (cmd.timeout > 0) {
                 cmd.timeout -= options.delay;
@@ -167,17 +193,15 @@ function ExecuteScript() {
 
     console.log(`Executing command: ${cmd.code.join(' ')}`);
     switch (cmd.code[0]) {
+        case 'under':
+            console.log("Running subcommands")
+            ExecuteScript(cmd.subcommands, { line: 0, delay: 100, cmdtree: cmd.subcommands}, callback);
+            break;
         case 'press':
             var seq = cmd.code[1];
-            if (seq.charAt(0) === '"' || seq.charAt(0) === '\'') {
-                seq = seq.slice(1, -1);
-            }
-
-            if (!tag.length) {
-                tag = $(document.activeElement);
-            }
-            tag.simulate('key-combo', { combo: seq });
-            tag.next().focus();
+            simulijs.simulateFocus(tag[0],function(){
+                simulijs.simulateKeyPress(tag[0],seq);
+            });
             return setTimeout(function () {
                 options.line++;
                 ExecuteScript(cmdtree, options, callback);
@@ -227,8 +251,13 @@ function ExecuteScript() {
 
         case 'mouseover':
             if (tag.length) {
+                console.log(cmd.src)
                 console.log(tag);
-                simulijs.simulateMouseEnter(tag[0]);
+                simulijs.simulateMouseEnter(tag[0],function(){
+                    console.log(tag[0].parentElement.parentElement.parentElement.parentElement.innerHTML)
+                });
+               
+                
             }
             return setTimeout(function () {
                 options.line++;
@@ -244,10 +273,6 @@ function ExecuteScript() {
     }
 }
 
-
-document.addEventListener('DOMContentLoaded', () => {
-console.log("DOM fully loaded and altered");
-})
 
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

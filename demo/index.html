@@ -242,7 +242,7 @@ $(document).ready(function(){
             if (!this.querySelector('.icons')) {
                 const iconsDiv = document.createElement('div');
                 iconsDiv.classList.add('icons');
-                iconsDiv.innerHTML = '<span class="icon edit">✏️</span><span class="icon delete">❌</span>';
+                iconsDiv.innerHTML = '<span title="Edit" class="icon edit">✏️</span><span class="icon delete">❌</span>';
                 this.appendChild(iconsDiv);
 
                 iconsDiv.querySelector('.edit').addEventListener('click', function () {
