@@ -35,7 +35,7 @@ function ParseScript(script) {
 
         var stmt = line.trim().match(/\w+|'[^']+'|"[^"]+"|\{\{(.*?)\}\}|\*|:/g); // Tokenize line
         if (stmt) {
-            parseStatement(stmt, cmd);
+            parseStatement(stmt, cmd, line);
             addCommand(cmd, indentLevel);
         }
     }
@@ -43,7 +43,9 @@ function ParseScript(script) {
     return cmdtree;
 }
 
-function parseStatement(stmt, cmd) {
+function parseStatement(stmt, cmd, line) {
+
+  if (stmt[0].charAt(0)!=='*') {
     for (var j = 0; j < stmt.length; j++) {
         var z = stmt[j].charAt(0);
         if (z === '{' || z === '"' || z === '\'') {
@@ -99,6 +101,13 @@ function parseStatement(stmt, cmd) {
             }
         }
     }
+  } else {
+    cmd.code.push('type');
+				stmt = line.match(/\*[^:]+|:.+/g);
+				cmd.code.push(stmt[1].slice(1).trim());
+				cmd.code.push('in');
+				cmd.code.push(stmt[0].slice(1).trim());
+  }
 }
 
 function log(log_msg) {
