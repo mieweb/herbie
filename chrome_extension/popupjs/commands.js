@@ -43,7 +43,7 @@ function runCommand() {
 }
 
 function parseCommand() {
-    const scriptContent = document.getElementById('herbie_command').value;
+    const scriptContent = document.getElementById('herbie_script').value;
     document.getElementById('herbie_output').textContent = "Loading.....";
     chrome.runtime.sendMessage({ action: 'parse', data: scriptContent }, (response) => {
         console.log('Response from background:', response.data);
