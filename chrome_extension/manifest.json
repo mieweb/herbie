@@ -47,7 +47,9 @@
       "matches": ["<all_urls>"],
       "js":[
         "dist/jquery.min.js",
-        "dist/mie-simulijs.js", 
+        "dist/mie-simulijs.js",
+        "ExecuteScript.js", 
+        "content-utils.js",
         "content.js"
       ],
        "type":"module"
