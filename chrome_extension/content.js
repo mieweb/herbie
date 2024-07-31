@@ -1,5 +1,3 @@
-// import { ExecuteScript, stopScript } from './ExecuteScript.js'; // Adjust the import path as necessary
-// import { findElementThroughHeading, FindDesc, log, highlightElement, removeHighlight, captureXPath, getElementXPath } from './content-utils.js'; // Adjust the import path as necessary
 
 var cmdtree = [];
 

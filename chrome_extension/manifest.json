@@ -50,6 +50,7 @@
         "dist/mie-simulijs.js",
         "ExecuteScript.js", 
         "content-utils.js",
+        "FindElement.js",
         "content.js"
       ],
        "type":"module"
