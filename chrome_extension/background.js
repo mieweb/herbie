@@ -6,28 +6,51 @@ let currentLine = 0;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'parse') {
         const scriptContent = message.data;
-        //console.log('Received script content:', scriptContent);
         
-        var k = ParseScript(scriptContent);
-        sendResponse({ status: 'success', data: k });
+        // Fetch global and local keywords from storage and then parse the script
+        chrome.storage.local.get(['globalKeywords'], (result) => {
+            const globalKeywords = result.globalKeywords || [];
+            
+            // Fetch local keywords
+            chrome.storage.local.get(['localKeywords'], (localResult) => {
+                const localKeywords = localResult.localKeywords || [];
+                const keywords = globalKeywords.concat(localKeywords);
+                var k = ParseScript(scriptContent, keywords);
+                sendResponse({ status: 'success', data: k });
+            });
+        });
+
+        return true; // Keep the messaging channel open for asynchronous responses
     }
 
     if (message.action === 'RUN') {
         const scriptContent = message.data;
         console.log('Received RUN script from extension to background.js:', scriptContent);
-        
-        var k = ParseScript(scriptContent);
-        
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0]) {
-                chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: k, line: 0 }, (response) => {
-                    console.log('Response RUN script from content js:', response);
+
+        // Fetch global and local keywords from storage and then parse the script
+        chrome.storage.local.get(['globalKeywords'], (result) => {
+            const globalKeywords = result.globalKeywords || [];
+            
+            // Fetch local keywords
+            chrome.storage.local.get(['localKeywords'], (localResult) => {
+                const localKeywords = localResult.localKeywords || [];
+                const keywords = globalKeywords.concat(localKeywords);
+                var k = ParseScript(scriptContent, keywords);
+
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    if (tabs[0]) {
+                        chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: k, line: 0 }, (response) => {
+                            console.log('Response RUN script from content js:', response);
+                        });
+                    }
                 });
-            }
-        }); 
-        cmdtree = k;
-        currentLine = 0; // Reset the current line counter
-        sendResponse({ status: 'success', data: k });
+                cmdtree = k;
+                currentLine = 0; // Reset the current line counter
+                sendResponse({ status: 'success', data: k });
+            });
+        });
+
+        return true; // Keep the messaging channel open for asynchronous responses
     }
 
     if (message.action === 'log') {
@@ -49,5 +72,23 @@ chrome.webNavigation.onDOMContentLoaded.addListener((details) => {
                 console.log('Response RUN script from content js:', response);
             });
         }
-    }); 
+    });
 });
+
+
+function hashString(str) {
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++) {
+        hash = (hash * 33) ^ str.charCodeAt(i);
+    }
+    return hash >>> 0; // Convert to unsigned 32-bit integer
+}
+
+function getCurrentPageKey() {
+    const url = new URL(window.location.href);
+    const path = url.pathname;
+    const params = url.search;
+    const fullString = `${path}${params}`;
+    const hashedKey = hashString(fullString);
+    return `keywords_${hashedKey}`;
+}
