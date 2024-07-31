@@ -223,7 +223,6 @@ function ExecuteScript() {
                 }, options.delay);
             }
            
-
         case 'click':
             if (tag.length) {
                 console.log(tag);
@@ -277,6 +276,35 @@ function ExecuteScript() {
                 } else {
                     console.log(`Text "${text}" not found in element ${tagname}.`);
                     chrome.runtime.sendMessage({ action: 'log', data: `Text "${text}" not found in element ${tagname}.` });
+                }
+            }
+            return setTimeout(function () {
+                options.line++;
+                ExecuteScript(cmdtree, options, callback);
+            }, options.delay);
+
+        case 'select':
+            var value = cmd.code[1];
+            if (value.charAt(0) === '"' || value.charAt(0) === '\'') {
+                value = value.slice(1, -1);
+            }
+            if (tag.length) {
+                var selectElement = tag[0];
+                var optionFound = false;
+                for (var j = 0; j < selectElement.options.length; j++) {
+                    if (selectElement.options[j].value === value) {
+                        selectElement.selectedIndex = j;
+                        optionFound = true;
+                        simulijs.simulateChange(selectElement);
+                        break;
+                    }
+                }
+                if (!optionFound) {
+                    console.error(`Option "${value}" not found in select element at line ${i}.`);
+                    if (callback) {
+                        callback(true, options, `Error: Option "${value}" not found`);
+                    }
+                    return;
                 }
             }
             return setTimeout(function () {

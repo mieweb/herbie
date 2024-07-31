@@ -63,6 +63,7 @@ function parseStatement(stmt, cmd, line, keywords) {
                     case 'navigate':
                     case 'press':
                     case 'verify':
+                    case 'select':  // Add select keyword here
                         cmd.code.push(candidate);
                         break;
                     // Nouns
