@@ -471,7 +471,7 @@ body {
   margin-right: 20px;
 }
 
-#add-keyword {
+#add-keyword, #inspect-element{
   padding: 10px 20px;
   font-size: 14px;
   border: none;
