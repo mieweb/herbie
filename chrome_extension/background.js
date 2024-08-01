@@ -76,6 +76,11 @@ chrome.webNavigation.onDOMContentLoaded.addListener((details) => {
 });
 
 
+
+
+
+
+
 function hashString(str) {
     let hash = 5381;
     for (let i = 0; i < str.length; i++) {
@@ -92,3 +97,19 @@ function getCurrentPageKey() {
     const hashedKey = hashString(fullString);
     return `keywords_${hashedKey}`;
 }
+
+
+
+let actions = [];
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'get_actions') {
+        sendResponse({ actions: actions });
+    } else if (message.action === 'update_actions') {
+        actions = message.actions;
+        sendResponse({ status: 'updated' });
+    } else if (message.action === 'clear_actions') {
+        actions = [];
+        sendResponse({ status: 'cleared' });
+    }
+});
