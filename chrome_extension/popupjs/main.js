@@ -1,8 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Load saved script content
-    chrome.storage.local.get(['herbieScriptContent'], (result) => {
+    chrome.storage.local.get(['herbieScriptContent', 'activeTab'], (result) => {
         if (result.herbieScriptContent) {
             document.getElementById('herbie_script').value = result.herbieScriptContent;
+        }
+        if (result.activeTab) {
+            const activeTab = result.activeTab;
+            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tabContent => tabContent.classList.remove('active'));
+            document.querySelector(`[data-tab="${activeTab}"]`).classList.add('active');
+            document.getElementById(activeTab).classList.add('active');
         }
     });
 
@@ -51,6 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
             tab.classList.add('active');
             const tabId = tab.getAttribute('data-tab');
             document.getElementById(tabId).classList.add('active');
+
+            // Save the active tab to chrome.storage.local
+            chrome.storage.local.set({ activeTab: tabId });
+
             if (tabId === 'tab2') {
                 loadLogs();
             }
@@ -59,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-    
+
     const textarea =  document.getElementById('herbie_script');
 
     textarea.addEventListener('keydown', function(event) {
@@ -76,13 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.selectionStart = this.selectionEnd = start + tabCharacter.length;
         }
     });
-    
-    
-    
+
     loadKeywords();
     loadLogs();
     loadSavedScripts();
-
-
-
 });

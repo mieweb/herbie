@@ -25,3 +25,8 @@ function getCurrentPageKey() {
     const hashedKey = hashString(fullString);
     return `keywords_${hashedKey}`;
 }
+
+const draggableElement = document.getElementById('draggable-element');
+draggableElement.addEventListener('dragstart', (e) => {
+  e.dataTransfer.setData('text', 'This is a draggable element');
+});
