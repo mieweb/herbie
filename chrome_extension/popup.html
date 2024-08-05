@@ -9,11 +9,13 @@
 
 </head>
 <body>
+  
   <div class="tab-container">
     <button class="tab-button active" data-tab="tab1">Herbie</button>
     <button class="tab-button" data-tab="tab4">Keywords</button>
     <button class="tab-button" data-tab="tab3">Saved Scripts</button>
     <button class="tab-button" data-tab="tab2">Logs</button>
+    <button class="tab-button" data-tab="tab5">Record</button>
   </div>
   <div id="tab1" class="tab-content active">
     <div id="herbie_div">
@@ -100,14 +102,28 @@
       <ul id="local-keywords-list"></ul>
   </div>
 </div>
+<div id="tab5" class="tab-content">
+  <h2>Record</h2>
+  <div class="button-container">
+    <button id="record_type" aria-label="Record Type" draggable="true"><i class="fas fa-keyboard"></i> Type</button>
+    <button id="record_click" aria-label="Record Click" draggable="true"><i class="fas fa-mouse-pointer"></i> Click</button>
+    <button id="record_run" aria-label="Run Script"><i class="fas fa-play"></i> Run</button>
+    <button id="fetch_actions" aria-label="Fetch Actions">Fetch Actions</button>
+    <button id="clear_actions" aria-label="Clear Actions">Clear Actions</button>
+  </div>
+  <div>
+    
+    <div id="actions_container" aria-label="Actions Container"></div>
+  </div>
+</div>
 
 
-  
 <script src="popupjs/commands.js"></script>
 <script src="popupjs/logs.js"></script>
 <script src="popupjs/scripts.js"></script>
 <script src="popupjs/utils.js"></script>
 <script src="popupjs/keywords.js" ></script>
+<script src="popupjs/record.js" ></script>
 <script src="popupjs/main.js"></script>
 
 </body>

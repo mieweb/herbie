@@ -51,6 +51,7 @@
         "ExecuteScript.js", 
         "content-utils.js",
         "FindElement.js",
+        "Dragdrop.js",
         "content.js"
       ],
        "type":"module"

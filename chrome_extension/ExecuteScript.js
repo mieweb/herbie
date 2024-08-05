@@ -96,6 +96,7 @@ function ExecuteScript() {
 
             if (tag.length) {
                 simulijs.simulateFocus(tag[0],function(){
+                    tag[0].value = "";
                     simulijs.simulateKeyPress(tag[0],seq);
                 });
                 return setTimeout(function () {

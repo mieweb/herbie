@@ -43,3 +43,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         document.addEventListener('click', captureXPath, true);
     }
 });
+
+
+
+
+
+
+
+

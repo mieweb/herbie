@@ -25,3 +25,4 @@ function getCurrentPageKey() {
     const hashedKey = hashString(fullString);
     return `keywords_${hashedKey}`;
 }
+
