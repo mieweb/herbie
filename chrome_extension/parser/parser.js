@@ -8,16 +8,14 @@ function ParseScript(script, keywords) {
     var stack = [];
 
     function addCommand(cmd, indentLevel) {
-        // Remove commands from the stack until the correct indent level is found
         while (stack.length > 0 && indentLevel <= stack[stack.length - 1].indentLevel) {
             stack.pop();
         }
-        // Add command to the correct place in the tree and add header attribute
         if (stack.length === 0) {
             cmdtree.push(cmd);
         } else {
             var parentCmd = stack[stack.length - 1].cmd;
-            cmd.header = extractHeader(parentCmd.src); // Set header attribute to parent command's header value
+            cmd.header = extractHeader(parentCmd.src);
             stack[stack.length - 1].cmd.subcommands.push(cmd);
         }
         stack.push({ cmd: cmd, indentLevel: indentLevel });
@@ -30,10 +28,10 @@ function ParseScript(script, keywords) {
 
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
-        var indentLevel = line.search(/\S|$/); // Find the indentation level
+        var indentLevel = line.search(/\S|$/);
         var cmd = { line: i, code: [], src: line.trim(), timeout: 5000, subcommands: [] };
 
-        var stmt = line.trim().match(/\w+|'[^']+'|"[^"]+"|\{\{(.*?)\}\}|\*|:/g); // Tokenize line
+        var stmt = line.trim().match(/\w+|'[^']+'|"[^"]+"|\{\{(.*?)\}\}|\*|:/g);
         if (stmt) {
             parseStatement(stmt, cmd, line, keywords);
             addCommand(cmd, indentLevel);
@@ -52,7 +50,6 @@ function parseStatement(stmt, cmd, line, keywords) {
             } else {
                 var candidate = stmt[j].toLowerCase();
                 switch (candidate) {
-                    // Verbs
                     case 'click':
                     case 'type':
                     case 'capture':
@@ -63,10 +60,9 @@ function parseStatement(stmt, cmd, line, keywords) {
                     case 'navigate':
                     case 'press':
                     case 'verify':
-                    case 'select':  // Add select keyword here
+                    case 'select':
                         cmd.code.push(candidate);
                         break;
-                    // Nouns
                     case 'button':
                     case 'close':
                     case 'autocomplete':
@@ -97,15 +93,27 @@ function parseStatement(stmt, cmd, line, keywords) {
         cmd.code.push(stmt[0].slice(1).trim());
     }
 
-    // Replace keywords with XPaths
     for (var k = 0; k < cmd.code.length; k++) {
         keywords.forEach(keyword => {
-            if (cmd.code[k] === `'${keyword.keyword}'` || cmd.code[k] === `"${keyword.keyword}"`) {
-                cmd.code[k] = keyword.xpath;
+            if (keyword.hasVariable) {
+                const variablePattern = new RegExp(`"${keyword.keyword}"`, 'g');
+                if (cmd.code.includes(`"${keyword.keyword}"`)) {
+                    const variable = cmd.code.find(element => element.includes(`"${keyword.keyword}"`));
+                    if (variable) {
+                        const dynamicXpath = keyword.xpath.replace("{$}", variable.replace(/["']/g, ''));
+                        cmd.code[k] = dynamicXpath;
+                    }
+                }
+            } else {
+                if (cmd.code[k] === `'${keyword.keyword}'` || cmd.code[k] === `"${keyword.keyword}"`) {
+                    cmd.code[k] = keyword.xpath;
+                }
             }
         });
     }
 }
+
+
 
 function log(log_msg) {
     chrome.runtime.sendMessage({ action: 'log_msg', message: log_msg });
