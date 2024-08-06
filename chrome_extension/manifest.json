@@ -48,11 +48,11 @@
       "js":[
         "dist/jquery.min.js",
         "dist/mie-simulijs.js",
-        "ExecuteScript.js", 
-        "content-utils.js",
-        "FindElement.js",
-        "Dragdrop.js",
-        "content.js"
+        "content-scripts/ExecuteScript.js", 
+        "content-scripts/content-utils.js",
+        "content-scripts/FindElement.js",
+        "content-scripts/Dragdrop.js",
+        "content-scripts/content.js"
       ],
        "type":"module"
     }

@@ -1,4 +1,3 @@
-// Function to start inspecting elements
 function startInspecting() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0].id) {
@@ -11,13 +10,11 @@ function startInspecting() {
     });
 }
 
-// Listener for messages from the content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'set_xpath') {
         const xpathInput = document.getElementById('keyword-xpath');
         xpathInput.value = message.xpath;
         
-        // Save the XPath value to chrome.storage
         chrome.storage.local.set({ 'saved_xpath': message.xpath }, () => {
             console.log('XPath value saved:', message.xpath);
         });
@@ -26,7 +23,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-// Load the saved XPath value from storage when the popup is opened
 document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get(['saved_xpath'], (result) => {
         if (result.saved_xpath) {
@@ -43,27 +39,40 @@ function addKeyword() {
     const keywordInput = document.getElementById('new-keyword');
     const xpathInput = document.getElementById('keyword-xpath');
     const globalCheckbox = document.getElementById('keyword-global');
+    const hasVariableCheckbox = document.getElementById('has-variable');
 
     const keyword = keywordInput.value.trim();
     const xpath = escapeXpath(xpathInput.value.trim());
     const isGlobal = globalCheckbox.checked;
+    const hasVariable = hasVariableCheckbox.checked;
 
     if (keyword !== '' && xpath !== '') {
         const storageKey = isGlobal ? 'globalKeywords' : getCurrentPageKey();
 
         chrome.storage.local.get({ [storageKey]: [] }, (result) => {
             const keywords = result[storageKey];
-            keywords.push({ keyword, xpath, global: isGlobal });
+            keywords.push({ keyword, xpath, global: isGlobal, hasVariable });
             chrome.storage.local.set({ [storageKey]: keywords }, () => {
                 keywordInput.value = '';
                 xpathInput.value = '';
                 globalCheckbox.checked = false;
+                hasVariableCheckbox.checked = false;
                 loadKeywords();
             });
         });
     }
 }
 
+function saveHasVariable(index, hasVariable, isGlobal) {
+    const storageKey = isGlobal ? 'globalKeywords' : getCurrentPageKey();
+    chrome.storage.local.get({ [storageKey]: [] }, (result) => {
+        const keywords = result[storageKey];
+        keywords[index].hasVariable = hasVariable;
+        chrome.storage.local.set({ [storageKey]: keywords }, () => {
+            loadKeywords();
+        });
+    });
+}
 
 function loadKeywords() {
     const globalKey = 'globalKeywords';
@@ -88,6 +97,7 @@ function displayKeywords(keywords, keywordsList) {
         li.innerHTML = `
             <span class="keyword">${item.keyword}:</span> 
             <input type="text" class="xpath" value="${item.xpath}" data-index="${index}" data-global="${item.global}">
+            <label><input type="checkbox" class="has-variable" ${item.hasVariable ? 'checked' : ''} data-index="${index}" data-global="${item.global}"> Has Variable</label>
             <button class="delete-keyword"><i class="fas fa-trash-alt"></i></button>
         `;
 
@@ -109,6 +119,12 @@ function displayKeywords(keywords, keywordsList) {
             }
         });
 
+        const hasVariableCheckbox = li.querySelector('.has-variable');
+        hasVariableCheckbox.addEventListener('change', () => {
+            const isChecked = hasVariableCheckbox.checked;
+            saveHasVariable(index, isChecked, item.global);
+        });
+
         keywordsList.appendChild(li);
     });
 }
@@ -124,7 +140,6 @@ function saveEditedXpath(index, newXpath, isGlobal) {
     });
 }
 
-
 function deleteKeyword(index, isGlobal) {
     const storageKey = isGlobal ? 'globalKeywords' : getCurrentPageKey();
 
@@ -136,7 +151,6 @@ function deleteKeyword(index, isGlobal) {
         });
     });
 }
-
 
 function escapeXpath(xpath) {
     return xpath.replace(/"/g, '&quot;');
