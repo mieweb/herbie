@@ -2,13 +2,13 @@ var stopScript = false;
 
 function ExecuteScript() {
     var cmdtree = arguments[0], options = { line: 0, delay: 100, cmdtree: cmdtree }, callback, tag = [];
-    if (arguments.length === 2) { // only two arguments supplied
+    if (arguments.length === 2) {
         if (Object.prototype.toString.call(arguments[1]) === '[object Function]') {
-            callback = arguments[1]; // if is a function, set as 'callback'
+            callback = arguments[1];
         } else {
-            options = arguments[1]; // if not a function, set as 'options'
+            options = arguments[1];
         }
-    } else if (arguments.length === 3) { // three arguments supplied
+    } else if (arguments.length === 3) {
         if (arguments[1]) {
             options = arguments[1];
         }
@@ -41,12 +41,12 @@ function ExecuteScript() {
     var inclause = $.inArray('in', cmd.code);
     if (inclause !== -1) {
         var tagname = cmd.code[inclause + 1];
-       
-        if(cmd.header){
-            console.log("Subcommand : "+cmd.code[2]);
-            tag=findElementThroughHeading(cmd.header,cmd.code[2],2);
+
+        if (cmd.header) {
+            console.log("Subcommand : " + cmd.code[2]);
+            tag = findElementThroughHeading(cmd.header, cmd.code[2], 2);
             console.log(tag);
-        }else{
+        } else {
             if (tagname.charAt(0) === '"' || tagname.charAt(0) === '\'') {
                 tagname = tagname.slice(1, -1);
             }
@@ -76,12 +76,12 @@ function ExecuteScript() {
     switch (cmd.code[0]) {
         case 'under':
             console.log("Running subcommands")
-            ExecuteScript(cmd.subcommands, { line: 0, delay: 100, cmdtree: cmd.subcommands}, callback);
+            ExecuteScript(cmd.subcommands, { line: 0, delay: 100, cmdtree: cmd.subcommands }, callback);
             break;
         case 'press':
             var seq = cmd.code[1];
-            simulijs.simulateFocus(tag[0],function(){
-                simulijs.simulateKeyPress(tag[0],seq);
+            simulijs.simulateFocus(tag[0], function () {
+                simulijs.simulateKeyPress(tag[0], seq);
             });
             return setTimeout(function () {
                 options.line++;
@@ -95,20 +95,20 @@ function ExecuteScript() {
             }
 
             if (tag.length) {
-                simulijs.simulateFocus(tag[0],function(){
+                simulijs.simulateFocus(tag[0], function () {
                     tag[0].value = "";
-                    simulijs.simulateKeyPress(tag[0],seq);
+                    simulijs.simulateKeyPress(tag[0], seq);
                 });
                 return setTimeout(function () {
                     options.line++;
                     ExecuteScript(cmdtree, options, callback);
                 }, options.delay);
             }
-           
+
         case 'click':
             if (tag.length) {
                 console.log(tag);
-                simulijs.simulateClick(tag[0]);
+                //simulijs.simulateClick(tag[0]);
             }
             return setTimeout(function () {
                 options.line++;
@@ -134,11 +134,9 @@ function ExecuteScript() {
             if (tag.length) {
                 console.log(cmd.src)
                 console.log(tag);
-                simulijs.simulateMouseEnter(tag[0],function(){
-                    console.log(tag[0].parentElement.parentElement.parentElement.parentElement.innerHTML)
-                });
-               
-                
+                simulijs.simulateMouseEnter(tag[0], function () {});
+
+
             }
             return setTimeout(function () {
                 options.line++;
@@ -214,5 +212,3 @@ function ExecuteScript() {
             }, options.delay);
     }
 }
-
-
