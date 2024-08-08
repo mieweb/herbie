@@ -134,9 +134,7 @@ function ExecuteScript() {
             if (tag.length) {
                 console.log(cmd.src)
                 console.log(tag);
-                simulijs.simulateMouseEnter(tag[0], function () {
-                    console.log(tag[0].parentElement.parentElement.parentElement.parentElement.innerHTML)
-                });
+                simulijs.simulateMouseEnter(tag[0], function () {});
 
 
             }
