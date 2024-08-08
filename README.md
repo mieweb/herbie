@@ -33,11 +33,15 @@ We made this change because the jQuery Simulate package was not being maintained
 Voila! Now a Herbie robot button should exist on the toolbar. It will inject Herbie into the background of the current tab of any webpage.
 
 
-Initial Herbie
+## Initial Herbie
 ----
-An online demo is available here: http://mieweb.github.io/herbie/demo/index.html#run_herbie
+
+Feel free to check out Herbie, which was written in jQuery in 2015. This was one of the first versions.
+
+An online demo is available here: [Herbie Demo](http://mieweb.github.io/herbie/demo/index.html#run_herbie)
 
 ![Initial version of Herbie](http://mieweb.github.io/herbie/herbie_movie.gif)
+
 
 About
 -----
