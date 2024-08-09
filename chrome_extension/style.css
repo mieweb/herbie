@@ -609,3 +609,142 @@ body {
   z-index: 1000;
   color: black;
 }
+/* Styles for the Record tab */
+.record-tab {
+  padding: 20px;
+  background-color: #f4f4f4; /* Light grey background for better contrast */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.record-title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
+
+.record-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.record-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.record-button {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+}
+
+.record-button i {
+  margin-right: 8px;
+}
+
+.record-button:hover {
+  background-color: #0056b3;
+}
+
+/* Specific button styling if needed */
+.record-type {
+  background-color: #17a2b8;
+}
+
+.record-click {
+  background-color: #17a2b8;
+}
+
+.record-run {
+  background-color: #28a745;
+}
+
+.record-fetch {
+  background-color: #6c757d;
+}
+
+.record-clear {
+  background-color: #dc3545;
+}
+
+/* Hover effects for specific buttons */
+.record-type:hover {
+  background-color: #138496;
+}
+
+.record-click:hover {
+  background-color: #138496;
+}
+
+.record-run:hover {
+  background-color: #218838;
+}
+
+.record-fetch:hover {
+  background-color: #5a6268;
+}
+
+.record-clear:hover {
+  background-color: #c82333;
+}
+
+
+#actions_container {
+  background-color: #f8f9fa; /* Light background for contrast */
+  border: 1px solid #ced4da; /* Light border for definition */
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 15px;
+  max-height: 200px; /* Limit the height for overflow handling */
+  overflow-y: auto; /* Enable scrolling if content exceeds max-height */
+  font-family: "Courier New", Courier, monospace; /* Monospace font for code-like appearance */
+  font-size: 14px;
+  color: #343a40; /* Dark text color for readability */
+  white-space: pre-wrap; /* Preserve whitespace and wrap text */
+  word-wrap: break-word; /* Break long words to prevent overflow */
+}
+
+/* Optional: Add some margin between JSON objects if you display multiple */
+#actions_container div {
+  margin-bottom: 10px;
+}
+
+/* Highlight the JSON keys */
+#actions_container .json-key {
+  color: #007bff; /* Blue color for keys */
+  font-weight: bold;
+}
+
+/* Highlight the JSON string values */
+#actions_container .json-string {
+  color: #28a745; /* Green color for string values */
+}
+
+/* Highlight the JSON numeric values */
+#actions_container .json-number {
+  color: #dc3545; /* Red color for numeric values */
+}
+
+/* Highlight the JSON boolean values */
+#actions_container .json-boolean {
+  color: #ffc107; /* Yellow color for boolean values */
+}
+
+/* Highlight the JSON null values */
+#actions_container .json-null {
+  color: #6c757d; /* Gray color for null values */
+}
