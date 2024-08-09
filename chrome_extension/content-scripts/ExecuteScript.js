@@ -108,7 +108,7 @@ function ExecuteScript() {
         case 'click':
             if (tag.length) {
                 console.log(tag);
-                //simulijs.simulateClick(tag[0]);
+                simulijs.simulateClick(tag[0]);
             }
             return setTimeout(function () {
                 options.line++;
