@@ -56,7 +56,7 @@ function ExecuteScript() {
         if (!tag.length) {
             if (cmd.timeout > 0) {
                 cmd.timeout -= options.delay;
-                console.log(`Waiting for element: ${tagname}`);
+             //   console.log(`Waiting for element: ${tagname}`);
                 return setTimeout(function () { ExecuteScript(cmdtree, options, callback); }, options.delay);
             } else {
                 log(`Cannot find tag named: "${tagname}". Proceeding to next command.`);

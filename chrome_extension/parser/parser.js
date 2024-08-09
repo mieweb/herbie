@@ -27,16 +27,14 @@ function ParseScript(script) {
 
         var stmt = line.trim().match(/\w+|'[^']+'|"[^"]+"|\{\{(.*?)\}\}|\*|:/g); // tokenize line
         if (stmt) {
-            parseStatement(stmt, cmd);
-            addCommand(cmd, indentLevel);
+            parseStatement(stmt, cmd).then(() => addCommand(cmd, indentLevel));
         }
     }
 
     return cmdtree;
 }
 
-function parseStatement(stmt, cmd) {
-    console.log("hi")
+async function parseStatement(stmt, cmd) {
     for (var j = 0; j < stmt.length; j++) {
         var z = stmt[j].charAt(0);
         if (z === '{' || z === '"' || z === '\'') {
@@ -92,7 +90,56 @@ function parseStatement(stmt, cmd) {
             }
         }
     }
+
+    const foundKeyword = await new Promise((resolve) => {
+        chrome.storage.local.get("globalKeywords", function(result) {
+            if (result.globalKeywords) {
+                const keywords = result.globalKeywords.map(item => item.keyword);
+                
+                function stripQuotesFromArray(arr) {
+                    return arr.map(str => {
+                        if ((str.startsWith('"') && str.endsWith('"')) || (str.startsWith("'") && str.endsWith("'"))) {
+                            return str.slice(1, -1);
+                        }
+                        return str;
+                    });
+                }
+        
+                function findKeyword(str) {
+                    const cleanedStr = stripQuotesFromArray(str);
+                    return result.globalKeywords.find(item => cleanedStr.includes(item.keyword)) || null;
+                }
+        
+                const keyword = findKeyword(cmd.code);
+                resolve(keyword);
+            } else {
+                resolve(null);
+            }
+        });
+    });
+
+    if (foundKeyword) {
+        if (foundKeyword.hasVariable) {
+            const variables = cmd.code.filter(str => (str.startsWith('"') && str.endsWith('"')) || (str.startsWith("'") && str.endsWith("'")))
+                                        .map(str => str.slice(1, -1));
+
+            let updatedXpath = foundKeyword.xpath;
+            variables.forEach(variable => {
+                updatedXpath = updatedXpath.replace('{$}', variable);
+            });
+
+            var inclause = cmd.code.indexOf("in");
+            cmd.code[inclause + 1] = updatedXpath;
+
+        } else {
+            var inclause = cmd.code.indexOf("in");
+            cmd.code[inclause + 1] = foundKeyword.xpath;
+        }
+    } else {
+        console.log("The string does not contain any keywords.");
+    }
 }
+
 function log(log_msg) {
     chrome.runtime.sendMessage({ action: 'log_msg', message: log_msg });
 }
