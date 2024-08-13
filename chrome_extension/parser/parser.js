@@ -1,4 +1,4 @@
-function ParseScript(script) {
+async function ParseScript(script) {
     if (!script) {
         return [];
     }
@@ -20,16 +20,20 @@ function ParseScript(script) {
         stack.push({ cmd: cmd, indentLevel: indentLevel });
     }
 
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i];
+    // Create an array of promises for each line parsing
+    let promises = lines.map(async (line, i) => {
         var indentLevel = line.search(/\S|$/); // Find the indentation level
         var cmd = { line: i, code: [], src: line.trim(), timeout: 5000, subcommands: [] };
 
         var stmt = line.trim().match(/\w+|'[^']+'|"[^"]+"|\{\{(.*?)\}\}|\*|:/g); // tokenize line
         if (stmt) {
-            parseStatement(stmt, cmd).then(() => addCommand(cmd, indentLevel));
+            await parseStatement(stmt, cmd);
+            addCommand(cmd, indentLevel);
         }
-    }
+    });
+
+    // Wait for all the parsing promises to complete
+    await Promise.all(promises);
 
     return cmdtree;
 }

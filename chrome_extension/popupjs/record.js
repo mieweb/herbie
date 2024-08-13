@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchActionsButton = document.getElementById('fetch_actions');
     const actionsContainer = document.getElementById('actions_container');
     const clearActionsButton = document.getElementById('clear_actions');
-
+    const recordWaitButton = document.getElementById('record_wait');
     const record_run = document.getElementById("record_run");
 
     recordClickButton.addEventListener('dragstart', (event) => {
