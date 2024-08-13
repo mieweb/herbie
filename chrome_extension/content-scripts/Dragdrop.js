@@ -1,159 +1,193 @@
-let actions = [];
+// Event listeners for drag and drop operations
+document.addEventListener('dragover', handleDragOver);
+document.addEventListener('dragleave', handleDragLeave);
+document.addEventListener('drop', handleDrop);
 
-document.addEventListener('dragover', (event) => {
+// Handle the drag over event
+function handleDragOver(event) {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
 
     const data = event.dataTransfer.getData('text/plain');
-    if (data === 'click') {
-        event.target.style.border = '2px dashed red';
-    } else if (data === 'type' && (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA')) {
-        event.target.style.border = '2px dashed blue';
-    }
-});
+    applyDragStyle(event.target, data);
+}
 
-document.addEventListener('dragleave', (event) => {
-    if (event.target.tagName === 'BUTTON' || (event.target.tagName === 'INPUT' && (event.target.type === 'checkbox' || event.target.type === 'radio' || event.target.type === 'text')) || event.target.tagName === 'TEXTAREA') {
-        event.target.style.border = ''; // Remove the border when dragging leaves the element
-    } else {
-        event.target.style.border = ''; // Also remove the border for any other element
-    }
-});
+// Handle the drag leave event
+function handleDragLeave(event) {
+    removeDragStyle(event.target);
+}
 
-document.addEventListener('drop', (event) => {
+// Handle the drop event
+async function handleDrop(event) {
     event.preventDefault();
     const data = event.dataTransfer.getData('text/plain');
 
     if (data === 'click') {
-        event.target.style.border = '2px dashed red';
-        console.log('Dropped click on:', event.target); // Log the drop event
-
-        // Get the XPath of the target element
-        const xpath = getElementXPath(event.target);
-
-        // Create a command object for click
-        const command = {
-            line: actions.length,
-            code: ["click", "in", xpath],
-            src: `Click on the '${xpath}' element.`,
-            timeout: 5000,
-            subcommands: []
-        };
-        actions.push(command);
-        console.log('Actions:', actions);
-        // Store the actions array in Chrome storage
-        chrome.storage.local.set({ actions: actions }, () => {
-            console.log('Actions saved to Chrome storage.');
-        });
-
-    } else if (data === 'type' && (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA')) {
-        event.target.style.border = '2px dashed blue';
-        console.log('Dropped type on:', event.target); // Log the drop event
-
-        // Create a container for the editable span and the "+" button
-        const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.zIndex = 1000;
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-
-        // Create an editable span
-        const span = document.createElement('span');
-        span.contentEditable = true;
-        span.style.backgroundColor = 'blue';
-        span.style.border = '1px solid blue';
-        span.style.padding = '2px';
-        span.style.color = 'white';
-        span.innerText = 'Enter text';
-
-        // Create the "+" button
-        const plusButton = document.createElement('button');
-        plusButton.innerText = '+';
-        plusButton.style.marginLeft = '5px';
-        plusButton.style.padding = '2px 5px';
-        plusButton.style.backgroundColor = 'white';
-        plusButton.style.border = '1px solid blue';
-        plusButton.style.color = 'blue';
-        plusButton.style.cursor = 'pointer';
-
-        // Append the span and the "+" button to the container
-        container.appendChild(span);
-        container.appendChild(plusButton);
-
-        // Position the container
-        const rect = event.target.getBoundingClientRect();
-        container.style.top = `${rect.top - 25}px`; // Adjust the position as needed
-        container.style.left = `${rect.left}px`;
-
-        // Append the container to the body
-        document.body.appendChild(container);
-
-        // Adjust the container's position when the input/textarea moves
-        const observer = new MutationObserver(() => {
-            const rect = event.target.getBoundingClientRect();
-            container.style.top = `${rect.top - 25}px`;
-            container.style.left = `${rect.left}px`;
-        });
-
-        observer.observe(event.target, { attributes: true, childList: true, subtree: true });
-
-        // Handle the "+" button click event
-        plusButton.addEventListener('click', () => {
-            const inputValue = span.innerText.replace('+', '').trim(); // Remove the "+" character and trim
-            console.log('Input value:', inputValue);
-
-            // Get the XPath of the target element
-            const xpath = getElementXPath(event.target);
-
-            // Create a command object for type
-            const command = {
-                line: actions.length,
-                code: ["type", `'${inputValue}'`, "in", xpath],
-                src: `Type '${inputValue}' in '${xpath}' input.`,
-                timeout: 5000,
-                subcommands: []
-            };
-            actions.push(command);
-            console.log('Actions:', actions);
-            // Store the actions array in Chrome storage
-            chrome.storage.local.set({ actions: actions }, () => {
-                console.log('Actions saved to Chrome storage.');
-            });
-            // Remove the container
-            container.remove();
-        });
+        handleDropClick(event);
+    } else if (data === 'type' && isInputOrTextarea(event.target)) {
+        await handleDropType(event);
     } else {
         console.log('Dropped on a non-highlightable element:', event.target);
     }
-});
+}
 
-function captureXPath(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    document.removeEventListener('mouseover', highlightElement);
-    document.removeEventListener('mouseout', removeHighlight);
-    document.removeEventListener('click', captureXPath, true);
-    
-    const element = event.target;
-    const xpath = getElementXPath(element);
-    console.log(xpath);
-    chrome.runtime.sendMessage({ action: 'set_xpath', xpath: xpath }, (response) => {
-        console.log(response);
+// Apply drag style to the target element
+function applyDragStyle(target, data) {
+    if (data === 'click') {
+        target.style.border = '2px dashed red';
+    } else if (data === 'type' && isInputOrTextarea(target)) {
+        target.style.border = '2px dashed blue';
+    }
+}
+
+// Remove drag style from the target element
+function removeDragStyle(target) {
+    if (isHighlightableElement(target)) {
+        target.style.border = '';
+    }
+}
+
+// Check if the element is an input or textarea
+function isInputOrTextarea(element) {
+    return element.tagName === 'INPUT' || element.tagName === 'TEXTAREA';
+}
+
+// Check if the element is highlightable
+function isHighlightableElement(element) {
+    return element.tagName === 'BUTTON' || 
+           (element.tagName === 'INPUT' && 
+           ['checkbox', 'radio', 'text'].includes(element.type)) || 
+           element.tagName === 'TEXTAREA';
+}
+
+// Handle drop event for "click" action
+async function handleDropClick(event) {
+    console.log('Dropped click on:', event.target);
+    const xpath = getElementXPath(event.target);
+
+    const command = {
+        line: 0, // Line number will be adjusted when fetching the existing actions
+        code: ["click", "in", xpath],
+        src: `Click on the '${xpath}' element.`,
+        timeout: 5000,
+        subcommands: []
+    };
+
+    await addActionToStorage(command);
+}
+
+// Handle drop event for "type" action
+async function handleDropType(event) {
+    console.log('Dropped type on:', event.target);
+
+    const container = createEditableContainer();
+    positionContainer(container, event.target);
+    document.body.appendChild(container);
+
+    const plusButton = container.querySelector('button');
+    const span = container.querySelector('span');
+
+    plusButton.addEventListener('click', async () => {
+        const inputValue = span.innerText.replace('+', '').trim();
+        console.log('Input value:', inputValue);
+
+        const xpath = getElementXPath(event.target);
+
+        const command = {
+            line: 0, // Line number will be adjusted when fetching the existing actions
+            code: ["type", `'${inputValue}'`, "in", xpath],
+            src: `Type '${inputValue}' in '${xpath}' input.`,
+            timeout: 5000,
+            subcommands: []
+        };
+
+        await addActionToStorage(command);
+        container.remove(); // Remove the container after the action is stored
     });
 }
 
+// Create an editable container for the type action
+function createEditableContainer() {
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.zIndex = 1000;
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+
+    const span = document.createElement('span');
+    span.contentEditable = true;
+    span.style.backgroundColor = 'blue';
+    span.style.border = '1px solid blue';
+    span.style.padding = '2px';
+    span.style.color = 'white';
+    span.innerText = 'Enter text';
+
+    const plusButton = document.createElement('button');
+    plusButton.innerText = '+';
+    plusButton.style.marginLeft = '5px';
+    plusButton.style.padding = '2px 5px';
+    plusButton.style.backgroundColor = 'white';
+    plusButton.style.border = '1px solid blue';
+    plusButton.style.color = 'blue';
+    plusButton.style.cursor = 'pointer';
+
+    container.appendChild(span);
+    container.appendChild(plusButton);
+
+    return container;
+}
+
+// Position the editable container relative to the target element
+function positionContainer(container, target) {
+    const rect = target.getBoundingClientRect();
+    container.style.top = `${rect.top - 25}px`;
+    container.style.left = `${rect.left}px`;
+
+    // Adjust position when the input/textarea moves
+    const observer = new MutationObserver(() => {
+        const newRect = target.getBoundingClientRect();
+        container.style.top = `${newRect.top - 25}px`;
+        container.style.left = `${newRect.left}px`;
+    });
+
+    observer.observe(target, { attributes: true, childList: true, subtree: true });
+}
+
+// Function to capture the XPath of an element
 function getElementXPath(element) {
     let paths = [];
-    for (; element && element.nodeType == Node.ELEMENT_NODE; element = element.parentNode) {
+    for (; element && element.nodeType === Node.ELEMENT_NODE; element = element.parentNode) {
         let index = 0;
         for (let sibling = element.previousSibling; sibling; sibling = sibling.previousSibling) {
-            if (sibling.nodeType == Node.DOCUMENT_TYPE_NODE) continue;
-            if (sibling.nodeName == element.nodeName) ++index;
+            if (sibling.nodeType === Node.DOCUMENT_TYPE_NODE) continue;
+            if (sibling.nodeName === element.nodeName) ++index;
         }
         let tagName = element.nodeName.toLowerCase();
         let pathIndex = (index ? `[${index + 1}]` : '');
         paths.splice(0, 0, `${tagName}${pathIndex}`);
     }
     return paths.length ? `/${paths.join('/')}` : null;
+}
+
+// Function to add the action to Chrome storage
+async function addActionToStorage(command) {
+    // Fetch the existing actions from Chrome storage
+    const result = await new Promise((resolve) => {
+        chrome.storage.local.get(['actions'], resolve);
+    });
+
+    let actions = result.actions || [];
+    
+    // Update the line number for the new command
+    command.line = actions.length;
+
+    // Append the new command to the existing actions
+    actions.push(command);
+
+    // Store the updated actions array in Chrome storage
+    await new Promise((resolve) => {
+        chrome.storage.local.set({ actions: actions }, resolve);
+    });
+
+    console.log('Actions updated and saved to Chrome storage:', actions);
 }
