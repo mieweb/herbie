@@ -748,3 +748,37 @@ body {
 #actions_container .json-null {
   color: #6c757d; /* Gray color for null values */
 }
+
+.action-entry {
+  margin-bottom: 10px;
+}
+
+.clickable-tag {
+  text-decoration: underline;
+}
+
+.details {
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 5px;
+  padding-left: 10px;
+}
+#actions_container_header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+#save_actions_button {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+#save_actions_button:hover {
+  background-color: #0056b3;
+}
