@@ -23,11 +23,18 @@ async function handleDrop(event) {
     const data = event.dataTransfer.getData('text/plain');
 
     if (data === 'click') {
-        handleDropClick(event);
+        await handleDropClick(event);
     } else if (data === 'type' && isInputOrTextarea(event.target)) {
         await handleDropType(event);
     } else {
         console.log('Dropped on a non-highlightable element:', event.target);
+    }
+
+    // Ensure the border remains after the drop
+    if (data === 'click') {
+        event.target.style.border = '2px dashed red';
+    } else if (data === 'type' && isInputOrTextarea(event.target)) {
+        event.target.style.border = '2px dashed blue';
     }
 }
 
@@ -40,10 +47,10 @@ function applyDragStyle(target, data) {
     }
 }
 
-// Remove drag style from the target element
+// Remove drag style only if the element is not in the process of dropping
 function removeDragStyle(target) {
     if (isHighlightableElement(target)) {
-        target.style.border = '';
+        target.style.border = ''; // Remove the border style
     }
 }
 
@@ -74,6 +81,9 @@ async function handleDropClick(event) {
     };
 
     await addActionToStorage(command);
+
+    // Ensure the border remains after the drop
+    event.target.style.border = '2px dashed red';
 }
 
 // Handle drop event for "type" action
@@ -103,6 +113,9 @@ async function handleDropType(event) {
 
         await addActionToStorage(command);
         container.remove(); // Remove the container after the action is stored
+
+        // Ensure the border remains after the drop
+        event.target.style.border = '2px dashed blue';
     });
 }
 
@@ -153,7 +166,7 @@ function positionContainer(container, target) {
     observer.observe(target, { attributes: true, childList: true, subtree: true });
 }
 
-// Function to capture the XPath of an element
+// Function to get the XPath of an element
 function getElementXPath(element) {
     let paths = [];
     for (; element && element.nodeType === Node.ELEMENT_NODE; element = element.parentNode) {
