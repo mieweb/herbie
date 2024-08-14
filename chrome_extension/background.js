@@ -67,6 +67,26 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return true; // Keep the messaging channel open for asynchronous responses
     }
 
+    if (message.action === 'actions_run') {
+        try {
+            var k = message.data;
+
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (tabs[0]) {
+                    chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: k, line: 0 }, (response) => {
+                        console.log('Response RUN script from content js:', response);
+                    });
+                }
+            });
+            cmdtree = k;
+            currentLine = 0; // Reset the current line counter
+            sendResponse({ status: 'success', data: k });
+        }catch (error) {
+                    console.error('Error running script:', error);
+                    sendResponse({ status: 'error', message: 'Failed to run script' });
+        }
+    }
+
     if (message.action === 'log') {
         log(message.data);
         currentLine++;
@@ -79,13 +99,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 chrome.webNavigation.onDOMContentLoaded.addListener((details) => {
     log("Navigating to :" + details.url + "\n");
-    // Perform actions when the DOM content is fully loaded
+
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]) {
-            chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: cmdtree, line: currentLine }, (response) => {
-                console.log('Response RUN script from content js:', response);
-            });
+            sendMessageWithRetry(tabs[0].id, cmdtree, currentLine);
         }
     });
 });
 
+
+function sendMessageWithRetry(tabId, data, line, retries = 5) {
+    if (retries === 0) {
+        log("Nobody to receive after 5 attempts");
+        return;
+    }
+
+    chrome.tabs.sendMessage(tabId, { action: 'RUN', data: data, line: line }, (response) => {
+        if (chrome.runtime.lastError || !response) {
+            log(`Retry ${6 - retries}: Message not received, trying again...`);
+            setTimeout(() => {
+                sendMessageWithRetry(tabId, data, line, retries - 1);
+            }, 500); // Wait 500ms before retrying
+        } else {
+            console.log('Response RUN script from content js:', response);
+        }
+    });
+}

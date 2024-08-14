@@ -52,15 +52,8 @@ function runActions() {
         const actions = result.actions || [];
         console.log('Retrieved actions:', actions);
 
-        // Get the current active tab
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            const activeTab = tabs[0];
-            if (activeTab) {
-                // Send the actions to the content script
-                chrome.tabs.sendMessage(activeTab.id, { action: 'RUN', data: actions, line: 0 }, (response) => {
-                    console.log('Response from content script:', response);
-                });
-            }
+        chrome.runtime.sendMessage({ action: 'actions_run', data: actions }, (response) => {
+            console.log('Response from background:', response.data);
         });
     });
 }
