@@ -12,7 +12,7 @@ function setupEventListeners() {
 
     recordClickButton.addEventListener('dragstart', handleDragStart.bind(null, 'click'));
     recordTypeButton.addEventListener('dragstart', handleDragStart.bind(null, 'type'));
-    fetchActionsButton.addEventListener('click', fetchAndDisplayActions);
+    //fetchActionsButton.addEventListener('click', fetchAndDisplayActions);
     clearActionsButton.addEventListener('click', clearActions);
     recordRunButton.addEventListener('click', runActions);
     recordWaitButton.addEventListener('click', handleWaitButtonClick);
