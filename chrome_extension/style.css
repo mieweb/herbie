@@ -782,3 +782,14 @@ body {
 #save_actions_button:hover {
   background-color: #0056b3;
 }
+.details {
+  margin-top: 5px; /* Optional: Add some spacing if needed */
+}
+
+.action-entry {
+  margin-bottom: 10px; /* Ensure there's some spacing between actions */
+}
+
+.clickable-tag {
+  white-space: nowrap; /* Prevent the tag from wrapping */
+}
