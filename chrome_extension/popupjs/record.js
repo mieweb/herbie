@@ -26,13 +26,27 @@ function handleDragStart(actionType, event) {
 function fetchAndDisplayActions() {
     chrome.storage.local.get(['actions'], (result) => {
         const actions = result.actions || [];
+        const actionsContainer = document.getElementById('actions_container');
+        actionsContainer.innerHTML = ''; // Clear previous content
+
         if (actions.length === 0) {
-            displayNoActionsMessage();
+            // Display a message if there are no actions
+            const noActionsMessage = document.createElement('p');
+            noActionsMessage.textContent = 'No actions available.';
+            noActionsMessage.style.color = '#888'; // Optional: Gray color for the message
+            noActionsMessage.style.textAlign = 'center'; // Optional: Center align the message
+            actionsContainer.appendChild(noActionsMessage);
         } else {
-            displayActions(actions);
+            // Display each action
+            actions.forEach((action, index) => {
+                const actionDiv = createActionDiv(action, index);
+                actionsContainer.appendChild(actionDiv);
+            });
         }
     });
 }
+
+
 
 function displayNoActionsMessage() {
     const actionsContainer = document.getElementById('actions_container');
@@ -52,15 +66,8 @@ function runActions() {
         const actions = result.actions || [];
         console.log('Retrieved actions:', actions);
 
-        // Get the current active tab
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            const activeTab = tabs[0];
-            if (activeTab) {
-                // Send the actions to the content script
-                chrome.tabs.sendMessage(activeTab.id, { action: 'RUN', data: actions, line: 0 }, (response) => {
-                    console.log('Response from content script:', response);
-                });
-            }
+        chrome.runtime.sendMessage({ action: 'actions_run', data: actions }, (response) => {
+            console.log('Response from background:', response.data);
         });
     });
 }
@@ -137,23 +144,56 @@ function displayActions(actions) {
     });
 }
 
-function createActionDiv(action) {
+
+
+function deleteAction(index) {
+    chrome.storage.local.get(['actions'], (result) => {
+        let actions = result.actions || [];
+
+        if (index >= 0 && index < actions.length) {
+            actions.splice(index, 1); // Remove the action at the specified index
+
+            // Re-index the remaining actions
+            actions.forEach((action, i) => {
+                action.line = i; // Adjust the line numbers
+            });
+
+            // Save the updated actions array back to Chrome storage
+            chrome.storage.local.set({ actions: actions }, () => {
+                console.log('Action deleted and storage updated.');
+                fetchAndDisplayActions(); // Refresh the displayed actions
+            });
+        }
+    });
+}
+
+
+function createActionDiv(action, index) {
     const actionDiv = document.createElement('div');
     actionDiv.classList.add('action-entry');
+
+    // Create a container to hold the main content and the delete button
+    const contentContainer = document.createElement('div');
+    contentContainer.style.display = 'flex';
+    contentContainer.style.alignItems = 'center';
+    contentContainer.style.justifyContent = 'space-between';
 
     // Extract the action type and tag (first and last elements of the "code" array)
     const actionType = capitalize(action.code[0]);
     const actionTag = action.code[action.code.length - 1];
 
     if (actionType.toLowerCase() === 'wait') {
-        actionDiv.textContent = `Wait ${actionTag} ms`;
+        contentContainer.textContent = `Wait ${actionTag} ms`;
     } else {
-        // Create a clickable span for "Tag"
+        // Create a span for "Tag"
         const tagSpan = document.createElement('span');
-        tagSpan.textContent = `${actionType} on Tag`;
+        tagSpan.textContent = `Tag`;
         tagSpan.classList.add('clickable-tag');
-        tagSpan.style.color = 'blue';
+        tagSpan.style.textDecoration = 'underline';
         tagSpan.style.cursor = 'pointer';
+
+        // Create the text nodes for the surrounding text
+        const beforeTagText = document.createTextNode(`${actionType} on `);
 
         // Hidden element for full XPath or details
         const detailsDiv = document.createElement('div');
@@ -161,24 +201,43 @@ function createActionDiv(action) {
         detailsDiv.textContent = actionTag;  // This should be your XPath or tag value
         detailsDiv.style.display = 'none';  // Hide initially
 
-        // Append the tagSpan and detailsDiv to the actionDiv
-        actionDiv.appendChild(tagSpan);
-        actionDiv.appendChild(detailsDiv);
-
-        // Debugging to ensure the XPath is correct
-        console.log('Action Tag:', actionTag);
-        console.log('Details Div:', detailsDiv);
+        // Create a delete button
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>'; // FontAwesome trash icon
+        deleteButton.style.marginLeft = '10px';
+        deleteButton.style.cursor = 'pointer';
+        deleteButton.title = 'Delete this action';
+        deleteButton.classList.add('delete-action');
 
         // Add click event to toggle the details visibility
         tagSpan.addEventListener('click', () => {
-            console.log("Tag clicked, toggling details visibility.");
             detailsDiv.style.display = detailsDiv.style.display === 'none' ? 'block' : 'none';
-            console.log("Details Div display state:", detailsDiv.style.display);
         });
+
+        // Append the parts to the content container
+        const textContainer = document.createElement('div');
+        textContainer.appendChild(beforeTagText);
+        textContainer.appendChild(tagSpan);
+        textContainer.appendChild(detailsDiv);
+
+        contentContainer.appendChild(textContainer);
+        contentContainer.appendChild(deleteButton);
+        // Add click event to delete the action
+        deleteButton.addEventListener('click', () => {
+            deleteAction(index);
+         });
     }
+
+    actionDiv.appendChild(contentContainer);
+
+    
 
     return actionDiv;
 }
+
+
+
+
 
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
