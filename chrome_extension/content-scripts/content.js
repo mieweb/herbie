@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.error('Invalid script content received:', scriptContent);
             return;
         }
-
+        stopScript = false;
         ExecuteScript(cmdtree, options, function (done, option, comment) {
             if (option) {
                 var currentCmd = option.cmdtree[option.line];
