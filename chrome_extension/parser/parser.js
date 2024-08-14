@@ -91,6 +91,8 @@ async function parseStatement(stmt, cmd) {
                     break;
                 case 'mouseover':
                     cmd.code.push('mouseover');
+                case 'verify':
+                    cmd.code.push('verify');
             }
         }
     }
@@ -130,7 +132,7 @@ async function parseStatement(stmt, cmd) {
              let updatedXpath = foundKeyword.xpath;
 
             // For 'type' commands, skip the first variable, for others, use all variables
-            const relevantVariables = cmd.code.includes("type") ? variables.slice(1) : variables;
+            const relevantVariables = (cmd.code[0]==("type") || cmd.code[0]==("verify") || cmd.code[0]==("select")) ? variables.slice(1) : variables;
             
             relevantVariables.forEach(variable => {
                 updatedXpath = updatedXpath.replace('{$}', variable);
