@@ -89,7 +89,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     if (message.action === 'log') {
         log(message.data);
-        currentLine++;
+        const regex = /^Line: \d+.*/;
+        if(regex.test(message.data)){
+            currentLine++;
+        }
         chrome.runtime.sendMessage({ action: 'progress', current: currentLine, total: cmdtree.length });
         sendResponse({ status: 'success', data: "log received" });
     }
@@ -102,7 +105,7 @@ chrome.webNavigation.onDOMContentLoaded.addListener((details) => {
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]) {
-            sendMessageWithRetry(tabs[0].id, cmdtree, currentLine);
+            sendMessageWithRetry(tabs[0].id, cmdtree, currentLine-1);
         }
     });
 });
@@ -116,7 +119,7 @@ function sendMessageWithRetry(tabId, data, line, retries = 5) {
 
     chrome.tabs.sendMessage(tabId, { action: 'RUN', data: data, line: line }, (response) => {
         if (chrome.runtime.lastError || !response) {
-            log(`Retry ${6 - retries}: Message not received, trying again...`);
+            log(`Retry ${6 - retries}: to inject content scripts after page navigation, trying again...\n`);
             setTimeout(() => {
                 sendMessageWithRetry(tabId, data, line, retries - 1);
             }, 500); // Wait 500ms before retrying
