@@ -98,7 +98,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 chrome.webNavigation.onDOMContentLoaded.addListener((details) => {
-    log("Navigating to :" + details.url + "\n");
+    log("\nNavigating to :" + details.url + "\n");
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]) {
