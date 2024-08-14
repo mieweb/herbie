@@ -84,24 +84,31 @@
 
 
 <div id="tab4" class="tab-content">
-  <h2>Keywords</h2>
-  <button id="inspect-element">Inspect</button>
-  <div id="keywords-container">
-    <input type="text" id="new-keyword" placeholder="Enter keyword">
-    <input type="text" id="keyword-xpath" placeholder="Enter XPath">
-    <label  style="display: none;"><input type="checkbox" style="display: none;" id="keyword-global" checked> Global</label>
-    <label><input type="checkbox" id="has-variable"> Has Variable</label>
-    <button id="add-keyword">Add Keyword</button>
-</div>
-  <div id="global-keywords-container">
-      <h3>Global Keywords</h3>
+  <h1>Keywords</h1>
+  <button id="inspect-element" class="btn-primary">Inspect</button>
+  <div id="keywords-container" class="form-group">
+    <input type="text" id="new-keyword" placeholder="Enter keyword" aria-label="Keyword Input" class="form-control">
+    <!-- Updated textarea for XPath -->
+    <textarea id="keyword-xpath" placeholder="Enter XPath" aria-label="XPath Input" class="form-control"></textarea>
+    <label class="checkbox-inline">
+      <input type="checkbox" id="has-variable"> Has Variable
+    </label>
+    <label class="checkbox-inline" style="display: none;">
+      <input type="checkbox" checked id="keyword-global" style="display: none;"> Is Global
+    </label>
+   
+    <button id="add-keyword" class="btn-primary">Add Keyword</button>
+  </div>
+  <div id="global-keywords-container" class="keywords-list">
+      <h1>Global Keywords</h1>
       <ul id="global-keywords-list"></ul>
   </div>
-  <div id="local-keywords-container">
-      <!-- <h3>Test Keywords</h3> -->
+  <div id="local-keywords-container" class="keywords-list">
       <ul id="local-keywords-list"></ul>
   </div>
 </div>
+
+
 <div id="tab5" class="tab-content record-tab">
   <h2 class="record-title">Record</h2>
   

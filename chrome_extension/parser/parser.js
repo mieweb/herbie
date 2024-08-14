@@ -121,14 +121,18 @@ async function parseStatement(stmt, cmd) {
             }
         });
     });
-
+    console.log(foundKeyword);
     if (foundKeyword) {
         if (foundKeyword.hasVariable) {
             const variables = cmd.code.filter(str => (str.startsWith('"') && str.endsWith('"')) || (str.startsWith("'") && str.endsWith("'")))
                                         .map(str => str.slice(1, -1));
 
-            let updatedXpath = foundKeyword.xpath;
-            variables.forEach(variable => {
+             let updatedXpath = foundKeyword.xpath;
+
+            // For 'type' commands, skip the first variable, for others, use all variables
+            const relevantVariables = cmd.code.includes("type") ? variables.slice(1) : variables;
+            
+            relevantVariables.forEach(variable => {
                 updatedXpath = updatedXpath.replace('{$}', variable);
             });
 

@@ -100,6 +100,7 @@ body {
     border-radius: 4px;
     resize: none;
     box-sizing: border-box;
+    font-size: 16px;
   }
   
   .herbie_bar {
@@ -460,7 +461,6 @@ body {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-right: 10px;
-  font-size: 14px;
   width: 200px;
 }
 
@@ -485,56 +485,6 @@ body {
   background-color: #0056b3;
 }
 
-#global-keywords-container, #local-keywords-container {
-  margin-top: 20px;
-}
-
-#global-keywords-list, #local-keywords-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-#global-keywords-list li, #local-keywords-list li {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#global-keywords-list li .delete-keyword, #local-keywords-list li .delete-keyword {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #dc3545; /* Red color for the delete icon */
-}
-
-#global-keywords-list li .delete-keyword:hover, #local-keywords-list li .delete-keyword:hover {
-  color: #c82333; /* Darker red on hover */
-}
-
-#global-keywords-list li .delete-keyword i, #local-keywords-list li .delete-keyword i {
-  font-size: 18px; /* Adjust the size as needed */
-}
-
-#global-keywords-list li .xpath, #local-keywords-list li .xpath {
-  background-color: transparent;
-  border: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  outline: none;
-  width: auto;
-  display: inline;
-  transition: border 0.3s ease;
-}
-
-#global-keywords-list li .xpath:focus, #local-keywords-list li .xpath:focus {
-  border: 1px solid #007bff;
-  background-color: white;
-}
 .tab-container {
   display: flex;
   border-bottom: 1px solid #ccc;
@@ -792,4 +742,134 @@ body {
 
 .clickable-tag {
   white-space: nowrap; /* Prevent the tag from wrapping */
+}
+
+#keyword-xpath {
+  font-size: 16px; /* Increased font size for better readability */
+  font-family: monospace; /* Monospace font for better alignment of code */
+  height: 80px; /* Height to show multiple lines */
+  width: 100%; /* Max width of the container */
+  resize: none; /* Disable resizing */
+  overflow-y: scroll; /* Enable vertical scrolling */
+  padding: 10px;
+  margin: 5px 10px 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Include padding in width/height calculations */
+  white-space: pre-wrap; /* Ensure long lines break and are visible */
+}
+
+/* Highlight the variable placeholder {$} */
+textarea::selection {
+  background-color: #ffeb3b; /* Highlight color for selected text */
+}
+
+.variable-highlight {
+  background-color: #ffeb3b; /* Highlight color for variable placeholders */
+  font-weight: bold;
+}
+
+/* Increase font size specifically for the new-keyword input */
+#new-keyword {
+  font-size: 17px; /* Adjust to your desired size */
+  font-family: Arial, sans-serif; /* Ensure consistent font styling */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+
+
+
+
+
+
+
+/* Styling for the keyword items */
+.keyword-item {
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  list-style-type: none; /* Remove bullet points */
+}
+
+.keyword-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer; /* Indicate that the header is clickable */
+}
+
+.keyword-name {
+  font-size: 16px;
+  font-weight: bold;
+  flex-grow: 1;
+}
+
+.keyword-actions {
+  display: flex;
+  align-items: center;
+}
+
+.keyword-actions button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.keyword-actions button:hover {
+  color: #c82333;
+}
+
+
+
+.keyword-details.active {
+  display: flex;
+  flex-direction: column; /* Ensure elements are stacked vertically */
+}
+
+
+
+.keyword-details label {
+  display: block; /* Ensure checkbox is on its own line */
+  margin-top: 5px;
+}
+
+.keyword-details label input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Remove bullet points from the ul element */
+ul {
+  padding-left: 0;
+  list-style-type: none; /* Remove bullet points */
+}
+
+.keyword-details.active {
+  display: flex;
+}
+.keyword-details {
+  display: none;
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent contents from overflowing the container */
+}
+
+.keyword-details textarea {
+  width: 100%;
+  height: 120px; /* Increase the height of the textarea */
+  font-size: 16px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none; /* Disable resizing */
+  margin-bottom: 10px;
+  box-sizing: border-box; /* Ensure padding is included in the width/height */
+  overflow-y: auto; /* Allow vertical scrolling if content overflows */
 }
