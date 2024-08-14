@@ -93,11 +93,13 @@ function ExecuteScript() {
             if (seq.charAt(0) === '"' || seq.charAt(0) === '\'') {
                 seq = seq.slice(1, -1);
             }
-
+           
             if (tag.length) {
                 simulijs.simulateFocus(tag[0], function () {
                     tag[0].value = "";
-                    simulijs.simulateKeyPress(tag[0], seq);
+                    simulijs.simulateKeyPress(tag[0], seq,function(){
+                        console.log(seq);
+                    });
                 });
                 return setTimeout(function () {
                     options.line++;
