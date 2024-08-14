@@ -68,6 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (tabId === 'tab3') {
                 loadSavedScripts();
             }
+            if (tabId === 'tab5') {
+                fetchAndDisplayActions();
+            }
         });
     });
 
@@ -91,4 +94,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadKeywords();
     loadLogs();
     loadSavedScripts();
+    fetchAndDisplayActions();
 });

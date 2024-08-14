@@ -56,7 +56,7 @@ function ExecuteScript() {
         if (!tag.length) {
             if (cmd.timeout > 0) {
                 cmd.timeout -= options.delay;
-                console.log(`Waiting for element: ${tagname}`);
+             //   console.log(`Waiting for element: ${tagname}`);
                 return setTimeout(function () { ExecuteScript(cmdtree, options, callback); }, options.delay);
             } else {
                 log(`Cannot find tag named: "${tagname}". Proceeding to next command.`);
@@ -93,11 +93,13 @@ function ExecuteScript() {
             if (seq.charAt(0) === '"' || seq.charAt(0) === '\'') {
                 seq = seq.slice(1, -1);
             }
-
+           
             if (tag.length) {
                 simulijs.simulateFocus(tag[0], function () {
                     tag[0].value = "";
-                    simulijs.simulateKeyPress(tag[0], seq);
+                    simulijs.simulateKeyPress(tag[0], seq,function(){
+                        console.log(seq);
+                    });
                 });
                 return setTimeout(function () {
                     options.line++;
@@ -108,7 +110,7 @@ function ExecuteScript() {
         case 'click':
             if (tag.length) {
                 console.log(tag);
-                //simulijs.simulateClick(tag[0]);
+                simulijs.simulateClick(tag[0]);
             }
             return setTimeout(function () {
                 options.line++;

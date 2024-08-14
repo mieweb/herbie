@@ -45,9 +45,9 @@ function FindDesc(desc) {
     // Function to log attempts and results
     function logAttempt(method, result) {
         if (result.length) {
-            console.log(`Found element using ${method} for description: "${originalDesc}"`);
+            //console.log(`Found element using ${method} for description: "${originalDesc}"`);
         } else {
-            console.log(`No element found using ${method} for description: "${originalDesc}"`);
+          //  console.log(`No element found using ${method} for description: "${originalDesc}"`);
         }
     }
 

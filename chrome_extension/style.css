@@ -100,6 +100,7 @@ body {
     border-radius: 4px;
     resize: none;
     box-sizing: border-box;
+    font-size: 16px;
   }
   
   .herbie_bar {
@@ -460,7 +461,6 @@ body {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-right: 10px;
-  font-size: 14px;
   width: 200px;
 }
 
@@ -485,56 +485,6 @@ body {
   background-color: #0056b3;
 }
 
-#global-keywords-container, #local-keywords-container {
-  margin-top: 20px;
-}
-
-#global-keywords-list, #local-keywords-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-#global-keywords-list li, #local-keywords-list li {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#global-keywords-list li .delete-keyword, #local-keywords-list li .delete-keyword {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #dc3545; /* Red color for the delete icon */
-}
-
-#global-keywords-list li .delete-keyword:hover, #local-keywords-list li .delete-keyword:hover {
-  color: #c82333; /* Darker red on hover */
-}
-
-#global-keywords-list li .delete-keyword i, #local-keywords-list li .delete-keyword i {
-  font-size: 18px; /* Adjust the size as needed */
-}
-
-#global-keywords-list li .xpath, #local-keywords-list li .xpath {
-  background-color: transparent;
-  border: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  outline: none;
-  width: auto;
-  display: inline;
-  transition: border 0.3s ease;
-}
-
-#global-keywords-list li .xpath:focus, #local-keywords-list li .xpath:focus {
-  border: 1px solid #007bff;
-  background-color: white;
-}
 .tab-container {
   display: flex;
   border-bottom: 1px solid #ccc;
@@ -608,4 +558,318 @@ body {
   padding: 2px;
   z-index: 1000;
   color: black;
+}
+/* Styles for the Record tab */
+.record-tab {
+  padding: 20px;
+  background-color: #f4f4f4; /* Light grey background for better contrast */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.record-title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
+
+.record-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.record-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.record-button {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+}
+
+.record-button i {
+  margin-right: 8px;
+}
+
+.record-button:hover {
+  background-color: #0056b3;
+}
+
+/* Specific button styling if needed */
+.record-type {
+  background-color: #17a2b8;
+}
+
+.record-click {
+  background-color: #17a2b8;
+}
+
+.record-run {
+  background-color: #28a745;
+}
+
+.record-fetch {
+  background-color: #6c757d;
+}
+
+.record-clear {
+  background-color: #dc3545;
+}
+
+/* Hover effects for specific buttons */
+.record-type:hover {
+  background-color: #138496;
+}
+
+.record-click:hover {
+  background-color: #138496;
+}
+
+.record-run:hover {
+  background-color: #218838;
+}
+
+.record-fetch:hover {
+  background-color: #5a6268;
+}
+
+.record-clear:hover {
+  background-color: #c82333;
+}
+
+
+#actions_container {
+  background-color: #f8f9fa; /* Light background for contrast */
+  border: 1px solid #ced4da; /* Light border for definition */
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 15px;
+  max-height: 200px; /* Limit the height for overflow handling */
+  overflow-y: auto; /* Enable scrolling if content exceeds max-height */
+  font-family: "Courier New", Courier, monospace; /* Monospace font for code-like appearance */
+  font-size: 14px;
+  color: #343a40; /* Dark text color for readability */
+  white-space: pre-wrap; /* Preserve whitespace and wrap text */
+  word-wrap: break-word; /* Break long words to prevent overflow */
+}
+
+/* Optional: Add some margin between JSON objects if you display multiple */
+#actions_container div {
+  margin-bottom: 10px;
+}
+
+/* Highlight the JSON keys */
+#actions_container .json-key {
+  color: #007bff; /* Blue color for keys */
+  font-weight: bold;
+}
+
+/* Highlight the JSON string values */
+#actions_container .json-string {
+  color: #28a745; /* Green color for string values */
+}
+
+/* Highlight the JSON numeric values */
+#actions_container .json-number {
+  color: #dc3545; /* Red color for numeric values */
+}
+
+/* Highlight the JSON boolean values */
+#actions_container .json-boolean {
+  color: #ffc107; /* Yellow color for boolean values */
+}
+
+/* Highlight the JSON null values */
+#actions_container .json-null {
+  color: #6c757d; /* Gray color for null values */
+}
+
+.action-entry {
+  margin-bottom: 10px;
+}
+
+.clickable-tag {
+  text-decoration: underline;
+}
+
+.details {
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 5px;
+  padding-left: 10px;
+}
+#actions_container_header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+#save_actions_button {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+#save_actions_button:hover {
+  background-color: #0056b3;
+}
+.details {
+  margin-top: 5px; /* Optional: Add some spacing if needed */
+}
+
+.action-entry {
+  margin-bottom: 10px; /* Ensure there's some spacing between actions */
+}
+
+.clickable-tag {
+  white-space: nowrap; /* Prevent the tag from wrapping */
+}
+
+#keyword-xpath {
+  font-size: 16px; /* Increased font size for better readability */
+  font-family: monospace; /* Monospace font for better alignment of code */
+  height: 80px; /* Height to show multiple lines */
+  width: 100%; /* Max width of the container */
+  resize: none; /* Disable resizing */
+  overflow-y: scroll; /* Enable vertical scrolling */
+  padding: 10px;
+  margin: 5px 10px 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Include padding in width/height calculations */
+  white-space: pre-wrap; /* Ensure long lines break and are visible */
+}
+
+/* Highlight the variable placeholder {$} */
+textarea::selection {
+  background-color: #ffeb3b; /* Highlight color for selected text */
+}
+
+.variable-highlight {
+  background-color: #ffeb3b; /* Highlight color for variable placeholders */
+  font-weight: bold;
+}
+
+/* Increase font size specifically for the new-keyword input */
+#new-keyword {
+  font-size: 17px; /* Adjust to your desired size */
+  font-family: Arial, sans-serif; /* Ensure consistent font styling */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+
+
+
+
+
+
+
+/* Styling for the keyword items */
+.keyword-item {
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  list-style-type: none; /* Remove bullet points */
+}
+
+.keyword-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer; /* Indicate that the header is clickable */
+}
+
+.keyword-name {
+  font-size: 16px;
+  font-weight: bold;
+  flex-grow: 1;
+}
+
+.keyword-actions {
+  display: flex;
+  align-items: center;
+}
+
+.keyword-actions button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.keyword-actions button:hover {
+  color: #c82333;
+}
+
+
+
+.keyword-details.active {
+  display: flex;
+  flex-direction: column; /* Ensure elements are stacked vertically */
+}
+
+
+
+.keyword-details label {
+  display: block; /* Ensure checkbox is on its own line */
+  margin-top: 5px;
+}
+
+.keyword-details label input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Remove bullet points from the ul element */
+ul {
+  padding-left: 0;
+  list-style-type: none; /* Remove bullet points */
+}
+
+.keyword-details.active {
+  display: flex;
+}
+.keyword-details {
+  display: none;
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent contents from overflowing the container */
+}
+
+.keyword-details textarea {
+  width: 100%;
+  height: 120px; /* Increase the height of the textarea */
+  font-size: 16px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none; /* Disable resizing */
+  margin-bottom: 10px;
+  box-sizing: border-box; /* Ensure padding is included in the width/height */
+  overflow-y: auto; /* Allow vertical scrolling if content overflows */
 }

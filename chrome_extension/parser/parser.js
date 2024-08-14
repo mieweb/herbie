@@ -1,4 +1,4 @@
-function ParseScript(script) {
+async function ParseScript(script) {
     if (!script) {
         return [];
     }
@@ -20,23 +20,25 @@ function ParseScript(script) {
         stack.push({ cmd: cmd, indentLevel: indentLevel });
     }
 
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i];
+    // Create an array of promises for each line parsing
+    let promises = lines.map(async (line, i) => {
         var indentLevel = line.search(/\S|$/); // Find the indentation level
         var cmd = { line: i, code: [], src: line.trim(), timeout: 5000, subcommands: [] };
 
         var stmt = line.trim().match(/\w+|'[^']+'|"[^"]+"|\{\{(.*?)\}\}|\*|:/g); // tokenize line
         if (stmt) {
-            parseStatement(stmt, cmd);
+            await parseStatement(stmt, cmd);
             addCommand(cmd, indentLevel);
         }
-    }
+    });
+
+    // Wait for all the parsing promises to complete
+    await Promise.all(promises);
 
     return cmdtree;
 }
 
-function parseStatement(stmt, cmd) {
-    console.log("hi")
+async function parseStatement(stmt, cmd) {
     for (var j = 0; j < stmt.length; j++) {
         var z = stmt[j].charAt(0);
         if (z === '{' || z === '"' || z === '\'') {
@@ -89,10 +91,65 @@ function parseStatement(stmt, cmd) {
                     break;
                 case 'mouseover':
                     cmd.code.push('mouseover');
+                case 'verify':
+                    cmd.code.push('verify');
             }
         }
     }
+
+    const foundKeyword = await new Promise((resolve) => {
+        chrome.storage.local.get("globalKeywords", function(result) {
+            if (result.globalKeywords) {
+                const keywords = result.globalKeywords.map(item => item.keyword);
+                
+                function stripQuotesFromArray(arr) {
+                    return arr.map(str => {
+                        if ((str.startsWith('"') && str.endsWith('"')) || (str.startsWith("'") && str.endsWith("'"))) {
+                            return str.slice(1, -1);
+                        }
+                        return str;
+                    });
+                }
+        
+                function findKeyword(str) {
+                    const cleanedStr = stripQuotesFromArray(str);
+                    return result.globalKeywords.find(item => cleanedStr.includes(item.keyword)) || null;
+                }
+        
+                const keyword = findKeyword(cmd.code);
+                resolve(keyword);
+            } else {
+                resolve(null);
+            }
+        });
+    });
+    console.log(foundKeyword);
+    if (foundKeyword) {
+        if (foundKeyword.hasVariable) {
+            const variables = cmd.code.filter(str => (str.startsWith('"') && str.endsWith('"')) || (str.startsWith("'") && str.endsWith("'")))
+                                        .map(str => str.slice(1, -1));
+
+             let updatedXpath = foundKeyword.xpath;
+
+            // For 'type' commands, skip the first variable, for others, use all variables
+            const relevantVariables = (cmd.code[0]==("type") || cmd.code[0]==("verify") || cmd.code[0]==("select")) ? variables.slice(1) : variables;
+            
+            relevantVariables.forEach(variable => {
+                updatedXpath = updatedXpath.replace('{$}', variable);
+            });
+
+            var inclause = cmd.code.indexOf("in");
+            cmd.code[inclause + 1] = updatedXpath;
+
+        } else {
+            var inclause = cmd.code.indexOf("in");
+            cmd.code[inclause + 1] = foundKeyword.xpath;
+        }
+    } else {
+        console.log("The string does not contain any keywords.");
+    }
 }
+
 function log(log_msg) {
     chrome.runtime.sendMessage({ action: 'log_msg', message: log_msg });
 }

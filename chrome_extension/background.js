@@ -6,17 +6,24 @@ let currentLine = 0;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'parse') {
         const scriptContent = message.data;
-        
+
         // Fetch global and local keywords from storage and then parse the script
-        chrome.storage.local.get(['globalKeywords'], (result) => {
+        chrome.storage.local.get(['globalKeywords'], async (result) => {
             const globalKeywords = result.globalKeywords || [];
             
             // Fetch local keywords
-            chrome.storage.local.get(['localKeywords'], (localResult) => {
+            chrome.storage.local.get(['localKeywords'], async (localResult) => {
                 const localKeywords = localResult.localKeywords || [];
                 const keywords = globalKeywords.concat(localKeywords);
-                var k = ParseScript(scriptContent, keywords);
-                sendResponse({ status: 'success', data: k });
+                
+                // Await the parsing of the script
+                try {
+                    var k = await ParseScript(scriptContent, keywords);
+                    sendResponse({ status: 'success', data: k });
+                } catch (error) {
+                    console.error('Error parsing script:', error);
+                    sendResponse({ status: 'error', message: 'Failed to parse script' });
+                }
             });
         });
 
@@ -28,29 +35,56 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log('Received RUN script from extension to background.js:', scriptContent);
 
         // Fetch global and local keywords from storage and then parse the script
-        chrome.storage.local.get(['globalKeywords'], (result) => {
+        chrome.storage.local.get(['globalKeywords'], async (result) => {
             const globalKeywords = result.globalKeywords || [];
             
             // Fetch local keywords
-            chrome.storage.local.get(['localKeywords'], (localResult) => {
+            chrome.storage.local.get(['localKeywords'], async (localResult) => {
                 const localKeywords = localResult.localKeywords || [];
                 const keywords = globalKeywords.concat(localKeywords);
-                var k = ParseScript(scriptContent, keywords);
+                
+                // Await the parsing of the script
+                try {
+                    var k = await ParseScript(scriptContent, keywords);
 
-                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                    if (tabs[0]) {
-                        chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: k, line: 0 }, (response) => {
-                            console.log('Response RUN script from content js:', response);
-                        });
-                    }
-                });
-                cmdtree = k;
-                currentLine = 0; // Reset the current line counter
-                sendResponse({ status: 'success', data: k });
+                    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                        if (tabs[0]) {
+                            chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: k, line: 0 }, (response) => {
+                                console.log('Response RUN script from content js:', response);
+                            });
+                        }
+                    });
+                    cmdtree = k;
+                    currentLine = 0; // Reset the current line counter
+                    sendResponse({ status: 'success', data: k });
+                } catch (error) {
+                    console.error('Error running script:', error);
+                    sendResponse({ status: 'error', message: 'Failed to run script' });
+                }
             });
         });
 
         return true; // Keep the messaging channel open for asynchronous responses
+    }
+
+    if (message.action === 'actions_run') {
+        try {
+            var k = message.data;
+
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (tabs[0]) {
+                    chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: k, line: 0 }, (response) => {
+                        console.log('Response RUN script from content js:', response);
+                    });
+                }
+            });
+            cmdtree = k;
+            currentLine = 0; // Reset the current line counter
+            sendResponse({ status: 'success', data: k });
+        }catch (error) {
+                    console.error('Error running script:', error);
+                    sendResponse({ status: 'error', message: 'Failed to run script' });
+        }
     }
 
     if (message.action === 'log') {
@@ -64,52 +98,30 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 chrome.webNavigation.onDOMContentLoaded.addListener((details) => {
-    log("Navigating to :" + details.url + "\n");
-    // Perform actions when the DOM content is fully loaded
+    log("\nNavigating to :" + details.url + "\n");
+
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]) {
-            chrome.tabs.sendMessage(tabs[0].id, { action: 'RUN', data: cmdtree, line: currentLine }, (response) => {
-                console.log('Response RUN script from content js:', response);
-            });
+            sendMessageWithRetry(tabs[0].id, cmdtree, currentLine);
         }
     });
 });
 
 
-
-
-
-
-
-function hashString(str) {
-    let hash = 5381;
-    for (let i = 0; i < str.length; i++) {
-        hash = (hash * 33) ^ str.charCodeAt(i);
+function sendMessageWithRetry(tabId, data, line, retries = 5) {
+    if (retries === 0) {
+        log("Nobody to receive after 5 attempts");
+        return;
     }
-    return hash >>> 0; // Convert to unsigned 32-bit integer
+
+    chrome.tabs.sendMessage(tabId, { action: 'RUN', data: data, line: line }, (response) => {
+        if (chrome.runtime.lastError || !response) {
+            log(`Retry ${6 - retries}: Message not received, trying again...`);
+            setTimeout(() => {
+                sendMessageWithRetry(tabId, data, line, retries - 1);
+            }, 500); // Wait 500ms before retrying
+        } else {
+            console.log('Response RUN script from content js:', response);
+        }
+    });
 }
-
-function getCurrentPageKey() {
-    const url = new URL(window.location.href);
-    const path = url.pathname;
-    const params = url.search;
-    const fullString = `${path}${params}`;
-    const hashedKey = hashString(fullString);
-    return `keywords_${hashedKey}`;
-}
-
-
-
-let actions = [];
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === 'get_actions') {
-        sendResponse({ actions: actions });
-    } else if (message.action === 'update_actions') {
-        actions = message.actions;
-        sendResponse({ status: 'updated' });
-    } else if (message.action === 'clear_actions') {
-        actions = [];
-        sendResponse({ status: 'cleared' });
-    }
-});
