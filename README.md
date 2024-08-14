@@ -22,8 +22,6 @@ We made this change because the jQuery Simulate package was not being maintained
 
 # How to Install the Chrome Extension
 
-[Download Chrome Extension](https://github.com/HrithikMani/herbie/releases/download/0.2/chrome_extension.rar)
-
 1. Clone the project to your local machine or download the chrome extension from above link.
 2. Open Chrome and go to `Preferences... -> Extensions`.
 3. Ensure "Developer mode" is checked (upper left).
