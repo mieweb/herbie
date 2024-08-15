@@ -13,7 +13,7 @@ There are several different components to Herbie:
 
 
 # How to Install the Chrome Extension
-
+[Download Link](https://github.com/HrithikMani/herbie/archive/refs/tags/0.3.zip)
 1. Clone the project to your local machine or download the chrome extension from above link.
 2. Open Chrome and go to `Preferences... -> Extensions`.
 3. Ensure "Developer mode" is checked (upper left).
