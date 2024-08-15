@@ -1,0 +1,108 @@
+h2 {
+    font-size: 1.1em;
+    margin: 0.1em;
+  }
+  div.sample {
+    border: solid #000 1px;
+    display: inline-block;
+    padding: 10px;
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  li {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+  }
+  .icons {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .icon {
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  .modal.open {
+    display: block;
+  }
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+  .modal-overlay.open {
+    display: block;
+  }
+  #herbie_div {
+    z-index: 9999;      
+    position: fixed;
+    top: 2px;
+    right: 2px;
+    width: auto;
+    background-color: white; 
+    border:1px solid rgba(0,0,0,0.5); 
+    border-radius: 6px;
+    box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+    padding: 15px;
+  }
+  #herbie_div label {
+    width: 6em;
+    float: left;
+    text-align: right;
+    clear: both;
+    margin-right: 10px;
+  }
+  #herbie_div textarea {
+    width: 100%;
+  }
+  #herbie_div input {
+    width: calc(100% - 8em);
+  }
+  #herbie_div #herbie_line {
+    width: auto;
+    text-align: right;
+  }
+  #herbie_div pre {
+    margin: 5px; 
+    height: auto;
+    max-height: 200px;
+    max-width: 520px;
+    overflow: auto;
+    background-color: #eeeeee;
+    word-break: normal !important;
+    word-wrap: normal !important;
+    white-space: pre !important;
+    cursor: auto;
+    padding: 10px;
+  }
+  #herbie_div.herbie_dragging {
+    background-color: whitesmoke;
+  }
+  #herbie_buttons {
+    cursor: move;
+  }
+  
+  

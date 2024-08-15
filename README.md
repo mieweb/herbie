@@ -11,25 +11,33 @@ There are several different components to Herbie:
 2. An interactive inspector to make it easier for Vision authors to discover what elements are on a page.
 3. A simple Vision interpreter that allow an author to test/debug Vision script. 
 
-The jQuery Simulate Extended plug-in (a.k.a. jquery-simulate-ext) provides methods for simulating complex
-user interactions based on the [jQuery.simulate()](https://github.com/jquery/jquery-simulate) plug-in.
-The plug-in provides simulation of: Drag & Drop, Key Sequences, Key Combinations
 
-Chrome Extension
-----------------
-A Goole Chrome extension is maintained here: [Chrome Plugin Source](chrome_extension).  To install:
-* First, clone the project to your local machine.
-* Chrome -> Preferences... -> Extensions 
-* Make sure "Developer mode" is checked (upper left)
-* Press "Load unpacked extension..."
-* Browse to the chrome_extension folder in the project.
-* viola.  Now a Herbie robot button should exist on the toolbar.  It will inject Herbie into the backgound of the current tab of any webpage.
+# How to Install the Chrome Extension
+[Download Link](https://github.com/HrithikMani/herbie/archive/refs/tags/0.3.zip)
+1. Clone the project to your local machine or download the chrome extension from above link.
+2. Open Chrome and go to `Preferences... -> Extensions`.
+3. Ensure "Developer mode" is checked (upper left).
+4. Click "Load unpacked extension...".
+5. Browse to the `chrome_extension` folder in the project.
 
-Demo
+Voila! Now a Herbie robot button should exist on the toolbar. It will inject Herbie into the background of the current tab of any webpage.
+
+## Simulating User Interactions
+
+Instead of using the jQuery Simulate Extended plug-in (a.k.a. jquery-simulate-ext) for simulating complex user interactions based on the [jQuery.simulate()](https://github.com/jquery/jquery-simulate) plug-in, we have used `mie-simulijs`, which was developed in MIE. It's a package that simulates events on the page. Here is the npm package: [mie-simulijs](https://www.npmjs.com/package/mie-simulijs).
+
+We made this change because the jQuery Simulate package was not being maintained, and some events like mouseover and mouseenter were not working as expected. To overcome this, we had to build our own package. Feel free to check out the package.
+
+
+## Initial Herbie
 ----
-An online demo is available here: http://mieweb.github.io/herbie/demo/index.html#run_herbie
 
-![Herbie example movie](http://mieweb.github.io/herbie/herbie_movie.gif)
+Feel free to check out Herbie, which was written in jQuery in 2015. This was one of the first versions.
+
+An online demo is available here: [Herbie Demo](http://mieweb.github.io/herbie/demo/index.html#run_herbie)
+
+![Initial version of Herbie](http://mieweb.github.io/herbie/herbie_movie.gif)
+
 
 About
 -----

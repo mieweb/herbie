@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Herbie Popup</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<body>
+  
+  <div class="tab-container">
+    <button class="tab-button active" data-tab="tab1">Herbie</button>
+    <button class="tab-button" data-tab="tab4">Keywords</button>
+    <button class="tab-button" data-tab="tab5">Record</button>
+    <button class="tab-button" data-tab="tab3">Saved Scripts</button>
+    <button class="tab-button" data-tab="tab2">Logs</button>
+  </div>
+  <div id="tab1" class="tab-content active">
+    <div id="herbie_div">
+      <div id="herbie_buttons">
+        <img id="herbie_logo" align="left" src="logos/herbie48.png" alt="Herbie Logo" height="30" style="padding-top: 2px; padding-left: 4px;">
+        <span><a target="_blank" href="http://mieweb.github.io/herbie/">Herbie</a></span>
+        
+        <button id="herbie_run" title="Run" class="run-button" aria-label="Run Herbie">
+          <i class="fas fa-play"></i>
+        </button>
+        <button id="herbie_save" title="Add to Saved Scripts" class="save-button" aria-label="Save Herbie">
+          <i class="fas fa-save"></i>
+          <i class="fas fa-check"></i>
+        </button>        
+      </div>
+      <div class="progress-container">
+        <div id="herbie_progress" class="progress-bar"></div>
+      </div>
+      <div class="herbie_script">
+        <label class="prompt" for="herbie_script">Script:</label>
+        <textarea id="herbie_script" placeholder="Type or load your test scripts here..." name="Script" rows="10" cols="80" aria-label="Herbie Script Area"></textarea>
+      </div>
+      <div class="herbie_bar">
+        <label for="herbie_command">Command:</label>
+        <input id="herbie_command" type="text" name="Command" maxlength="100" aria-label="Herbie Command Input"/>
+        <div class="button-container">
+          <button id="herbie_add" aria-label="Add Command"><i class="fas fa-plus"></i> Add</button>
+          <button id="herbie_parse" aria-label="Parse Command"><i class="fas fa-code"></i> Parse</button>
+          <button id="herbie_clear" aria-label="Clear Command"><i class="fas fa-trash-alt"></i> Clear</button>
+          <button id="herbie_save_logs" aria-label="Save Command"><i class="fas fa-save"></i> Save</button>
+        </div>
+      </div>
+      <div class="herbie_output" aria-label="Herbie Output Area">
+        <span id="herbie_output">Click parse or run</span>
+      </div>
+    </div>
+  </div>
+  
+  <div id="tab2" class="tab-content">
+    <div class="log-header-container">
+        <h2>Logs</h2>
+        <button id="export-logs" class="export-logs" aria-label="Export Logs">
+            <i class="fas fa-file-export"></i> Export
+        </button>
+    </div>
+    <div class="logs-progress-bar-container" id="logs-progress-bar-container">
+      <div class="logs-progress-bar" id="logs-progress-bar"></div>
+  </div>
+    <div id="logs-container" class="logs-container">
+        <!-- Log entries will be loaded here -->
+    </div>
+   
+</div>
+
+
+<div id="tab3" class="tab-content">
+  <div class="saved-scripts-header">
+    <h2>Saved Scripts</h2>
+    <button id="import-button" class="import-button">
+      <i class="fas fa-file-import"></i> Import
+    </button>
+    <input type="file" id="import-file" class="import-input" accept=".txt" style="display: none;" />
+  </div>
+  <div id="saved-scripts-container" class="saved-scripts-container"></div>
+</div>
+
+<div id="tab4" class="tab-content">
+ 
+  <div class="keywords-header">
+    <h1 class="keywords-title">Keywords</h1>
+    <div class="keywords-buttons">
+      <button id="inspect-element" class="btn-primary">
+        <i class="fas fa-search"></i> Inspect
+      </button>
+      <button id="import-keywords" class="btn-secondary">
+        <i class="fas fa-file-import"></i> Import
+      </button>
+    </div>
+  </div>
+
+  <!-- Keywords Container with Input, Textarea, Checkbox, and Button -->
+  <div id="keywords-container" class="form-group">
+    <input type="text" id="new-keyword" placeholder="Enter keyword" aria-label="Keyword Input" class="form-control">
+    <textarea id="keyword-xpath" placeholder="Enter XPath" aria-label="XPath Input" class="form-control"></textarea>
+
+    <div class="keyword-actions">
+      <label class="checkbox-inline">
+        <input type="checkbox" id="has-variable"> Has Variable
+      </label>
+      <button id="add-keyword" class="btn-primary">Add Keyword</button>
+    </div>
+  </div>
+
+  <!-- Global and Local Keywords Lists -->
+  <div id="global-keywords-container" class="keywords-list">
+    <h1>Global Keywords</h1>
+    <ul id="global-keywords-list"></ul>
+  </div>
+  <div id="local-keywords-container" class="keywords-list">
+    <ul id="local-keywords-list"></ul>
+  </div>
+</div>
+
+
+
+
+
+<div id="tab5" class="tab-content record-tab">
+  <h2 class="record-title">Record</h2>
+  
+  <div class="record-button-container">
+    <div class="record-row">
+      <button id="record_click" class="record-button record-click" aria-label="Record Click" draggable="true">
+        <i class="fas fa-mouse-pointer"></i> Click
+      </button>
+      <button id="record_type" class="record-button record-type" aria-label="Record Type" draggable="true">
+        <i class="fas fa-keyboard"></i> Type
+      </button>
+      
+      <button id="record_wait" class="record-button record-wait" aria-label="Record Wait" draggable="true">
+        <i class="fas fa-clock"></i> Wait
+      </button>
+    </div>
+    
+    <div class="record-row">
+      <button id="record_run" class="record-button record-run" aria-label="Run Script">
+        <i class="fas fa-play"></i> Run
+      </button>
+    </div>
+    <div class="record-row">
+      <button id="save_actions" class="record-button record-save" aria-label="Save Actions">
+        Save Actions
+      </button>
+    </div>
+    
+    <div class="record-row">
+      <button id="clear_actions" class="record-button record-clear" aria-label="Clear Actions">
+        Clear Actions
+      </button>
+    </div>
+    
+    
+    
+    <div id="actions_container"></div>
+  </div>
+</div>
+
+
+
+
+<script src="popupjs/commands.js"></script>
+<script src="popupjs/logs.js"></script>
+<script src="popupjs/scripts.js"></script>
+<script src="popupjs/utils.js"></script>
+<script src="popupjs/keywords.js" ></script>
+<script src="popupjs/record.js" ></script>
+<script src="popupjs/main.js"></script>
+
+</body>
+</html>
