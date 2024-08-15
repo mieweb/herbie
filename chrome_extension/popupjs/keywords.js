@@ -5,24 +5,25 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('keyword-xpath').value = result.saved_xpath;
         }
     });
-    
+
     document.getElementById('inspect-element').addEventListener('click', startInspecting);
     document.getElementById('add-keyword').addEventListener('click', addKeyword);
+    document.getElementById('import-keywords').addEventListener('click', importKeywords);
     loadKeywords();
+
     xpathTextarea.addEventListener('input', () => {
         const currentValue = xpathTextarea.value;
         chrome.storage.local.set({ saved_xpath: currentValue }, () => {
-          console.log('XPath value saved:', currentValue);
+            console.log('XPath value saved:', currentValue);
         });
-      });
-    
-      // Optional: Save the value again when the popup is closed
-      window.addEventListener('beforeunload', () => {
+    });
+
+    window.addEventListener('beforeunload', () => {
         const currentValue = xpathTextarea.value;
         chrome.storage.local.set({ saved_xpath: currentValue }, () => {
-          console.log('XPath value saved on close:', currentValue);
+            console.log('XPath value saved on close:', currentValue);
         });
-      });
+    });
 });
 
 function startInspecting() {
@@ -41,16 +42,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'set_xpath') {
         const xpathInput = document.getElementById('keyword-xpath');
         xpathInput.value = message.xpath;
-        
+
         chrome.storage.local.set({ 'saved_xpath': message.xpath }, () => {
             console.log('XPath value saved:', message.xpath);
         });
-        
+
         sendResponse({ status: 'success', data: message.xpath });
     }
 });
-
-
 
 function addKeyword() {
     const keywordInput = document.getElementById('new-keyword');
@@ -80,20 +79,10 @@ function addKeyword() {
     }
 }
 
-function saveEditedXpath(index, newXpath, isGlobal) {
-    const storageKey = isGlobal ? 'globalKeywords' : getCurrentPageKey();
-    chrome.storage.local.get({ [storageKey]: [] }, (result) => {
-      const keywords = result[storageKey];
-      keywords[index].xpath = newXpath;
-      chrome.storage.local.set({ [storageKey]: keywords }, () => {
-        loadKeywords();
-      });
-    });
-  }
-  function loadKeywords() {
+function loadKeywords() {
     const globalKey = 'globalKeywords';
     const pageKey = getCurrentPageKey();
-  
+
     chrome.storage.local.get({ [globalKey]: [], [pageKey]: [] }, (result) => {
         const globalKeywords = result[globalKey];
         const globalKeywordsList = document.getElementById('global-keywords-list');
@@ -102,7 +91,7 @@ function saveEditedXpath(index, newXpath, isGlobal) {
         globalKeywords.forEach((item, index) => {
             const li = document.createElement('li');
             li.className = 'keyword-item';
-  
+
             li.innerHTML = `
                 <div class="keyword-header">
                     <span class="keyword-name">${item.keyword}</span>
@@ -117,73 +106,65 @@ function saveEditedXpath(index, newXpath, isGlobal) {
                     </label>
                 </div>
             `;
-  
+
             const deleteButton = li.querySelector('.delete-keyword');
             deleteButton.addEventListener('click', (event) => {
-                event.stopPropagation(); // Prevent the toggle when deleting
+                event.stopPropagation();
                 deleteKeyword(index, true);
             });
-  
+
             li.querySelector('.keyword-header').addEventListener('click', () => {
                 const details = li.querySelector('.keyword-details');
-                if (details.classList.contains('active')) {
-                    details.style.display = 'none'; // Explicitly set display to none
-                    details.classList.remove('active');
-                } else {
-                    details.style.display = 'flex'; // Explicitly set display to flex
-                    details.classList.add('active');
-                }
+                details.style.display = details.classList.contains('active') ? 'none' : 'flex';
+                details.classList.toggle('active');
             });
-  
+
             const xpathInput = li.querySelector('.xpath');
             xpathInput.addEventListener('blur', () => {
                 const newXpath = escapeXpath(xpathInput.value.trim());
                 saveEditedXpath(index, newXpath, true);
             });
-  
+
             const hasVariableCheckbox = li.querySelector('.has-variable');
             hasVariableCheckbox.addEventListener('change', () => {
                 const isChecked = hasVariableCheckbox.checked;
                 saveHasVariable(index, isChecked, true);
             });
-  
+
             globalKeywordsList.appendChild(li);
         });
     });
 }
-  
 
 function saveEditedXpath(index, newXpath, isGlobal) {
     const storageKey = isGlobal ? 'globalKeywords' : getCurrentPageKey();
     chrome.storage.local.get({ [storageKey]: [] }, (result) => {
-      const keywords = result[storageKey];
-      keywords[index].xpath = newXpath;
-      chrome.storage.local.set({ [storageKey]: keywords }, () => {
-        loadKeywords();
-      });
+        const keywords = result[storageKey];
+        keywords[index].xpath = newXpath;
+        chrome.storage.local.set({ [storageKey]: keywords }, () => {
+            loadKeywords();
+        });
     });
-  }
-function deleteKeyword(index, isGlobal) {
-  const storageKey = isGlobal ? 'globalKeywords' : getCurrentPageKey();
+}
 
-  chrome.storage.local.get({ [storageKey]: [] }, (result) => {
-    const keywords = result[storageKey];
-    keywords.splice(index, 1);
-    chrome.storage.local.set({ [storageKey]: keywords }, () => {
-      loadKeywords();
+function deleteKeyword(index, isGlobal) {
+    const storageKey = isGlobal ? 'globalKeywords' : getCurrentPageKey();
+
+    chrome.storage.local.get({ [storageKey]: [] }, (result) => {
+        const keywords = result[storageKey];
+        keywords.splice(index, 1);
+        chrome.storage.local.set({ [storageKey]: keywords }, () => {
+            loadKeywords();
+        });
     });
-  });
 }
 
 function escapeXpath(xpath) {
-    // If the XPath contains double quotes, we'll escape them by using single quotes for XPath strings
     if (xpath.includes('"')) {
-        // Handle cases where both single and double quotes are used
-        xpath = xpath.replace(/"/g, '\"');  // Escape double quotes by adding a backslash before them
+        xpath = xpath.replace(/"/g, '\"');
     }
     return xpath;
 }
-
 
 function getCurrentPageKey() {
     return window.location.hostname.replace(/\./g, '_');
@@ -194,9 +175,58 @@ function saveHasVariable(index, hasVariable, isGlobal) {
 
     chrome.storage.local.get({ [storageKey]: [] }, (result) => {
         const keywords = result[storageKey];
-        keywords[index].hasVariable = hasVariable; // Update the hasVariable property
+        keywords[index].hasVariable = hasVariable;
         chrome.storage.local.set({ [storageKey]: keywords }, () => {
             console.log(`Has Variable status saved for keyword at index ${index}: ${hasVariable}`);
+        });
+    });
+}
+
+function importKeywords() {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.onchange = event => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const importedKeywords = JSON.parse(e.target.result);
+                processImportedKeywords(importedKeywords);
+            };
+            reader.readAsText(file);
+        }
+    };
+    fileInput.click();
+}
+
+function processImportedKeywords(keywords) {
+    chrome.storage.local.get(['globalKeywords', 'localKeywords'], (result) => {
+        let globalKeywords = result.globalKeywords || [];
+        let localKeywords = result.localKeywords || [];
+
+        keywords.forEach(keywordObj => {
+            const { keyword, xpath, global = true, hasVariable = false } = keywordObj;
+
+            const list = global ? globalKeywords : localKeywords;
+            const duplicate = list.some(item => item.keyword === keyword);
+
+            if (!duplicate) {
+                const newKeyword = { keyword, xpath, global, hasVariable };
+
+                if (global) {
+                    globalKeywords.push(newKeyword);
+                } else {
+                    localKeywords.push(newKeyword);
+                }
+            } else {
+                console.log(`Duplicate keyword skipped: ${keyword}`);
+            }
+        });
+
+        chrome.storage.local.set({ globalKeywords: globalKeywords, localKeywords: localKeywords }, () => {
+            console.log('Keywords imported and saved successfully.');
+            loadKeywords();
         });
     });
 }
