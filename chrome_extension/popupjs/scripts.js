@@ -36,60 +36,157 @@ function formatDate(timestamp) {
   }
   
   function loadSavedScripts() {
-    chrome.storage.local.get({ herbieScripts: [] }, (result) => {
-      const scripts = result.herbieScripts;
-      const savedScriptsContainer = document.getElementById('saved-scripts-container');
-      savedScriptsContainer.innerHTML = ''; // Clear the container
-  
-      if (scripts.length === 0) {
-        savedScriptsContainer.innerHTML = "<p>No saved scripts available.</p>";
-      } else {
-        scripts.reverse();
-  
-        scripts.forEach((script, index) => {
-          const scriptEntry = document.createElement('div');
-          scriptEntry.classList.add('script-entry');
-          scriptEntry.innerHTML = `
-            <div class="script-header">
-              <strong contenteditable="true" class="editable-title" data-index="${index}">${script.title}</strong> (${formatDate(script.time)})
-              <button class="delete-script" data-index="${index}" aria-label="Delete Script">
-                <i title="Delete" class="fas fa-trash-alt"></i>
-              </button>
-              <button class="load-script" data-index="${index}" aria-label="Load Script">
-                <i title="Load" class="fas fa-upload"></i>
-              </button>
-            </div>
-            <pre>${script.script}</pre>
-          `;
-          savedScriptsContainer.appendChild(scriptEntry);
-        });
-  
-        const deleteButtons = document.querySelectorAll('.delete-script');
-        deleteButtons.forEach(button => {
-          button.addEventListener('click', function () {
-            const index = this.getAttribute('data-index');
-            deleteScript(index);
-          });
-        });
-  
-        const loadButtons = document.querySelectorAll('.load-script');
-        loadButtons.forEach(button => {
-          button.addEventListener('click', function () {
-            const index = this.getAttribute('data-index');
-            loadScript(index);
-          });
-        });
-  
-        const editableTitles = document.querySelectorAll('.editable-title');
-        editableTitles.forEach(title => {
-          title.addEventListener('blur', function () {
-            const index = this.getAttribute('data-index');
-            saveEditedTitle(index, this.textContent);
-          });
-        });
-      }
+    chrome.storage.local.get({ herbieScripts: [], savedRecords: [] }, (result) => {
+        const scripts = result.herbieScripts;
+        const savedRecords = result.savedRecords;
+        const savedScriptsContainer = document.getElementById('saved-scripts-container');
+        savedScriptsContainer.innerHTML = ''; // Clear the container
+
+        if (scripts.length === 0 && savedRecords.length === 0) {
+            savedScriptsContainer.innerHTML = "<p>No saved scripts or records available.</p>";
+        } else {
+            // Display Herbie Scripts
+            if (scripts.length > 0) {
+                scripts.reverse();
+                scripts.forEach((script, index) => {
+                    const scriptEntry = document.createElement('div');
+                    scriptEntry.classList.add('script-entry');
+                    scriptEntry.innerHTML = `
+                        <div class="script-header">
+                            <strong contenteditable="true" class="editable-title-script" data-index="${index}">${script.title}</strong> (${formatDate(script.time)})
+                            <button class="delete-script" data-index="${index}" aria-label="Delete Script">
+                                <i title="Delete" class="fas fa-trash-alt"></i>
+                            </button>
+                            <button class="load-script" data-index="${index}" aria-label="Load Script">
+                                <i title="Load" class="fas fa-upload"></i>
+                            </button>
+                        </div>
+                        <pre>${script.script}</pre>
+                    `;
+                    savedScriptsContainer.appendChild(scriptEntry);
+                });
+
+                const deleteScriptButtons = document.querySelectorAll('.delete-script');
+                deleteScriptButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const index = this.getAttribute('data-index');
+                        deleteScript(index);
+                    });
+                });
+
+                const loadScriptButtons = document.querySelectorAll('.load-script');
+                loadScriptButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const index = this.getAttribute('data-index');
+                        loadScript(index);
+                    });
+                });
+
+                const editableScriptTitles = document.querySelectorAll('.editable-title-script');
+                editableScriptTitles.forEach(title => {
+                    title.addEventListener('blur', function () {
+                        const index = this.getAttribute('data-index');
+                        saveEditedTitle(index, this.textContent);
+                    });
+                });
+            }
+
+            // Display Saved Records
+            if (savedRecords.length > 0) {
+                savedRecords.reverse();
+                savedRecords.forEach((record, index) => {
+                    const recordEntry = document.createElement('div');
+                    recordEntry.classList.add('script-entry');
+                    
+                    // Replace the XPath with Tag labels
+                    let tagCount = 1;
+                    const actionsDisplay = record.actions.map(action => {
+                        return `<div class="action-item"><span>${capitalize(action.code[0])} on Tag${tagCount++}</span></div>`;
+                    }).join('');
+
+                    recordEntry.innerHTML = `
+                        <div class="script-header">
+                            <strong contenteditable="true" class="editable-title-record" data-record-index="${index}">${record.title || `Record ${index + 1}`}</strong> (${formatDate(record.time)})
+                            <button class="delete-record" data-index="${index}" aria-label="Delete Record">
+                                <i title="Delete" class="fas fa-trash-alt"></i>
+                            </button>
+                            <button class="load-record" data-index="${index}" aria-label="Load Record">
+                                <i title="Load" class="fas fa-upload"></i>
+                            </button>
+                        </div>
+                        <div class="record-actions">
+                            ${actionsDisplay}
+                        </div>
+                    `;
+                    savedScriptsContainer.appendChild(recordEntry);
+                });
+
+                // Add event listeners for deleting saved records
+                const deleteRecordButtons = document.querySelectorAll('.delete-record');
+                deleteRecordButtons.forEach((button, buttonIndex) => {
+                    button.addEventListener('click', function () {
+                        // Use the index from the loop directly
+                        const index = savedRecords.length - 1 - buttonIndex;
+                        
+                        // Deleting the record inside the event listener
+                        chrome.storage.local.get({ savedRecords: [] }, (result) => {
+                            let savedRecords = result.savedRecords;
+                            savedRecords.splice(index, 1); // Remove the record at the specified index
+
+                            chrome.storage.local.set({ savedRecords: savedRecords }, () => {
+                                loadSavedScripts(); // Reload the saved scripts and records to update the UI
+                            });
+                        });
+                    });
+                });
+
+                // Add event listeners for loading saved records
+                const loadRecordButtons = document.querySelectorAll('.load-record');
+                loadRecordButtons.forEach((button, buttonIndex) => {
+                    button.addEventListener('click', function () {
+                        // Use the index from the loop directly
+                        const index = savedRecords.length - 1 - buttonIndex;
+
+                        // Load the saved record and navigate to the Records tab
+                        chrome.storage.local.get({ savedRecords: [] }, (result) => {
+                            const record = result.savedRecords[index];
+
+                            // Clear current actions and load the saved record actions
+                            chrome.storage.local.set({ actions: record.actions }, () => {
+                                // Navigate to the Records tab
+                                document.querySelector('[data-tab="tab5"]').click(); // Simulate click on the Records tab
+
+                                // Reload the actions in the Record tab (assuming there's a function for this)
+                                fetchAndDisplayActions(); // Replace with your actual function to load actions into the UI
+                            });
+                        });
+                    });
+                });
+
+                // Add event listener to save edited title for records
+                const editableRecordTitles = document.querySelectorAll('.editable-title-record');
+                editableRecordTitles.forEach((title, titleIndex) => {
+                    title.addEventListener('blur', function () {
+                        // Use the index from the loop directly
+                        const index = savedRecords.length - 1 - titleIndex;
+                        
+                        // Save the edited title inside the event listener
+                        chrome.storage.local.get({ savedRecords: [] }, (result) => {
+                            let savedRecords = result.savedRecords;
+                            savedRecords[index].title = this.textContent; // Save the new title
+
+                            chrome.storage.local.set({ savedRecords: savedRecords }, () => {
+                                console.log(`Title updated for record at index ${index}: ${this.textContent}`);
+                            });
+                        });
+                    });
+                });
+            }
+        }
     });
-  }
+}
+
+
   
   function loadScript(index) {
     chrome.storage.local.get({ herbieScripts: [] }, (result) => {

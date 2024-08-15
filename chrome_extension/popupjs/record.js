@@ -9,13 +9,48 @@ function setupEventListeners() {
     const clearActionsButton = document.getElementById('clear_actions');
     const recordRunButton = document.getElementById('record_run');
     const recordWaitButton = document.getElementById('record_wait');
-
+    const saveActionsButton = document.getElementById('save_actions');
     recordClickButton.addEventListener('dragstart', handleDragStart.bind(null, 'click'));
     recordTypeButton.addEventListener('dragstart', handleDragStart.bind(null, 'type'));
     //fetchActionsButton.addEventListener('click', fetchAndDisplayActions);
     clearActionsButton.addEventListener('click', clearActions);
     recordRunButton.addEventListener('click', runActions);
     recordWaitButton.addEventListener('click', handleWaitButtonClick);
+    saveActionsButton.addEventListener('click', saveActions);
+}
+
+function saveActions() {
+    chrome.storage.local.get(['actions', 'savedRecords'], (result) => {
+        const actions = result.actions || [];
+        let savedRecords = result.savedRecords || [];
+
+        // Reference to the actions container
+        const actionsContainer = document.getElementById('actions_container');
+
+        // Check if actions array is empty
+        if (actions.length === 0) {
+            // Display a message indicating no actions to be saved
+            actionsContainer.innerHTML = '<p>No actions are present to be saved.</p>';
+        } else {
+            // Create a record entry with a timestamp and the actions
+            const timestamp = new Date().toISOString();
+            const recordEntry = {
+                time: timestamp,
+                actions: actions
+            };
+
+            // Add the new record to the savedRecords list
+            savedRecords.push(recordEntry);
+
+            // Save the updated list back to Chrome storage and clear the actions
+            chrome.storage.local.set({ savedRecords: savedRecords, actions: [] }, () => {
+                console.log('Actions saved to savedRecords');
+
+                // Display a success message in the actions_container
+                actionsContainer.innerHTML = '<p>Actions have been saved successfully!</p>';
+            });
+        }
+    });
 }
 
 function handleDragStart(actionType, event) {

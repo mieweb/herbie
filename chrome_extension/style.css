@@ -873,3 +873,6 @@ ul {
   box-sizing: border-box; /* Ensure padding is included in the width/height */
   overflow-y: auto; /* Allow vertical scrolling if content overflows */
 }
+#record_wait{
+  background-color: #17a2b8;
+}
