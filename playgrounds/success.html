@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success Page</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+        header img {
+            max-height: 50px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            margin-top: auto;
+            height: 50px;
+        }
+        .success-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .success-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="../logos/herbie.png" alt="Herbie Logo">
+    <h1>Success Page</h1>
+</header>
+
+<div class="success-container">
+    <div class="success-box">
+        <h1>Welcome, <span id="username"></span>!</h1>
+    </div>
+</div>
+
+<footer>
+    &copy; 2024 Your Company
+</footer>
+
+<script>
+    // Get the username from the query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username');
+    
+    // Display the username on the page
+    document.getElementById('username').textContent = username || 'Guest';
+</script>
+
+</body>
+</html>

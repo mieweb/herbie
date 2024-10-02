@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Command Playground</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+        header img {
+            max-height: 50px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            margin-top: auto;
+            height: 50px;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .box {
+            display: flex;
+            width: 60%;
+            background-color: #f7f7f7;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .box .section {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .box .section.left {
+            border-right: 1px solid #ddd;
+            text-align: left;
+        }
+        .box .section.right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .highlight {
+            background-color: #e8e8e8;
+            padding: 5px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="../logos/herbie.png" alt="Herbie Logo">
+    <h1>Verify Command Playground</h1>
+</header>
+
+<div class="container">
+    <div class="box">
+        <div class="section left">
+            <h2>Instructions</h2>
+            <p>Use the <strong>verify</strong> command to check if the success message on the right is displayed correctly.</p>
+            <p>Open the Herbie extension and type the following commands in Herbie Tab:</p>
+            <p><strong>By ID:</strong></p>
+            <p><span class="highlight">verify "Success" in '#message'</span></p>
+            <p><strong>By Class:</strong></p>
+            <p><span class="highlight">verify "Success" in '.message-class'</span></p>
+            <p><strong>By XPath:</strong></p>
+            <p><span class="highlight">verify "Success" in "//div[@role='alert']"</span></p>
+            <p>This will verify that the text "Success" is present in the message on the right.</p>
+        </div>
+        <div class="section right">
+            <div id="message" class="message-class" role="alert">Success</div>
+        </div>
+    </div>
+</div>
+
+<footer></footer>
+
+</body>
+</html>

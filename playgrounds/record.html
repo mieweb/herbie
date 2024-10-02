@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Command Playground</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+        header img {
+            max-height: 50px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            margin-top: auto;
+            height: 50px;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .box {
+            display: flex;
+            width: 60%;
+            background-color: #f7f7f7;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .box .section {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .box .section.left {
+            border-right: 1px solid #ddd;
+            text-align: left;
+        }
+        .box .section.right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .button-inline {
+            display: inline-block;
+            padding: 5px 10px;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+        .button-blue {
+            background-color: #007bff;
+        }
+        .button-blue:hover {
+            background-color: #0056b3;
+        }
+        .button-green {
+            background-color: #28a745;
+        }
+        .button-green:hover {
+            background-color: #218838;
+        }
+        .button-red {
+            background-color: #dc3545;
+        }
+        .button-red:hover {
+            background-color: #c82333;
+        }
+        .input-group {
+            width: 100%;
+            text-align: left;
+        }
+        .input-group label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .input-group button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .input-group button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="../logos/herbie.png" alt="Herbie Logo">
+    <h1>Record Command Playground</h1>
+</header>
+
+<div class="container">
+    <div class="box">
+        <div class="section left">
+            <h2>Instructions</h2>
+            <p>The <strong>Record</strong> tab in the Herbie extension allows you to drag and drop actions onto the elements you want to interact with on the webpage.</p>
+            <p>Here's how to use it:</p>
+            <ol>
+                <li>Open the <strong>Record</strong> tab in the Herbie extension.</li>
+                <li>Drag the desired action (e.g., 
+                    <span class="button-inline button-blue">Click</span>, 
+                    <span class="button-inline button-blue">Type</span>, 
+                    <span class="button-inline button-blue">Wait</span>) from the extension.
+                </li>
+                <li>Drop the action onto the target element on the webpage that you want to interact with.</li>
+                <li>The action will be recorded in the Herbie extension.</li>
+                <li>Once all actions are recorded, you can:</li>
+                <ul>
+                    <li><span class="button-inline button-green">Run</span> the actions to execute them.</li>
+                    <li><span class="button-inline button-blue">Save Actions</span> to store them for future use.</li>
+                    <li><span class="button-inline button-red">Clear Actions</span> to remove all recorded actions.</li>
+                </ul>
+                <li>Use this feature to automate interactions with various elements on the webpage.</li>
+            </ol>
+
+            <h3>Example:</h3>
+            <p>Follow these steps to automate filling in the username and submitting it:</p>
+            <ol>
+                <li>Open the Herbie extension and click on the <strong>Record</strong> tab.</li>
+                <li>Drag the <span class="button-inline button-blue">Type</span> action onto the username text field in the playground.</li>
+                <li>In the Herbie extension, enter the value you want to type (e.g., "JohnDoe").</li>
+                <li>Click on the plus button (+) in the extension to add the action.</li>
+                <li>Go back to the Herbie extension and drag the <span class="button-inline button-blue">Wait</span> action.</li>
+                <li>Set the wait time to <strong>5000ms</strong> in the extension and click on the add button.</li>
+                <li>Drag the <span class="button-inline button-blue">Click</span> action onto the submit button in the playground.</li>
+                <li>Finally, open the Herbie extension and click on the <span class="button-inline button-green">Run</span> button to execute the recorded actions.</li>
+            </ol>
+        </div>
+        <div class="section right">
+            <div class="input-group">
+                <label for="username">Enter Username:</label>
+                <input type="text" id="username" placeholder="Enter your username">
+                <button onclick="showUsername()">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer></footer>
+
+<script>
+    function showUsername() {
+        const username = document.getElementById('username').value;
+        alert('Username entered: ' + username);
+    }
+</script>
+
+</body>
+</html>
