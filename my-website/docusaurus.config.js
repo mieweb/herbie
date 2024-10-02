@@ -12,14 +12,14 @@ const config = {
   favicon: 'logos/herbie.png',
 
   // Set the production url of your site here
-  url: 'https://hrithikmani.github.io',
+  url: 'https://mieweb.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/herbie/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'HrithikMani', // Usually your GitHub org/user name.
+  organizationName: 'mieweb', // Usually your GitHub org/user name.
   projectName: 'herbie', // Usually your repo name.
 
   onBrokenLinks: 'throw',
