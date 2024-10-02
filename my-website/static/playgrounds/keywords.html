@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keywords Command Playground</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+        header img {
+            max-height: 50px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            margin-top: auto;
+            height: 50px;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .box {
+            display: flex;
+            width: 60%;
+            background-color: #f7f7f7;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .box .section {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .box .section.left {
+            border-right: 1px solid #ddd;
+            text-align: left;
+        }
+        .box .section.right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .highlight {
+            display: block;
+            background-color: #e8e8e8;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="../logos/herbie.png" alt="Herbie Logo">
+    <h1>Keywords Command Playground</h1>
+</header>
+
+<div class="container">
+    <div class="box">
+        <div class="section left">
+            <h2>Instructions</h2>
+            <p>To add a keyword with a variable in the Herbie extension, follow these steps:</p>
+            <ol>
+                <li>Navigate to the <strong>Keywords</strong> tab in the Herbie extension.</li>
+                <li>In the <strong>Enter keyword</strong> field, type your desired keyword, e.g., <span class="highlight">SubmitButton</span>.</li>
+                <li>In the <strong>Enter XPath</strong> field, type the XPath of the element, e.g., <span class="highlight">//button[@id='submit']</span>.</li>
+                <li>If the XPath contains a variable part (e.g., part of the XPath can change dynamically), check the <strong>Has Variable</strong> checkbox.</li>
+                <li>Click the <strong>Add Keyword</strong> button to save the keyword.</li>
+                <li>The keyword will now appear under the <strong>Global Keywords</strong> section.</li>
+                <li>To use the added keyword in your Herbie script, navigate back to the <strong>Herbie</strong> tab and type the following:</li>
+                <p><span class="highlight">click on 'SubmitButton'</span></p>
+            </ol>
+        </div>
+        <div class="section right">
+            <h2>Use Keyword in Herbie Script</h2>
+            <p>After adding the keyword, use it in the script as shown below:</p>
+            <p><span class="highlight">click on 'SubmitButton'</span></p>
+            <p>This will simulate a click action on the element specified by the XPath in the keyword.</p>
+            <button id="submit" onclick="triggerClick()">Click Me</button>
+        </div>
+    </div>
+</div>
+
+<footer></footer>
+
+<script>
+    function triggerClick() {
+        alert('Keyword "SubmitButton" was clicked!');
+    }
+</script>
+
+</body>
+</html>
