@@ -2,20 +2,26 @@
 
 To get started with Herbie, follow these steps:
 
-## 1. Download the Chrome Extension
+## 1. Install the Chrome Extension
 
-Download the latest version of the Chrome extension from the following link:
+You have two options to install the Herbie Chrome extension:
 
-- **Download the Latest Release**: [Download Here](https://github.com/HrithikMani/herbie/releases/latest)
+### Option 1: Install from the Chrome Web Store
 
-## 2. Install the Extension in Chrome
+1. Go to the Chrome Web Store and download the Herbie extension from the following link:
+   - **Herbie Extension**: [Download from Chrome Web Store](https://chromewebstore.google.com/detail/herbie-dev/bikchlaboloecmadcmngdofkfpajoahn)
+2. Click **Add to Chrome** and confirm the installation.
 
-1. **Open Chrome** and go to `Preferences... -> Extensions`.
-2. Ensure that **"Developer mode"** is checked (upper left corner).
-3. Click on **"Load unpacked extension..."**.
-4. Browse to the `chrome_extension` folder in the project and select it.
+### Option 2: Install as an Unpacked Extension
 
-## 3. Pin the Extension 
+1. Download the latest release of the Herbie extension from GitHub:
+   - **Download the Latest Release**: [Download Here](https://github.com/HrithikMani/herbie/releases/latest)
+2. **Open Chrome** and go to `Preferences... -> Extensions`.
+3. Ensure that **"Developer mode"** is checked (upper left corner).
+4. Click on **"Load unpacked extension..."**.
+5. Browse to the `chrome_extension` folder from the downloaded release and select it.
+
+## 2. Pin the Extension
 
 If you want to pin the extension for quick access, follow these steps:
 
