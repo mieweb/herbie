@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+  h2 { font-size: 1.1em; margin: 0.1em; }
+  div.sample { border: solid #000 1px; display: inline-block; }
+</style>
+
+<body>
+
+
+This is an example page.  It had many sample elements:<br>
+<div class="sample">
+<h2>Inputs without labels:</h2>
+Name: <input name="name" size="15" type="text" /><br>
+Address: <TEXTAREA NAME="address" ROWS=3 COLS=30 ></TEXTAREA><br>
+Type: <select  name="type">
+<option>Home</option>
+<option>Office</option>
+<option>Family</option>
+</select><br>
+Phone: <input name="phone" size="15" type="text" />
+<input name="phone" type="checkbox" value="business" /> business
+<input name="phone" type="checkbox" value="personal" /> personal
+<input name="phone" type="checkbox" value="other" /> other
+<br>
+A save button: <button>Save</button><br>
+An ok button: <button id="slowok">OK</button><br>
+A cancel button: <button>Cancel</button><br>
+And finally, it has a link <a href="http://www.google.com/">going away</a>
+</div>
+
+<div class="sample">
+<h2>Inputs with labels:</h2>
+<label for="input_name">Last Name:</label>
+<input id="input_name" name="name" size="15" type="text" /><br>
+<label for="input_address">Address:</label>
+<textarea id="input_address" name="address" rows=3 cols=30></textarea><br>
+<label for="input_type">Type:</label>
+<select id="input_type" name="type">
+<option>Home</option>
+<option>Office</option>
+<option>Family</option>
+</select><br>
+<label for="input_phone">Phone:</label>
+
+<input id="input_phone" name="phone" size="15" type="text" />
+<input id="input_business" name="phone" type="checkbox" value="business" /> <label for="input_business">business</label>
+<input id="input_personal" name="phone" type="checkbox" value="personal" /> <label for="input_personal">personal</label>
+<input id="input_other" name="phone" type="checkbox" value="other" /> <label for="input_other">other</label>
+<br>
+A save button: <button>Save</button><br>
+An ok button: <button>OK</button><br>
+A cancel button: <button>Cancel</button><br>
+And finally, it has a link <a href="http://www.google.com/">going away</a>
+</div>
+
+<div class="sample">
+<h2>Inputs w/o labels, but using IDs:</h2>
+Name: <input id="name" name="name" size="15" type="text" /><br>
+Address: <TEXTAREA id="address" NAME="address" ROWS=3 COLS=30 ></TEXTAREA><br>
+Type: <select id="type" name="type">
+<option>Home</option>
+<option>Office</option>
+<option>Family</option>
+</select><br>
+Phone: <input id="phone" name="phone" size="15" type="text" />
+<input id="business" name="phone" type="checkbox" value="business" /> business
+<input id="personal" name="phone" type="checkbox" value="personal" /> personal
+<input id="other" name="phone" type="checkbox" value="other" /> other
+<br>
+A save button: <button id="save">Save</button><br>
+An ok button: <button id="ok">OK</button><br>
+A cancel button: <button id="cancel">Cancel</button><br>
+And finally, it has a link <a href="http://www.google.com/">going away</a>
+</div>
+
+<script type="text/javascript">
+var runonce=false;
+
+herbie_sample_script = "Type 'hi' in to 'Address' input.\n\
+Fill out the following fields: \n\
+* Last Name: Horner\n\
+* Phone: 260-459-6270\n\
+Click on the 'Save' button. \n\
+Click 'OK'.\n\
+Type 'finally' in 'Slow Input'\n\
+Click on the 'going away' link.\n\
+Type 'it worked' in '#lst-ib'";
+
+(function() {
+	var button = document.getElementById("slowok");
+	button.addEventListener("click",function(e){
+		if (runonce) return;
+		runonce = true;
+		setTimeout(function() {
+			var button = e.toElement;
+			var div = document.createElement('span');
+			div.innerHTML = '<label for="input_slow">Slow Input:</label><input id="input_slow" name="slowly" size="15" type="text" /><br>';
+			button.parentNode.insertBefore(div, button.nextSibling.nextSibling);
+//			while (div.children.length > 0) {
+//				button.appendChild(div.children[0]);
+//			}
+		}, 1500);
+	},false);
+
+	function loadjsfile(filename){
+		var fileref=document.createElement('script')
+		fileref.async = false;
+		fileref.setAttribute("type","text/javascript")
+		fileref.setAttribute("src", filename)
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+	}
+	// If #run_herbie is on the URL, then we can load this in the page.
+	if (window.location.hash=="#run_herbie") {
+		loadjsfile("../dist/jquery.min.js");
+		loadjsfile("../dist/jquery.simulate.js");
+		loadjsfile("../dist/bililiteRange.js");
+		loadjsfile("../dist/jquery.simulate.ext.js");
+		loadjsfile("../dist/jquery.simulate.drag-n-drop.js");
+		loadjsfile("../dist/jquery.simulate.key-sequence.js");
+		loadjsfile("../dist/jquery.simulate.key-combo.js");
+		loadjsfile("../src/inspector.js");
+		loadjsfile("../src/herbie.js");
+
+		// This code is to load herbie whenever the above script injection finishes.
+		function TryHerbie() {
+			if (typeof(Herbie) != "undefined")
+				Herbie.BuildUI("../src/", herbie_sample_script);
+			else
+				setTimeout(TryHerbie, 500);
+		}
+		setTimeout(TryHerbie, 10);
+	}
+})();
+</script>
+</head>
+</body>
+</html>
