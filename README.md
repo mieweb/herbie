@@ -17,7 +17,7 @@ Before you begin, ensure you have the following installed:
    Clone this repository to your local machine:
 
    ```bash
-   git clone https://github.com/HrithikMani/herbie.git
+   git clone https://github.com/mieweb/herbie.git
    cd herbie
    ```
 
