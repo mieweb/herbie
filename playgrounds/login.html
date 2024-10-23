@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Welcome to Herbie</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             display: flex;
-            flex-direction: column;
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
         }
@@ -23,7 +22,6 @@
         }
         header img {
             max-height: 50px;
-            vertical-align: middle;
             margin-right: 10px;
         }
         header h1 {
@@ -35,37 +33,36 @@
             color: white;
             padding: 10px;
             text-align: center;
-            margin-top: auto;
-            height: 50px;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
         }
-        .login-container {
+        .container {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            gap: 30px;
         }
-        .login-box {
+        .box {
             background-color: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 45%;
             max-width: 400px;
-            width: 100%;
         }
-        h2 {
-            margin-top: 0;
-            font-size: 24px;
+        .instructions {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #555;
+            text-align: center;
         }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-size: 16px;
-        }
-        input[type="text"], input[type="password"] {
+        input[type="text"] {
             width: 100%;
             padding: 10px;
-            margin: 0 0 10px;
+            margin: 10px 0;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
@@ -83,39 +80,83 @@
         button:hover {
             background-color: #0056b3;
         }
+        .welcome-message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
 <header>
     <a href="https://mieweb.github.io/herbie/"><img src="../logos/herbie.png" alt="Herbie Logo"></a>
-    <h1>Login Page</h1>
+    <h1>Welcome to Herbie</h1>
 </header>
 
-<div class="login-container">
-    <div class="login-box" role="form" aria-labelledby="login-heading">
-        <h2 id="login-heading">Login</h2>
-        <form id="loginForm" aria-describedby="login-instructions">
-            <p id="login-instructions">Please enter your username and password to log in.</p>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Username" required aria-required="true">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Password" required aria-required="true">
-            <button type="submit">Submit</button>
+<div class="container">
+    <!-- Left Side: Form -->
+    <div class="box">
+        <h2>Get Started</h2>
+        <form id="welcomeForm">
+            <label for="firstName">firstname:</label>
+            <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
+
+            <label for="lastName">lastname:</label>
+            <input type="text" id="lastName" name="lastName" placeholder="Last Name" required>
+
+            <button type="button">Submit</button>
         </form>
+
+        <div id="welcomeMessage" class="welcome-message hidden"></div>
+    </div>
+
+    <!-- Right Side: Instructions -->
+    <div class="box">
+        <p class="instructions">
+            Now that you’re set, open the <strong>Herbie extension</strong> from your browser toolbar.
+        </p>
+        <p class="instructions">
+            The extension will guide you through its features with an interactive walkthrough.
+        </p>
+        <p class="instructions">
+            Enjoy using Herbie!
+        </p>
     </div>
 </div>
 
 <footer>
-    &copy; 2024 Your Company
+    MIE
 </footer>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const username = document.getElementById('username').value;
-        window.location.href = `success.html?username=${encodeURIComponent(username)}`;
-    });
+
+
+function showInstructions() {
+    document.getElementById('instructionsBox').classList.remove('hidden');
+    document.getElementById('formBox').classList.add('hidden');
+}
+
+function showForm() {
+    document.getElementById('instructionsBox').classList.add('hidden');
+    document.getElementById('formBox').classList.remove('hidden');
+}
+
+document.getElementById('welcomeForm').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    welcomeMessage.textContent = `Hi, ${firstName} ${lastName}   !.`;
+    welcomeMessage.classList.remove('hidden');
+
+    // Mark walkthrough as completed
+    chrome.runtime.sendMessage({ action: 'mark_walkthrough_complete' });
+});
+
 </script>
 
 </body>
