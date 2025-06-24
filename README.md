@@ -8,10 +8,30 @@ Herbie is a set of tools for developing BDD (https://en.wikipedia.org/wiki/Behav
 There are several different components to Herbie:
 
 1. An English like language parser specifically for understanding documentation like directives: Vision.
-2. An interactive inspector to make it easier for Vision authors to discover what elements are on a page.
+2. An interactive inspector to make it easier for okra authors to discover what elements are on a page.
 3. A simple Vision interpreter that allow an author to test/debug Vision script. 
 
+**Herbie Project Overview**
 
+Herbie is a browser extension that leverages natural language scripts (Okra) to automate, monitor, and measure user interactions on web pages. It supports multiple modes to address different use cases: automating procedures, measuring usability, and enabling competitive benchmarking through a public leaderboard. Competitions are defined in markdown and can be published for public participation, with results reported to a configurable leaderboard.
+
+---
+
+### Driving Automation
+
+In this mode, Herbie interprets Okra scripts written in natural language and directly automates the specified actions within the browser. This allows for rapid prototyping, testing, and demonstration of workflows by executing steps such as clicking buttons or entering text fields without manual intervention.
+
+---
+
+### Measuring Usability
+
+Herbie can operate in a passive mode where it observes users as they perform tasks defined in an Okra script. It tracks whether users complete each step, measures the time taken, and collects statistics on user performance. This mode is focused on gathering usability data and insights, without introducing gamification elements or competitive feedback.
+
+---
+
+### Competition Mode
+
+When running in competition mode, Herbie not only measures user performance but also gamifies the experience. Upon completion of a defined objective, Herbie celebrates the achievement (e.g., with confetti and a congratulatory message) and submits the user's results to a public or specified leaderboard. This enables users to compare their performance with others, fostering engagement and benchmarking through friendly competition. Competitions are defined and published via markdown, making it easy to share and participate in new challenges.
 # How to Install the Chrome Extension
 [Download Link](https://github.com/HrithikMani/herbie/archive/refs/tags/0.3.zip)
 1. Clone the project to your local machine or download the chrome extension from above link.
