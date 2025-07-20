@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Click Storage</title>
+</head>
+<body>
+    <h1>Click a Button</h1>
+    <button id="button1">Button 1</button>
+    <button id="button2">Button 2</button>
+    <button id="button3">Button 3</button>
+    
+    <p>Last clicked: <span id="lastClicked">None</span></p>
+
+    <script>
+        // Send message to the extension when a button is clicked
+        function sendMessageToExtension(buttonId) {
+            console.log(`Sending clicked button: ${buttonId}`);
+            window.postMessage({ action: "buttonClick", buttonId }, "*");
+        }
+
+        // Attach click event listeners to buttons
+        document.getElementById("button1").addEventListener("click", () => sendMessageToExtension("button1"));
+        document.getElementById("button2").addEventListener("click", () => sendMessageToExtension("button2"));
+        document.getElementById("button3").addEventListener("click", () => sendMessageToExtension("button3"));
+
+        // Listen for response from content script
+        window.addEventListener("message", (event) => {
+            if (event.data.action === "updateLastClicked") {
+                document.getElementById("lastClicked").innerText = event.data.buttonId;
+            }
+        });
+
+        // Request last clicked button on page load
+        window.postMessage({ action: "getLastClicked" }, "*");
+    </script>
+</body>
+</html>

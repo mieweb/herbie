@@ -1,0 +1,139 @@
+#injected-root {
+    position: fixed;
+    background: #fff;
+    color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.2);
+    z-index: 999999;
+    width: 420px;
+    font-family: Arial, sans-serif;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+  }
+  
+  /* Header */
+  #herbie_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+    cursor: grab;
+  }
+  
+  #herbie_header:active {
+    cursor: grabbing;
+  }
+  
+  #herbie_header img {
+    height: 30px;
+  }
+  
+  #herbie_title {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  /* Close Button */
+  .close-button {
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+  
+  .close-button:hover {
+    background: #cc0000;
+  }
+  
+  /* Control Buttons */
+  #herbie_buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+  }
+  
+  .run-button,
+  .stop-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    width: 100px;
+    transition: all 0.3s ease;
+  }
+  
+  .run-button {
+    background: #4caf50;
+    color: white;
+  }
+  
+  .run-button:hover {
+    background: #388e3c;
+  }
+  
+  .stop-button {
+    background: #f44336;
+    color: white;
+  }
+  
+  .stop-button:hover {
+    background: #d32f2f;
+  }
+  
+  /* Timer Display */
+  .timer-display {
+    margin: 15px 0;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Script Input */
+  .herbie_script {
+    margin-top: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .herbie_script label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+  
+  .herbie_script textarea {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: monospace;
+    background: #f9f9f9;
+    color: #333;
+    resize: vertical;
+    box-sizing: border-box;
+    display: block;
+    transition: all 0.2s ease;
+  }
+  
+  .herbie_script textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+  }
+  

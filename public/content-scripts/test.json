@@ -1,0 +1,37 @@
+[
+    {
+        "line": 0,
+        "code": [
+            "type",
+            "\"Hrithik\"",
+            "in",
+            "\"lastname\""
+        ],
+        "src": "type \"Hrithik\" into \"lastname\"",
+        "timeout": 5000,
+        "subcommands": []
+    },
+    {
+        "line": 1,
+        "code": [
+            "type",
+            "\"Mani\"",
+            "in",
+            "\"firstname\""
+        ],
+        "src": "type \"Mani\" into \"firstname\"",
+        "timeout": 5000,
+        "subcommands": []
+    },
+    {
+        "line": 2,
+        "code": [
+            "click",
+            "in",
+            "\"Submit\""
+        ],
+        "src": "click on \"Submit\"",
+        "timeout": 5000,
+        "subcommands": []
+    }
+]
